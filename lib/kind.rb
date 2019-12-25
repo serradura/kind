@@ -23,7 +23,7 @@ module Kind
     def self.call(expected, value)
       expected_klass, klass = Kind.of.Class(expected), Kind.of.Class(value)
 
-      klass == expected_klass || klass < expected_klass
+      klass <= expected_klass
     end
   end
 
