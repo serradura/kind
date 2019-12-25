@@ -30,6 +30,8 @@ module Kind
   def self.of; Of; end
   def self.is; Is; end
 
+  singleton_class.send(:alias_method, :is_a, :is)
+
   module Types
     KIND_OF = <<-RUBY
       def self.%{klass}(object)
