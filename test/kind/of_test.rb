@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class Kind::OfMethodsTest < Minitest::Test
+class Kind::OfTest < Minitest::Test
   def test_if_a_value_is_a_kind_of_hash
     assert_raises(Kind::Error) { Kind.of.Hash(Object.new) }
 
