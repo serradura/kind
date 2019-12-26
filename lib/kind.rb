@@ -1,4 +1,6 @@
-require "kind/version"
+# frozen_string_literal: true
+
+require 'kind/version'
 
 module Kind
   class Error < TypeError
@@ -34,7 +36,9 @@ module Kind
 
   module Types
     KIND_OF = <<-RUBY
-      def self.%{klass}(object)
+      def self.%{klass}(object = nil)
+        return Kind::Of::%{klass} unless object
+
         Kind::Of.call(::%{klass}, object)
       end
     RUBY
@@ -45,7 +49,21 @@ module Kind
       end
     RUBY
 
-    private_constant :KIND_OF, :KIND_IS
+    KIND_OF_MODULE = <<-RUBY
+      def self.class?(value)
+        Kind::Is.call(::%{klass}, value)
+      end
+
+      def self.instance?(value)
+        value.is_a?(::%{klass})
+      end
+
+      def self.or_nil(value)
+        return value if instance?(value)
+      end
+    RUBY
+
+    private_constant :KIND_OF, :KIND_IS, :KIND_OF_MODULE
 
     def self.add(klass)
       klass_name = Kind.of.Class(klass).name
@@ -53,6 +71,11 @@ module Kind
       return if Of.respond_to?(klass_name)
 
       Of.instance_eval(KIND_OF % { klass: klass_name })
+
+      type_module = Module.new
+      type_module.instance_eval(KIND_OF_MODULE % { klass: klass_name })
+
+      Of.const_set(klass_name, type_module)
 
       return if Is.respond_to?(klass_name)
 
