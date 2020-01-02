@@ -122,6 +122,16 @@ class Kind::IsTest < Minitest::Test
     assert Kind.is.File(Class.new(File))
   end
 
+  def test_if_a_value_is_a_boolean_class_or_subclass
+    refute Kind.is.Boolean(Object)
+
+    assert Kind.is.Boolean(TrueClass)
+    assert Kind.is.Boolean(FalseClass)
+
+    assert Kind.is.Boolean(Class.new(TrueClass))
+    assert Kind.is.Boolean(Class.new(FalseClass))
+  end
+
   # --- Modules
 
   def test_if_a_value_is_a_module

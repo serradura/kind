@@ -444,6 +444,70 @@ class Kind::OfModulesTest < Minitest::Test
     assert_equal(value, Kind::Of::File.or_nil(value))
   end
 
+  # -- Boolean
+
+  def test_if_a_value_is_a_kind_of_boolean
+    refute Kind.of.Boolean.instance?({})
+    assert Kind.of.Boolean.instance?(true)
+    assert Kind.of.Boolean.instance?(false)
+
+    refute Kind.of.Boolean.class?(String)
+    assert Kind.of.Boolean.class?(TrueClass)
+    assert Kind.of.Boolean.class?(FalseClass)
+    assert Kind.of.Boolean.class?(Class.new(TrueClass))
+
+    assert_nil Kind.of.Boolean.or_nil('')
+    assert_equal(true, Kind.of.Boolean.or_nil(true))
+    assert_equal(false, Kind.of.Boolean.or_nil(false))
+
+    # ---
+
+    refute Kind::Of::Boolean.instance?('')
+    assert Kind::Of::Boolean.instance?(true)
+    assert Kind::Of::Boolean.instance?(false)
+
+    refute Kind::Of::Boolean.class?(String)
+    assert Kind::Of::Boolean.class?(TrueClass)
+    assert Kind::Of::Boolean.class?(FalseClass)
+    assert Kind::Of::Boolean.class?(Class.new(TrueClass))
+
+    assert_nil Kind::Of::Boolean.or_nil('')
+    assert_equal(true, Kind::Of::Boolean.or_nil(true))
+    assert_equal(false, Kind::Of::Boolean.or_nil(false))
+  end
+
+  # -- Lambda
+
+  def test_if_a_value_is_a_kind_of_lambda
+    sum = proc { |a, b| a + b }
+    sub = lambda { |a, b| a - b }
+
+    refute Kind.of.Lambda.instance?({})
+    refute Kind.of.Lambda.instance?(sum)
+    assert Kind.of.Lambda.instance?(sub)
+
+    assert Kind.of.Lambda.class?(Proc)
+    assert Kind.of.Lambda.class?(Class.new(Proc))
+
+    assert_nil Kind.of.Lambda.or_nil('')
+    assert_nil Kind.of.Lambda.or_nil(sum)
+    assert_equal(sub, Kind.of.Lambda.or_nil(sub))
+
+    # ---
+
+    refute Kind::Of::Lambda.instance?('')
+    refute Kind::Of::Lambda.instance?(sum)
+    assert Kind::Of::Lambda.instance?(sub)
+
+    refute Kind::Of::Lambda.class?(String)
+    assert Kind::Of::Lambda.class?(Proc)
+    assert Kind::Of::Lambda.class?(Class.new(Proc))
+
+    assert_nil Kind::Of::Lambda.or_nil('')
+    assert_nil Kind::Of::Lambda.or_nil(sum)
+    assert_equal(sub, Kind::Of::Lambda.or_nil(sub))
+  end
+
   # Modules
 
   # -- Enumerable

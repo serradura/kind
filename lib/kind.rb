@@ -23,6 +23,50 @@ module Kind
     def self.Module(object)
       self.call(::Module, object)
     end
+
+    def self.Boolean(object = nil)
+      return Kind::Of::Boolean if object.nil?
+
+      return object if object.is_a?(::TrueClass) || object.is_a?(::FalseClass)
+
+      raise Kind::Error.new('Boolean'.freeze, object)
+    end
+
+    module Boolean
+      def self.class?(value)
+        Kind.is.Boolean(value)
+      end
+
+      def self.instance?(value)
+        value.is_a?(TrueClass) || value.is_a?(FalseClass)
+      end
+
+      def self.or_nil(value)
+        return value if instance?(value)
+      end
+    end
+
+    def self.Lambda(object = nil)
+      return Kind::Of::Lambda if object.nil?
+
+      return object if object.is_a?(::Proc) && object.lambda?
+
+      raise Kind::Error.new('Lambda'.freeze, object)
+    end
+
+    module Lambda
+      def self.class?(value)
+        Kind.is.Proc(value)
+      end
+
+      def self.instance?(value)
+        value.is_a?(::Proc) && value.lambda?
+      end
+
+      def self.or_nil(value)
+        return value if instance?(value)
+      end
+    end
   end
 
   module Is
@@ -38,6 +82,11 @@ module Kind
 
     def self.Module(value)
       value == Module || (value.is_a?(::Module) && !self.Class(value))
+    end
+
+    def self.Boolean(value)
+      klass = Kind.of.Class(value)
+      klass <= TrueClass || klass <= FalseClass
     end
   end
 

@@ -138,6 +138,26 @@ class Kind::OfMethodsTest < Minitest::Test
     assert_same(value, Kind.of.File(value))
   end
 
+  def test_if_a_value_is_a_kind_of_boolean
+    err = assert_raises(Kind::Error) { Kind.of.Boolean(:a) }
+    assert_equal(':a expected to be a kind of Boolean', err.message)
+
+    assert_same(true, Kind.of.Boolean(true))
+    assert_same(false, Kind.of.Boolean(false))
+  end
+
+  def test_if_a_value_is_a_kind_of_lambda
+    sum = proc { |a, b| a + b }
+    sub = lambda { |a, b| a - b }
+
+    err1 = assert_raises(Kind::Error) { Kind.of.Lambda([]) }
+    assert_equal('[] expected to be a kind of Lambda', err1.message)
+
+    err2 = assert_raises(Kind::Error) { Kind.of.Lambda(sum) }
+    assert_match(/<Proc:.*> expected to be a kind of Lambda/, err2.message)
+
+    assert_same(sub, Kind.of.Lambda(sub))
+  end
 
   # --- Modules
 
