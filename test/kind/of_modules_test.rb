@@ -9,9 +9,9 @@ class Kind::OfModulesTest < Minitest::Test
     refute Kind.of.String.instance?({})
     assert Kind.of.String.instance?('')
 
-    refute Kind.of.String.class?(Hash)
-    assert Kind.of.String.class?(String)
-    assert Kind.of.String.class?(Class.new(String))
+    assert_equal(false, Kind.of.String.class?(Hash))
+    assert_equal(true, Kind.of.String.class?(String))
+    assert_equal(true, Kind.of.String.class?(Class.new(String)))
 
     assert_nil Kind.of.String.or_nil({})
     assert_equal('a', Kind.of.String.or_nil('a'))
