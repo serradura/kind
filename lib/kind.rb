@@ -5,7 +5,7 @@ require 'kind/version'
 module Kind
   class Error < TypeError
     def initialize(klass, object)
-      super("#{object} expected to be a kind of #{klass}")
+      super("#{object.inspect} expected to be a kind of #{klass}")
     end
   end
 
@@ -19,25 +19,37 @@ module Kind
     def self.Class(object)
       self.call(::Class, object)
     end
+
+    def self.Module(object)
+      self.call(::Module, object)
+    end
   end
 
   module Is
     def self.call(expected, value)
-      expected_klass, klass = Kind.of.Class(expected), Kind.of.Class(value)
+      expected_klass, klass = Kind.of.Module(expected), Kind.of.Module(value)
 
       klass <= expected_klass
+    end
+
+    def self.Class(value)
+      value.is_a?(::Class)
+    end
+
+    def self.Module(value)
+      value == Module || (value.is_a?(::Module) && !self.Class(value))
     end
   end
 
   def self.of; Of; end
   def self.is; Is; end
 
-  singleton_class.send(:alias_method, :is_a, :is)
-
   module Types
+    extend self
+
     KIND_OF = <<-RUBY
       def self.%{klass}(object = nil)
-        return Kind::Of::%{klass} unless object
+        return Kind::Of::%{klass} if object.nil?
 
         Kind::Of.call(::%{klass}, object)
       end
@@ -65,8 +77,8 @@ module Kind
 
     private_constant :KIND_OF, :KIND_IS, :KIND_OF_MODULE
 
-    def self.add(klass)
-      klass_name = Kind.of.Class(klass).name
+    def add(klass)
+      klass_name = Kind.of.Module(klass).name
 
       return if Of.respond_to?(klass_name)
 
@@ -83,6 +95,16 @@ module Kind
     end
   end
 
-  [Hash, String]
-    .each { |klass| Types.add(klass) }
+  # Classes
+  [
+    String, Symbol, Numeric, Integer, Float, Regexp, Time,
+    Array, Range, Hash, Struct, Enumerator,
+    Method, Proc,
+    IO, File
+  ].each { |klass| Types.add(klass) }
+
+  # Modules
+  [
+    Enumerable, Comparable
+  ].each { |klass| Types.add(klass) }
 end
