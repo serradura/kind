@@ -1,11 +1,12 @@
 - [Kind](#kind)
   - [Installation](#installation)
   - [Usage](#usage)
-    - [Verifying the kind of some object.](#verifying-the-kind-of-some-object)
-    - [Verifying the kind of some class/module.](#verifying-the-kind-of-some-classmodule)
-  - [Built-in type checkers.](#built-in-type-checkers)
-    - [Kind.of](#kindof)
-    - [Kind.is](#kindis)
+    - [Verifying the kind of some object](#verifying-the-kind-of-some-object)
+    - [Verifying the kind of some class/module](#verifying-the-kind-of-some-classmodule)
+  - [Built-in type checkers](#built-in-type-checkers)
+    - [Special type checkers](#special-type-checkers)
+      - [Kind.of](#kindof)
+      - [Kind.is](#kindis)
   - [How to create a new type checker?](#how-to-create-a-new-type-checker)
   - [Development](#development)
   - [Contributing](#contributing)
@@ -40,7 +41,7 @@ Or install it yourself as:
 
 ## Usage
 
-### Verifying the kind of some object.
+### Verifying the kind of some object
 
 By default, basic type verification is strict. So, when you perform `Kind.of.Hash(value)`, if the given value was a Hash it will be returned, but if it wasn't one, an error will be raised.
 
@@ -90,7 +91,7 @@ Kind.of.Boolean.instance?(true)  # true
 Kind.of.Boolean.instance?(false) # true
 ```
 
-### Verifying the kind of some class/module.
+### Verifying the kind of some class/module
 
 You can use `Kind.is` to verify if some class has the expected type as its ancestor.
 
@@ -114,7 +115,7 @@ Kind.of.Hash.class?(Hash)
 Kind.of.Hash.class?(ActiveSupport::HashWithIndifferentAccess)
 ```
 
-## Built-in type checkers.
+## Built-in type checkers
 
 The list of types (classes and modules) available to use with `Kind.of.*` or `Kind.is.*` are:
 
@@ -137,16 +138,16 @@ The list of types (classes and modules) available to use with `Kind.of.*` or `Ki
 | IO         |            |
 | File       |            |
 
-Special type checkers:
+### Special type checkers
 
-### Kind.of
+#### Kind.of
 
 - `Kind.of.Class()`
 - `Kind.of.Module()`
 - `Kind.of.Lambda()`
 - `Kind.of.Boolean()`
 
-### Kind.is
+#### Kind.is
 
 - `Kind.of.Class()`
 - `Kind.of.Module()`
