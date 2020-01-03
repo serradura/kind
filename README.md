@@ -1,19 +1,7 @@
-- [Kind](#kind)
-  - [Installation](#installation)
-  - [Usage](#usage)
-    - [Verifying the kind of some object](#verifying-the-kind-of-some-object)
-    - [Verifying the kind of some class/module](#verifying-the-kind-of-some-classmodule)
-  - [Built-in type checkers](#built-in-type-checkers)
-    - [Special type checkers](#special-type-checkers)
-      - [Kind.of](#kindof)
-      - [Kind.is](#kindis)
-  - [How to create a new type checker?](#how-to-create-a-new-type-checker)
-  - [Development](#development)
-  - [Contributing](#contributing)
-  - [License](#license)
-  - [Code of Conduct](#code-of-conduct)
+[![Gem](https://img.shields.io/gem/v/kind.svg?style=flat-square)](https://rubygems.org/gems/kind)
+[![Build Status](https://travis-ci.com/serradura/kind.svg?branch=master)](https://travis-ci.com/serradura/kind)
 
-# Kind
+# Kind <!-- omit in toc -->
 
 Basic type system for Ruby.
 
@@ -22,6 +10,21 @@ Basic type system for Ruby.
 As a creator of Ruby gems, I have a common need that I have to handle in many of my projects: type checking of method arguments.
 
 One of the goals of this project is to do simple type checking like `"some string".is_a?(String)`, but using a bunch of basic abstractions. So, after reading this README and realizing that you need something more robust, I recommend to you check out the [dry-types gem](https://dry-rb.org/gems/dry-types).
+
+## Table of Contents <!-- omit in toc -->
+- [Installation](#installation)
+- [Usage](#usage)
+  - [Verifying the kind of some object](#verifying-the-kind-of-some-object)
+  - [Verifying the kind of some class/module](#verifying-the-kind-of-some-classmodule)
+- [Built-in type checkers](#built-in-type-checkers)
+  - [Special type checkers](#special-type-checkers)
+    - [Kind.of](#kindof)
+    - [Kind.is](#kindis)
+- [How to create a new type checker?](#how-to-create-a-new-type-checker)
+- [Development](#development)
+- [Contributing](#contributing)
+- [License](#license)
+- [Code of Conduct](#code-of-conduct)
 
 ## Installation
 
@@ -38,6 +41,8 @@ And then execute:
 Or install it yourself as:
 
     $ gem install kind
+
+[⬆️ Back to Top](#table-of-contents-)
 
 ## Usage
 
@@ -116,6 +121,8 @@ Kind.of.Hash.class?(ActiveSupport::HashWithIndifferentAccess)
 # true
 ```
 
+[⬆️ Back to Top](#table-of-contents-)
+
 ## Built-in type checkers
 
 The list of types (classes and modules) available to use with `Kind.of.*` or `Kind.is.*` are:
@@ -154,6 +161,8 @@ The list of types (classes and modules) available to use with `Kind.of.*` or `Ki
 - `Kind.of.Module()`
 - `Kind.of.Boolean()`
 
+[⬆️ Back to Top](#table-of-contents-)
+
 ## How to create a new type checker?
 
 Use `Kind::Types.add()`. e.g:
@@ -191,6 +200,8 @@ Kind.of.User.class?(Hash)  # false
 Kind.of.User.instance?(User) # true
 Kind.of.User.class?(User)    # true
 ```
+
+[⬆️ Back to Top](#table-of-contents-)
 
 ## Development
 
