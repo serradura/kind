@@ -11,8 +11,8 @@ module Kind
 
   module Is
     def self.call(expected, value)
-      expected_mod = Kind.of.Module(expected)
-      mod = Kind.of.Module(value)
+      expected_mod = Kind::Of.Module(expected)
+      mod = Kind::Of.Module(value)
 
       mod <= expected_mod || false
     end
@@ -22,7 +22,7 @@ module Kind
     end
 
     def self.Module(value)
-      value == Module || (value.is_a?(::Module) && !self.Class(value))
+      value == ::Module || (value.is_a?(::Module) && !self.Class(value))
     end
   end
 
@@ -53,13 +53,33 @@ module Kind
       raise Kind::Error.new(klass, object)
     end
 
-    def self.Class(object)
+    def self.Class(object = nil)
+      return Class if object.nil?
+
       self.call(::Class, object)
     end
 
-    def self.Module(object)
+    const_set(:Class, ::Class.new(Checker) do
+      def instance?(value)
+        Kind::Is.Class(value)
+      end
+
+      alias class? instance?
+    end.new(::Class).freeze)
+
+    def self.Module(object = nil)
+      return Module if object.nil?
+
       self.call(::Module, object)
     end
+
+    const_set(:Module, ::Class.new(Checker) do
+      def instance?(value)
+        Kind::Is.Module(value)
+      end
+
+      alias class? instance?
+    end.new(::Module).freeze)
   end
 
   module Types
@@ -109,9 +129,10 @@ module Kind
     Enumerable, Comparable
   ].each { |klass| Types.add(klass) }
 
-  # ---------------------- #
-  # Special types checkers #
-  # ---------------------- #
+  # --------------------- #
+  # Special type checkers #
+  # --------------------- #
+
   module Is
     def self.Boolean(value)
       klass = Kind.of.Class(value)
@@ -130,7 +151,7 @@ module Kind
       raise Kind::Error.new('Boolean'.freeze, object)
     end
 
-    const_set(:Boolean, Class.new(Checker) do
+    const_set(:Boolean, ::Class.new(Checker) do
       def class?(value)
         Kind.is.Boolean(value)
       end
@@ -150,7 +171,7 @@ module Kind
       raise Kind::Error.new('Lambda'.freeze, object)
     end
 
-    const_set(:Lambda, Class.new(Checker) do
+    const_set(:Lambda, ::Class.new(Checker) do
       def instance?(value)
         value.is_a?(::Proc) && value.lambda?
       end

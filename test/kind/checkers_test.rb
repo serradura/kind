@@ -3,6 +3,32 @@ require 'test_helper'
 class Kind::CheckersTest < Minitest::Test
   # Classes
 
+  def test_if_a_value_is_a_kind_of_class
+    refute Kind.of.Class.instance?([1])
+    refute Kind.of.Class.instance?(Enumerable)
+    assert Kind.of.Class.instance?(String)
+    assert Kind.of.Class.class?(Class.new.tap { |klass| klass.send(:include, Enumerable) })
+
+    refute Kind.of.Class.class?(Enumerable)
+    assert Kind.of.Class.class?(Class.new.tap { |klass| klass.send(:include, Enumerable) })
+
+    assert_nil Kind.of.Class.or_nil('')
+    assert_equal(String, Kind.of.Class.or_nil(String))
+
+    # ---
+
+    refute Kind::Of::Class.instance?([1])
+    refute Kind::Of::Class.instance?(Enumerable)
+    assert Kind::Of::Class.instance?(String)
+    assert Kind::Of::Class.class?(Class.new.tap { |klass| klass.send(:include, Enumerable) })
+
+    refute Kind::Of::Class.class?(Enumerable)
+    assert Kind::Of::Class.class?(Class.new.tap { |klass| klass.send(:include, Enumerable) })
+
+    assert_nil Kind::Of::Class.or_nil('')
+    assert_equal(String, Kind::Of::Class.or_nil(String))
+  end
+
   # -- String
 
   def test_if_a_value_is_a_kind_of_string
@@ -509,6 +535,28 @@ class Kind::CheckersTest < Minitest::Test
   end
 
   # Modules
+
+  def test_if_a_value_is_a_kind_of_module
+    refute Kind.of.Module.instance?([1])
+    assert Kind.of.Module.instance?(Enumerable)
+
+    assert Kind.of.Module.class?(Enumerable)
+    refute Kind.of.Module.class?(Class.new.tap { |klass| klass.send(:include, Enumerable) })
+
+    assert_nil Kind.of.Module.or_nil('')
+    assert_equal(Enumerable, Kind.of.Module.or_nil(Enumerable))
+
+    # ---
+
+    refute Kind::Of::Module.instance?([1])
+    assert Kind::Of::Module.instance?(Enumerable)
+
+    assert Kind::Of::Module.class?(Enumerable)
+    refute Kind::Of::Module.class?(Class.new.tap { |klass| klass.send(:include, Enumerable) })
+
+    assert_nil Kind::Of::Module.or_nil('')
+    assert_equal(Enumerable, Kind::Of::Module.or_nil(Enumerable))
+  end
 
   # -- Enumerable
 
