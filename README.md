@@ -113,6 +113,7 @@ Kind.of.Hash.class?(Hash)
 # true
 
 Kind.of.Hash.class?(ActiveSupport::HashWithIndifferentAccess)
+# true
 ```
 
 ## Built-in type checkers
