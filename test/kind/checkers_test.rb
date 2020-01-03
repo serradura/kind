@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class Kind::OfModulesTest < Minitest::Test
+class Kind::CheckersTest < Minitest::Test
   # Classes
 
   # -- String
