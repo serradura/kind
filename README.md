@@ -13,6 +13,7 @@ As a creator of Ruby gems, I have a common need that I have to handle in many of
 One of the goals of this project is to do simple type checking like `"some string".is_a?(String)`, but using a bunch of basic abstractions. So, after reading this README and realizing that you need something more robust, I recommend to you check out the [dry-types gem](https://dry-rb.org/gems/dry-types).
 
 ## Table of Contents <!-- omit in toc -->
+- [Required Ruby version](#required-ruby-version)
 - [Installation](#installation)
 - [Usage](#usage)
   - [Verifying the kind of some object](#verifying-the-kind-of-some-object)
@@ -26,6 +27,9 @@ One of the goals of this project is to do simple type checking like `"some strin
 - [Contributing](#contributing)
 - [License](#license)
 - [Code of Conduct](#code-of-conduct)
+
+## Required Ruby version
+> \>= 2.2.0
 
 ## Installation
 
