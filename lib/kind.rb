@@ -86,10 +86,12 @@ module Kind
     extend self
 
     KIND_OF = <<-RUBY
-      def self.%{name}(object = nil)
-        return Kind::Of::%{name} if object.nil?
+      def self.%{name}(object = nil, options = {})
+        default = options[:or]
 
-        Kind::Of.call(::%{name}, object)
+        return Kind::Of::%{name} if object.nil? && default.nil?
+
+        Kind::Of.call(::%{name}, object || default)
       end
     RUBY
 
@@ -143,12 +145,16 @@ module Kind
   module Of
     # -- Boolean
 
-    def self.Boolean(object = nil)
-      return Kind::Of::Boolean if object.nil?
+    def self.Boolean(object = nil, options = {})
+      default = options[:or]
 
-      return object if object.is_a?(::TrueClass) || object.is_a?(::FalseClass)
+      return Kind::Of::Boolean if object.nil? && default.nil?
 
-      raise Kind::Error.new('Boolean'.freeze, object)
+      bool = object.nil? ? default : object
+
+      return bool if bool.is_a?(::TrueClass) || bool.is_a?(::FalseClass)
+
+      raise Kind::Error.new('Boolean'.freeze, bool)
     end
 
     const_set(:Boolean, ::Class.new(Checker) do
@@ -163,17 +169,21 @@ module Kind
 
     # -- Lambda
 
-    def self.Lambda(object = nil)
-      return Kind::Of::Lambda if object.nil?
+    def self.Lambda(object = nil, options = {})
+      default = options[:or]
 
-      return object if object.is_a?(::Proc) && object.lambda?
+      return Kind::Of::Lambda if object.nil? && default.nil?
 
-      raise Kind::Error.new('Lambda'.freeze, object)
+      func = object || default
+
+      return func if func.is_a?(::Proc) && func.lambda?
+
+      raise Kind::Error.new('Lambda'.freeze, func)
     end
 
     const_set(:Lambda, ::Class.new(Checker) do
       def instance?(value)
-        value.is_a?(::Proc) && value.lambda?
+        value.is_a?(@type) && value.lambda?
       end
     end.new(::Proc).freeze)
   end
