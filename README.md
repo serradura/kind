@@ -53,7 +53,7 @@ Or install it yourself as:
 
 ### Verifying the kind of some object
 
-By default, basic type verification is strict. So, when you perform `Kind.of.Hash(value)`, if the given value was a Hash it will be returned, but if it wasn't one, an error will be raised.
+By default, basic verifications are strict. So, when you perform `Kind.of.Hash(value)`, if the given value was a Hash, the value itself will be returned, but if it isn't the right type, an error will be raised.
 
 ```ruby
 Kind.of.Hash('')
@@ -69,6 +69,20 @@ Kind.of.Boolean(nil)
 
 Kind.of.Boolean(true)  # true
 Kind.of.Boolean(false) # false
+```
+
+When the verified value is nil, it is possible to define a default value with the same type to be returned.
+
+```ruby
+value = nil
+
+Kind.of.Hash(value, or: {})
+# {}
+
+# ---
+
+Kind.of.Boolean(nil, or: true)
+# true
 ```
 
 As an alternative syntax, you can use the `Kind::Of` instead of the method. e.g: `Kind::Of::Hash('')`
