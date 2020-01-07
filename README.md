@@ -51,6 +51,20 @@ Or install it yourself as:
 
 ## Usage
 
+With this gem you can add some kind of type checking at runtime. e.g:
+
+```ruby
+def sum(a, b)
+  Kind.of.Numeric(a) + Kind.of.Numeric(b)
+end
+
+sum(1, 1)
+# 2
+
+sum('1', 1)
+# Kind::Error ("\"1\" expected to be a kind of Numeric")
+```
+
 ### Verifying the kind of some object
 
 By default, basic verifications are strict. So, when you perform `Kind.of.Hash(value)`, if the given value was a Hash, the value itself will be returned, but if it isn't the right type, an error will be raised.
