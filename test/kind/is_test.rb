@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class Kind::IsTest < Minitest::Test
-  # --- Classes
+  # -- Classes
 
   def test_if_a_value_is_a_class_or_subclass
     assert Kind.is.Class(Class)
@@ -132,7 +132,7 @@ class Kind::IsTest < Minitest::Test
     assert Kind.is.Boolean(Class.new(FalseClass))
   end
 
-  # --- Modules
+  # -- Modules
 
   def test_if_a_value_is_a_module
     assert Kind.is.Module(Module)
