@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class Kind::CheckersTest < Minitest::Test
-  # Classes
+  # -- Classes
 
   def test_if_a_value_is_a_kind_of_class
     refute Kind.of.Class.instance?([1])
@@ -29,7 +29,7 @@ class Kind::CheckersTest < Minitest::Test
     assert_equal(String, Kind::Of::Class.or_nil(String))
   end
 
-  # -- String
+  # --- String
 
   def test_if_a_value_is_a_kind_of_string
     refute Kind.of.String.instance?({})
@@ -55,7 +55,7 @@ class Kind::CheckersTest < Minitest::Test
     assert_equal('a', Kind::Of::String.or_nil('a'))
   end
 
-  # -- Symbol
+  # --- Symbol
 
   def test_if_a_value_is_a_kind_of_symbol
     refute Kind.of.Symbol.instance?({})
@@ -81,7 +81,7 @@ class Kind::CheckersTest < Minitest::Test
     assert_equal(:a, Kind::Of::Symbol.or_nil(:a))
   end
 
-  # -- Numeric
+  # --- Numeric
 
   def test_if_a_value_is_a_kind_of_numeric
     refute Kind.of.Numeric.instance?({})
@@ -115,7 +115,7 @@ class Kind::CheckersTest < Minitest::Test
     assert_equal(1.0, Kind::Of::Numeric.or_nil(1.0))
   end
 
-  # -- Integer
+  # --- Integer
 
   def test_if_a_value_is_a_kind_of_integer
     refute Kind.of.Integer.instance?({})
@@ -143,7 +143,7 @@ class Kind::CheckersTest < Minitest::Test
     assert_equal(1, Kind::Of::Integer.or_nil(1))
   end
 
-  # -- Float
+  # --- Float
 
   def test_if_a_value_is_a_kind_of_Float
     refute Kind.of.Float.instance?({})
@@ -171,7 +171,7 @@ class Kind::CheckersTest < Minitest::Test
     assert_equal(1.0, Kind::Of::Float.or_nil(1.0))
   end
 
-  # -- Regexp
+  # --- Regexp
 
   def test_if_a_value_is_a_kind_of_regexp
     refute Kind.of.Regexp.instance?({})
@@ -197,7 +197,7 @@ class Kind::CheckersTest < Minitest::Test
     assert_equal(/1.0/, Kind::Of::Regexp.or_nil(/1.0/))
   end
 
-  # -- Time
+  # --- Time
 
   def test_if_a_value_is_a_kind_of_time
     now = Time.now
@@ -225,7 +225,7 @@ class Kind::CheckersTest < Minitest::Test
     assert_equal(now, Kind::Of::Time.or_nil(now))
   end
 
-  # -- Array
+  # --- Array
 
   def test_if_a_value_is_a_kind_of_array
     refute Kind.of.Array.instance?({})
@@ -250,7 +250,7 @@ class Kind::CheckersTest < Minitest::Test
     assert_equal([1], Kind::Of::Array.or_nil([1]))
   end
 
-  # -- Range
+  # --- Range
 
   def test_if_a_value_is_a_kind_of_range
     range = 1..2
@@ -277,7 +277,7 @@ class Kind::CheckersTest < Minitest::Test
     assert_equal(range, Kind::Of::Range.or_nil(range))
   end
 
-  # -- Hash
+  # --- Hash
 
   def test_if_a_value_is_a_kind_of_hash
     refute Kind.of.Hash.instance?('')
@@ -302,7 +302,7 @@ class Kind::CheckersTest < Minitest::Test
     assert_equal({a: 1}, Kind::Of::Hash.or_nil(a: 1))
   end
 
-  # -- Struct
+  # --- Struct
 
   def test_if_a_value_is_a_kind_of_struct
     struct = Struct.new(:name)
@@ -330,7 +330,7 @@ class Kind::CheckersTest < Minitest::Test
     assert_equal(person, Kind::Of::Struct.or_nil(person))
   end
 
-  # -- Enumerator
+  # --- Enumerator
 
   def test_if_a_value_is_a_kind_of_enumerator
     enumerator = [].each
@@ -357,7 +357,7 @@ class Kind::CheckersTest < Minitest::Test
     assert_equal(enumerator, Kind::Of::Enumerator.or_nil(enumerator))
   end
 
-  # -- Method
+  # --- Method
 
   def test_if_a_value_is_a_kind_of_method
     method = [1,2].method(:first)
@@ -384,7 +384,7 @@ class Kind::CheckersTest < Minitest::Test
     assert_equal(method, Kind::Of::Method.or_nil(method))
   end
 
-  # -- Proc
+  # --- Proc
 
   def test_if_a_value_is_a_kind_of_proc
     sum = proc { |a, b| a + b }
@@ -416,61 +416,63 @@ class Kind::CheckersTest < Minitest::Test
     assert_equal(sub, Kind::Of::Proc.or_nil(sub))
   end
 
-  # -- IO
+  # --- IO
 
   def test_if_a_value_is_a_kind_of_io
-    value = IO.new(1)
+    io = IO.new(1)
 
     refute Kind.of.IO.instance?({})
-    assert Kind.of.IO.instance?(value)
+    assert Kind.of.IO.instance?(io)
 
     assert Kind.of.IO.class?(IO)
     assert Kind.of.IO.class?(Class.new(IO))
 
     assert_nil Kind.of.IO.or_nil('')
-    assert_equal(value, Kind.of.IO.or_nil(value))
+    assert_equal(io, Kind.of.IO.or_nil(io))
 
     # ---
 
     refute Kind::Of::IO.instance?('')
-    assert Kind::Of::IO.instance?(value)
+    assert Kind::Of::IO.instance?(io)
 
     refute Kind::Of::IO.class?(String)
     assert Kind::Of::IO.class?(IO)
     assert Kind::Of::IO.class?(Class.new(IO))
 
     assert_nil Kind::Of::IO.or_nil('')
-    assert_equal(value, Kind::Of::IO.or_nil(value))
+    assert_equal(io, Kind::Of::IO.or_nil(io))
   end
 
-  # -- File
+  # --- File
 
   def test_if_a_value_is_a_kind_of_file
-    value = File.new('.foo', 'w')
+    file = File.new('.foo', 'w')
+
+    # --
 
     refute Kind.of.File.instance?({})
-    assert Kind.of.File.instance?(value)
+    assert Kind.of.File.instance?(file)
 
     assert Kind.of.File.class?(File)
     assert Kind.of.File.class?(Class.new(File))
 
     assert_nil Kind.of.File.or_nil('')
-    assert_equal(value, Kind.of.File.or_nil(value))
+    assert_equal(file, Kind.of.File.or_nil(file))
 
     # ---
 
     refute Kind::Of::File.instance?('')
-    assert Kind::Of::File.instance?(value)
+    assert Kind::Of::File.instance?(file)
 
     refute Kind::Of::File.class?(String)
     assert Kind::Of::File.class?(File)
     assert Kind::Of::File.class?(Class.new(File))
 
     assert_nil Kind::Of::File.or_nil('')
-    assert_equal(value, Kind::Of::File.or_nil(value))
+    assert_equal(file, Kind::Of::File.or_nil(file))
   end
 
-  # -- Boolean
+  # --- Boolean
 
   def test_if_a_value_is_a_kind_of_boolean
     refute Kind.of.Boolean.instance?({})
@@ -502,11 +504,13 @@ class Kind::CheckersTest < Minitest::Test
     assert_equal(false, Kind::Of::Boolean.or_nil(false))
   end
 
-  # -- Lambda
+  # --- Lambda
 
   def test_if_a_value_is_a_kind_of_lambda
     sum = proc { |a, b| a + b }
     sub = lambda { |a, b| a - b }
+
+    # ---
 
     refute Kind.of.Lambda.instance?({})
     refute Kind.of.Lambda.instance?(sum)
@@ -534,7 +538,36 @@ class Kind::CheckersTest < Minitest::Test
     assert_equal(sub, Kind::Of::Lambda.or_nil(sub))
   end
 
-  # Modules
+  # --- Queue
+
+  def test_if_a_value_is_a_kind_of_queue
+    queue = Queue.new
+
+    # ---
+
+    refute Kind.of.Queue.instance?({})
+    assert Kind.of.Queue.instance?(queue)
+
+    assert Kind.of.Queue.class?(Queue)
+    assert Kind.of.Queue.class?(Class.new(Queue))
+
+    assert_nil Kind.of.Queue.or_nil('')
+    assert_equal(queue, Kind.of.Queue.or_nil(queue))
+
+    # ---
+
+    refute Kind::Of::Queue.instance?('')
+    assert Kind::Of::Queue.instance?(queue)
+
+    refute Kind::Of::Queue.class?(String)
+    assert Kind::Of::Queue.class?(Queue)
+    assert Kind::Of::Queue.class?(Class.new(Queue))
+
+    assert_nil Kind::Of::Queue.or_nil('')
+    assert_equal(queue, Kind::Of::Queue.or_nil(queue))
+  end
+
+  # -- Modules
 
   def test_if_a_value_is_a_kind_of_module
     refute Kind.of.Module.instance?([1])
@@ -558,7 +591,7 @@ class Kind::CheckersTest < Minitest::Test
     assert_equal(Enumerable, Kind::Of::Module.or_nil(Enumerable))
   end
 
-  # -- Enumerable
+  # --- Enumerable
 
   def test_if_a_value_is_a_kind_of_enumerable
     value = [1]
@@ -585,7 +618,7 @@ class Kind::CheckersTest < Minitest::Test
     assert_equal(value, Kind::Of::Enumerable.or_nil(value))
   end
 
-  # -- Comparable
+  # --- Comparable
 
   def test_if_a_value_is_a_kind_of_Comparable
     value = 1
