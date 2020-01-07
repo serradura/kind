@@ -47,10 +47,10 @@ module Kind
   end
 
   module Of
-    def self.call(klass, object)
+    def self.call(klass, object, name: nil)
       return object if object.is_a?(klass)
 
-      raise Kind::Error.new(klass, object)
+      raise Kind::Error.new((name || klass.name), object)
     end
 
     def self.Class(object = nil)
@@ -91,7 +91,7 @@ module Kind
 
         return Kind::Of::%{name} if object.nil? && default.nil?
 
-        Kind::Of.call(::%{name}, object || default)
+        Kind::Of.call(::%{name}, (object || default), name: "%{name}".freeze)
       end
     RUBY
 
@@ -103,22 +103,25 @@ module Kind
 
     private_constant :KIND_OF, :KIND_IS
 
-    def add(mod)
-      name = Kind.of.Module(mod).name
+    def add(mod, name: nil)
+      mod_name = Kind.of.Module(mod).name
+      chk_name = name ? Kind::Of.(String, name) : mod_name
 
-      unless Of.respond_to?(name)
-        Of.instance_eval(KIND_OF % { name: name })
-        Of.const_set(name, Checker.new(mod).freeze)
+      unless Of.respond_to?(chk_name)
+        Of.instance_eval(KIND_OF % { name: chk_name })
+        Of.const_set(chk_name, Checker.new(mod).freeze)
       end
 
-      Is.instance_eval(KIND_IS % { name: name }) unless Is.respond_to?(name)
+      unless Is.respond_to?(chk_name)
+        Is.instance_eval(KIND_IS % { name: chk_name })
+      end
     end
   end
 
   def self.is; Is; end
   def self.of; Of; end
 
-  # Classes
+  # -- Classes
   [
     String, Symbol, Numeric, Integer, Float, Regexp, Time,
     Array, Range, Hash, Struct, Enumerator,
@@ -126,7 +129,9 @@ module Kind
     IO, File
   ].each { |klass| Types.add(klass) }
 
-  # Modules
+  Types.add(Queue, name: 'Queue'.freeze)
+
+  # -- Modules
   [
     Enumerable, Comparable
   ].each { |klass| Types.add(klass) }
