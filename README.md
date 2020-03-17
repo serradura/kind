@@ -23,6 +23,7 @@ One of the goals of this project is to do simple type checking like `"some strin
     - [Kind.of](#kindof)
     - [Kind.is](#kindis)
 - [How to create a new type checker?](#how-to-create-a-new-type-checker)
+- [What happens if a custom type checker has a namespace?](#what-happens-if-a-custom-type-checker-has-a-namespace)
 - [Development](#development)
 - [Contributing](#contributing)
 - [License](#license)
@@ -212,14 +213,60 @@ Kind.of.User({})        # Kind::Error ({} expected to be a kind of User)
 
 Kind.of.User.or_nil({}) # nil
 
-Kind.of.User.instance?({}) # false
-Kind.of.User.class?(Hash)  # false
-
+Kind.of.User.instance?({})   # false
 Kind.of.User.instance?(User) # true
-Kind.of.User.class?(User)    # true
+
+Kind.of.User.class?(Hash)  # false
+Kind.of.User.class?(User)  # true
 ```
 
 [⬆️ Back to Top](#table-of-contents-)
+
+## What happens if a custom type checker has a namespace?
+
+The type checker will preserve the namespace. ;)
+
+```ruby
+module Account
+  class User
+    Kind::Types.add(self)
+  end
+end
+
+module Account
+  class User
+    class Membership
+      Kind::Types.add(self)
+    end
+  end
+end
+
+Kind.of.Account::User(Account::User.new)  # #<Account::User:0x0000...>
+
+Kind.of.Account::User({})        # Kind::Error ({} expected to be a kind of Account::User)
+
+Kind.of.Account::User.or_nil({}) # nil
+
+Kind.of.Account::User.instance?({})   # false
+Kind.of.Account::User.instance?(User) # true
+
+Kind.of.Account::User.class?(Hash)  # false
+Kind.of.Account::User.class?(User)  # true
+
+# ---
+
+Kind.of.Account::User::Membership(Account::User::Membership.new)  # #<Account::User::Membership:0x0000...>
+
+Kind.of.Account::User::Membership({})        # Kind::Error ({} expected to be a kind of Account::User::Membership)
+
+Kind.of.Account::User::Membership.or_nil({}) # nil
+
+Kind.of.Account::User::Membership.instance?({})   # false
+Kind.of.Account::User::Membership.instance?(User) # true
+
+Kind.of.Account::User::Membership.class?(Hash)  # false
+Kind.of.Account::User::Membership.class?(User)  # true
+```
 
 ## Development
 
