@@ -26,19 +26,13 @@ module Kind
     end
   end
 
-  class Checker
-    attr_reader :type
-
-    def initialize(type)
-      @type = type
-    end
-
+  module Checker
     def class?(value)
-      Kind::Is.call(@type, value)
+      Kind::Is.(__kind, value)
     end
 
     def instance?(value)
-      value.is_a?(@type)
+      value.is_a?(__kind)
     end
 
     def or_nil(value)
@@ -59,13 +53,15 @@ module Kind
       self.call(::Class, object)
     end
 
-    const_set(:Class, ::Class.new(Checker) do
-      def instance?(value)
-        Kind::Is.Class(value)
-      end
+    const_set(:Class, ::Module.new do
+      extend Checker
 
-      alias class? instance?
-    end.new(::Class).freeze)
+      def self.__kind; ::Class; end
+
+      def self.class?(value); Kind::Is.Class(value); end
+
+      def self.instance?(value); class?(value); end
+    end)
 
     def self.Module(object = nil)
       return Module if object.nil?
@@ -73,49 +69,105 @@ module Kind
       self.call(::Module, object)
     end
 
-    const_set(:Module, ::Class.new(Checker) do
-      def instance?(value)
-        Kind::Is.Module(value)
-      end
+    const_set(:Module, ::Module.new do
+      extend Checker
 
-      alias class? instance?
-    end.new(::Module).freeze)
+      def self.__kind; ::Module; end
+
+      def self.class?(value); Kind::Is.Module(value); end
+
+      def self.instance?(value); class?(value); end
+    end)
   end
 
   module Types
     extend self
 
+    COLONS = '::'.freeze
+
     KIND_OF = <<-RUBY
-      def self.%{name}(object = nil, options = {})
+      def self.%{method_name}(object = nil, options = {})
         default = options[:or]
 
-        return Kind::Of::%{name} if object.nil? && default.nil?
+        return Kind::Of::%{kind_name} if object.nil? && default.nil?
 
-        Kind::Of.call(::%{name}, (object || default), name: "%{name}".freeze)
+        Kind::Of.(::%{kind_name}, (object || default), name: "%{kind_name}".freeze)
       end
     RUBY
 
     KIND_IS = <<-RUBY
-      def self.%{name}(value)
-        Kind::Is.call(::%{name}, value)
+      def self.%{method_name}(value = nil)
+        return Kind::Is::%{kind_name} if value.nil?
+
+        Kind::Is.(::%{kind_name}, value)
       end
     RUBY
 
-    private_constant :KIND_OF, :KIND_IS
+    private_constant :KIND_OF, :KIND_IS, :COLONS
 
-    def add(mod, name: nil)
-      mod_name = Kind.of.Module(mod).name
-      chk_name = name ? Kind::Of.(String, name) : mod_name
+    def add(kind, name: nil)
+      kind_name = Kind.of.Module(kind).name
+      checker = name ? Kind::Of.(String, name) : kind_name
 
-      unless Of.respond_to?(chk_name)
-        Of.instance_eval(KIND_OF % { name: chk_name })
-        Of.const_set(chk_name, Checker.new(mod).freeze)
-      end
-
-      unless Is.respond_to?(chk_name)
-        Is.instance_eval(KIND_IS % { name: chk_name })
+      case
+      when checker.include?(COLONS)
+        add_kind_with_namespace(checker, method_name: name)
+      else
+        add_root(checker, kind_name, method_name: name, create_kind_is_mod: false)
       end
     end
+
+    private
+
+      def add_root(checker, kind_name, method_name:, create_kind_is_mod:)
+        root_checker = method_name ? method_name : checker
+        root_kind_name = method_name ? method_name : kind_name
+
+        add_kind(root_checker, root_kind_name, Kind::Of, Kind::Is, create_kind_is_mod)
+      end
+
+      def add_kind_with_namespace(checker, method_name:)
+        raise NotImplementedError if method_name
+
+        const_names = checker.split(COLONS)
+        const_names.each_with_index do |const_name, index|
+          if index == 0
+            add_root(const_name, const_name, method_name: nil, create_kind_is_mod: true)
+          else
+            add_node(const_names, index)
+          end
+        end
+      end
+
+      def add_node(const_names, index)
+        namespace = const_names[0..(index-1)]
+        namespace_name = namespace.join(COLONS)
+
+        kind_of_mod = Kind::Of.const_get(namespace_name)
+        kind_is_mod = Kind::Is.const_get(namespace_name)
+
+        checker = const_names[index]
+        kind_name = const_names[0..index].join(COLONS)
+
+        add_kind(checker, kind_name, kind_of_mod, kind_is_mod, true)
+      end
+
+      def add_kind(checker, kind_name, kind_of_mod, kind_is_mod, create_kind_is_mod)
+        params = { method_name: checker, kind_name: kind_name }
+
+        unless kind_of_mod.respond_to?(checker)
+          kind_checker = ::Module.new { extend Checker }
+          kind_checker.module_eval("def self.__kind; #{kind_name}; end")
+
+          kind_of_mod.instance_eval(KIND_OF % params)
+          kind_of_mod.const_set(checker, kind_checker)
+        end
+
+        unless kind_is_mod.respond_to?(checker)
+          kind_is_mod.instance_eval(KIND_IS % params)
+          kind_is_mod.const_set(checker, Module.new) if create_kind_is_mod
+        end
+      end
   end
 
   def self.is; Is; end
@@ -162,15 +214,17 @@ module Kind
       raise Kind::Error.new('Boolean'.freeze, bool)
     end
 
-    const_set(:Boolean, ::Class.new(Checker) do
-      def class?(value)
-        Kind.is.Boolean(value)
-      end
+    const_set(:Boolean, ::Module.new do
+      extend Checker
 
-      def instance?(value)
+      def self.__kind; [TrueClass, FalseClass].freeze; end
+
+      def self.class?(value); Kind.is.Boolean(value); end
+
+      def self.instance?(value);
         value.is_a?(TrueClass) || value.is_a?(FalseClass)
       end
-    end.new([TrueClass, FalseClass].freeze).freeze)
+    end)
 
     # -- Lambda
 
@@ -186,11 +240,15 @@ module Kind
       raise Kind::Error.new('Lambda'.freeze, func)
     end
 
-    const_set(:Lambda, ::Class.new(Checker) do
-      def instance?(value)
-        value.is_a?(@type) && value.lambda?
+    const_set(:Lambda, ::Module.new do
+      extend Checker
+
+      def self.__kind; ::Proc; end
+
+      def self.instance?(value)
+        value.is_a?(__kind) && value.lambda?
       end
-    end.new(::Proc).freeze)
+    end)
   end
 
   private_constant :Checker
