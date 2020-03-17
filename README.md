@@ -58,11 +58,9 @@ def sum(a, b)
   Kind.of.Numeric(a) + Kind.of.Numeric(b)
 end
 
-sum(1, 1)
-# 2
+sum(1, 1)  # 2
 
-sum('1', 1)
-# Kind::Error ("\"1\" expected to be a kind of Numeric")
+sum('1', 1 # Kind::Error ("\"1\" expected to be a kind of Numeric")
 ```
 
 ### Verifying the kind of some object
@@ -70,16 +68,13 @@ sum('1', 1)
 By default, basic verifications are strict. So, when you perform `Kind.of.Hash(value)`, if the given value was a Hash, the value itself will be returned, but if it isn't the right type, an error will be raised.
 
 ```ruby
-Kind.of.Hash('')
-# raise Kind::Error, "'' expected to be a kind of Hash"
+Kind.of.Hash('')     # raise Kind::Error, "'' expected to be a kind of Hash"
 
-Kind.of.Hash({a: 1})
-# {a: 1}
+Kind.of.Hash({a: 1}) # {a: 1}
 
 # ---
 
-Kind.of.Boolean(nil)
-# raise Kind::Error, "nil expected to be a kind of Boolean"
+Kind.of.Boolean(nil)   # raise Kind::Error, "nil expected to be a kind of Boolean"
 
 Kind.of.Boolean(true)  # true
 Kind.of.Boolean(false) # false
@@ -90,13 +85,11 @@ When the verified value is nil, it is possible to define a default value with th
 ```ruby
 value = nil
 
-Kind.of.Hash(value, or: {})
-# {}
+Kind.of.Hash(value, or: {})    # {}
 
 # ---
 
-Kind.of.Boolean(nil, or: true)
-# true
+Kind.of.Boolean(nil, or: true) # true
 ```
 
 As an alternative syntax, you can use the `Kind::Of` instead of the method. e.g: `Kind::Of::Hash('')`
@@ -134,24 +127,19 @@ Kind.of.Boolean.instance?(false) # true
 You can use `Kind.is` to verify if some class has the expected type as its ancestor.
 
 ```ruby
-Kind.is.Hash(String)
-# false
+Kind.is.Hash(String) # false
 
-Kind.is.Hash(Hash)
-# true
+Kind.is.Hash(Hash)   # true
 
-Kind.is.Hash(ActiveSupport::HashWithIndifferentAccess)
-# true
+Kind.is.Hash(ActiveSupport::HashWithIndifferentAccess) # true
 ```
 
 And just for convenience, you can use the method `Kind.of.*.class?` to verify if the given class has the expected type as its ancestor.
 
 ```ruby
-Kind.of.Hash.class?(Hash)
-# true
+Kind.of.Hash.class?(Hash) # true
 
-Kind.of.Hash.class?(ActiveSupport::HashWithIndifferentAccess)
-# true
+Kind.of.Hash.class?(ActiveSupport::HashWithIndifferentAccess) # true
 ```
 
 [⬆️ Back to Top](#table-of-contents-)
@@ -218,14 +206,11 @@ end
 # Usage examples: #
 # --------------- #
 
-Kind.of.User(User.new)
-# #<User:0x0000...>
+Kind.of.User(User.new)  # #<User:0x0000...>
 
-Kind.of.User({})
-# Kind::Error ({} expected to be a kind of User)
+Kind.of.User({})        # Kind::Error ({} expected to be a kind of User)
 
-Kind.of.User.or_nil({})
-# nil
+Kind.of.User.or_nil({}) # nil
 
 Kind.of.User.instance?({}) # false
 Kind.of.User.class?(Hash)  # false
