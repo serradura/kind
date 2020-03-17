@@ -59,9 +59,9 @@ def sum(a, b)
   Kind.of.Numeric(a) + Kind.of.Numeric(b)
 end
 
-sum(1, 1)  # 2
+sum(1, 1)   # 2
 
-sum('1', 1 # Kind::Error ("\"1\" expected to be a kind of Numeric")
+sum('1', 1) # Kind::Error ("\"1\" expected to be a kind of Numeric")
 ```
 
 ### Verifying the kind of some object
