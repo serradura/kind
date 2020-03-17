@@ -8,7 +8,7 @@ end
 
 module Account
   class User
-    class Member
+    class Membership
       Kind::Types.add(self)
     end
   end
@@ -17,7 +17,7 @@ end
 class Kind::OfTypesWithANamespaceTest < Minitest::Test
   def test_the_type_checker_generated_from_a_type_with_a_namespace
     user = Account::User.new
-    member = Account::User::Member.new
+    membership = Account::User::Membership.new
 
     #---
 
@@ -26,8 +26,8 @@ class Kind::OfTypesWithANamespaceTest < Minitest::Test
 
     # -
 
-    err2 = assert_raises(Kind::Error) { Kind.of.Account::User::Member([]) }
-    assert_equal('[] expected to be a kind of Account::User::Member', err2.message)
+    err2 = assert_raises(Kind::Error) { Kind.of.Account::User::Membership([]) }
+    assert_equal('[] expected to be a kind of Account::User::Membership', err2.message)
 
     # ---
 
@@ -36,18 +36,18 @@ class Kind::OfTypesWithANamespaceTest < Minitest::Test
 
     # -
 
-    assert_same(member, Kind.of.Account::User::Member(member))
-    assert_same(member, Kind.of.Account::User::Member(nil, or: member))
+    assert_same(membership, Kind.of.Account::User::Membership(membership))
+    assert_same(membership, Kind.of.Account::User::Membership(nil, or: membership))
 
     # ---
 
-    error1 = assert_raises(Kind::Error) { Kind.of.Account::User::Member(nil, or: 'default') }
-    assert_equal('"default" expected to be a kind of Account::User::Member', error1.message)
+    error1 = assert_raises(Kind::Error) { Kind.of.Account::User::Membership(nil, or: 'default') }
+    assert_equal('"default" expected to be a kind of Account::User::Membership', error1.message)
 
     # -
 
-    error2 = assert_raises(Kind::Error) { Kind.of.Account::User::Member(nil, or: 'default') }
-    assert_equal('"default" expected to be a kind of Account::User::Member', error2.message)
+    error2 = assert_raises(Kind::Error) { Kind.of.Account::User::Membership(nil, or: 'default') }
+    assert_equal('"default" expected to be a kind of Account::User::Membership', error2.message)
 
     # ---
 
@@ -63,15 +63,15 @@ class Kind::OfTypesWithANamespaceTest < Minitest::Test
 
     # -
 
-    refute Kind.of.Account::User::Member.instance?({})
-    assert Kind.of.Account::User::Member.instance?(member)
+    refute Kind.of.Account::User::Membership.instance?({})
+    assert Kind.of.Account::User::Membership.instance?(membership)
 
-    assert_equal(false, Kind.of.Account::User::Member.class?(Hash))
-    assert_equal(true, Kind.of.Account::User::Member.class?(Account::User::Member))
-    assert_equal(true, Kind.of.Account::User::Member.class?(Class.new(Account::User::Member)))
+    assert_equal(false, Kind.of.Account::User::Membership.class?(Hash))
+    assert_equal(true, Kind.of.Account::User::Membership.class?(Account::User::Membership))
+    assert_equal(true, Kind.of.Account::User::Membership.class?(Class.new(Account::User::Membership)))
 
-    assert_nil Kind.of.Account::User::Member.or_nil({})
-    assert_equal(member, Kind.of.Account::User::Member.or_nil(member))
+    assert_nil Kind.of.Account::User::Membership.or_nil({})
+    assert_equal(membership, Kind.of.Account::User::Membership.or_nil(membership))
 
     # ---
 
@@ -87,15 +87,15 @@ class Kind::OfTypesWithANamespaceTest < Minitest::Test
 
     # -
 
-    refute Kind::Of::Account::User::Member.instance?({})
-    assert Kind::Of::Account::User::Member.instance?(member)
+    refute Kind::Of::Account::User::Membership.instance?({})
+    assert Kind::Of::Account::User::Membership.instance?(membership)
 
-    assert_equal(false, Kind::Of::Account::User::Member.class?(Hash))
-    assert_equal(true, Kind::Of::Account::User::Member.class?(Account::User::Member))
-    assert_equal(true, Kind::Of::Account::User::Member.class?(Class.new(Account::User::Member)))
+    assert_equal(false, Kind::Of::Account::User::Membership.class?(Hash))
+    assert_equal(true, Kind::Of::Account::User::Membership.class?(Account::User::Membership))
+    assert_equal(true, Kind::Of::Account::User::Membership.class?(Class.new(Account::User::Membership)))
 
-    assert_nil Kind::Of::Account::User::Member.or_nil({})
-    assert_equal(member, Kind::Of::Account::User::Member.or_nil(member))
+    assert_nil Kind::Of::Account::User::Membership.or_nil({})
+    assert_equal(membership, Kind::Of::Account::User::Membership.or_nil(membership))
 
     # ---
 
@@ -113,16 +113,16 @@ class Kind::OfTypesWithANamespaceTest < Minitest::Test
 
     # --
 
-    refute Kind.is.Account::User::Member(Object)
+    refute Kind.is.Account::User::Membership(Object)
 
-    assert Kind.is.Account::User::Member(Account::User::Member)
-    assert Kind.is.Account::User::Member(Class.new(Account::User::Member))
+    assert Kind.is.Account::User::Membership(Account::User::Membership)
+    assert Kind.is.Account::User::Membership(Class.new(Account::User::Membership))
 
     # -
 
-    refute Kind::Is::Account::User::Member(Object)
+    refute Kind::Is::Account::User::Membership(Object)
 
-    assert Kind::Is::Account::User::Member(Account::User::Member)
-    assert Kind::Is::Account::User::Member(Class.new(Account::User::Member))
+    assert Kind::Is::Account::User::Membership(Account::User::Membership)
+    assert Kind::Is::Account::User::Membership(Class.new(Account::User::Membership))
   end
 end
