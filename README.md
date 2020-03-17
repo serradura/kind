@@ -18,12 +18,12 @@ One of the goals of this project is to do simple type checking like `"some strin
 - [Usage](#usage)
   - [Verifying the kind of some object](#verifying-the-kind-of-some-object)
   - [Verifying the kind of some class/module](#verifying-the-kind-of-some-classmodule)
+  - [How to create a new type checker?](#how-to-create-a-new-type-checker)
+    - [What happens if a custom type checker has a namespace?](#what-happens-if-a-custom-type-checker-has-a-namespace)
 - [Built-in type checkers](#built-in-type-checkers)
   - [Special type checkers](#special-type-checkers)
     - [Kind.of](#kindof)
     - [Kind.is](#kindis)
-- [How to create a new type checker?](#how-to-create-a-new-type-checker)
-- [What happens if a custom type checker has a namespace?](#what-happens-if-a-custom-type-checker-has-a-namespace)
 - [Development](#development)
 - [Contributing](#contributing)
 - [License](#license)
@@ -145,47 +145,7 @@ Kind.of.Hash.class?(ActiveSupport::HashWithIndifferentAccess) # true
 
 [⬆️ Back to Top](#table-of-contents-)
 
-## Built-in type checkers
-
-The list of types (classes and modules) available to use with `Kind.of.*` or `Kind.is.*` are:
-
-| Classes    | Modules    |
-| ---------- | ---------- |
-| String     | Enumerable |
-| Symbol     | Comparable |
-| Numeric    |            |
-| Integer    |            |
-| Float      |            |
-| Regexp     |            |
-| Time       |            |
-| Array      |            |
-| Range      |            |
-| Hash       |            |
-| Struct     |            |
-| Enumerator |            |
-| Method     |            |
-| Proc       |            |
-| IO         |            |
-| File       |            |
-
-### Special type checkers
-
-#### Kind.of
-
-- `Kind.of.Class()`
-- `Kind.of.Module()`
-- `Kind.of.Lambda()`
-- `Kind.of.Boolean()`
-
-#### Kind.is
-
-- `Kind.of.Class()`
-- `Kind.of.Module()`
-- `Kind.of.Boolean()`
-
-[⬆️ Back to Top](#table-of-contents-)
-
-## How to create a new type checker?
+### How to create a new type checker?
 
 Use `Kind::Types.add()`. e.g:
 
@@ -222,7 +182,7 @@ Kind.of.User.class?(User)  # true
 
 [⬆️ Back to Top](#table-of-contents-)
 
-## What happens if a custom type checker has a namespace?
+#### What happens if a custom type checker has a namespace?
 
 The type checker will preserve the namespace. ;)
 
@@ -267,6 +227,48 @@ Kind.of.Account::User::Membership.instance?(User) # true
 Kind.of.Account::User::Membership.class?(Hash)  # false
 Kind.of.Account::User::Membership.class?(User)  # true
 ```
+
+[⬆️ Back to Top](#table-of-contents-)
+
+## Built-in type checkers
+
+The list of types (classes and modules) available to use with `Kind.of.*` or `Kind.is.*` are:
+
+| Classes    | Modules    |
+| ---------- | ---------- |
+| String     | Enumerable |
+| Symbol     | Comparable |
+| Numeric    |            |
+| Integer    |            |
+| Float      |            |
+| Regexp     |            |
+| Time       |            |
+| Array      |            |
+| Range      |            |
+| Hash       |            |
+| Struct     |            |
+| Enumerator |            |
+| Method     |            |
+| Proc       |            |
+| IO         |            |
+| File       |            |
+
+### Special type checkers
+
+#### Kind.of
+
+- `Kind.of.Class()`
+- `Kind.of.Module()`
+- `Kind.of.Lambda()`
+- `Kind.of.Boolean()`
+
+#### Kind.is
+
+- `Kind.of.Class()`
+- `Kind.of.Module()`
+- `Kind.of.Boolean()`
+
+[⬆️ Back to Top](#table-of-contents-)
 
 ## Development
 
