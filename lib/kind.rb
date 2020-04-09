@@ -3,6 +3,8 @@
 require 'kind/version'
 
 module Kind
+  Undefined = Object.new
+
   class Error < TypeError
     def initialize(klass, object)
       super("#{object.inspect} expected to be a kind of #{klass}")
@@ -47,8 +49,8 @@ module Kind
       raise Kind::Error.new((name || klass.name), object)
     end
 
-    def self.Class(object = nil)
-      return Class if object.nil?
+    def self.Class(object = Undefined)
+      return Class if object == Undefined
 
       self.call(::Class, object)
     end
@@ -63,8 +65,8 @@ module Kind
       def self.instance?(value); class?(value); end
     end)
 
-    def self.Module(object = nil)
-      return Module if object.nil?
+    def self.Module(object = Undefined)
+      return Module if object == Undefined
 
       self.call(::Module, object)
     end
@@ -86,18 +88,18 @@ module Kind
     COLONS = '::'.freeze
 
     KIND_OF = <<-RUBY
-      def self.%{method_name}(object = nil, options = {})
+      def self.%{method_name}(object = Undefined, options = {})
         default = options[:or]
 
-        return Kind::Of::%{kind_name} if object.nil? && default.nil?
+        return Kind::Of::%{kind_name} if object == Undefined && default.nil?
 
         Kind::Of.(::%{kind_name}, (object || default), name: "%{kind_name}".freeze)
       end
     RUBY
 
     KIND_IS = <<-RUBY
-      def self.%{method_name}(value = nil)
-        return Kind::Is::%{kind_name} if value.nil?
+      def self.%{method_name}(value = Undefined)
+        return Kind::Is::%{kind_name} if value == Undefined
 
         Kind::Is.(::%{kind_name}, value)
       end
@@ -202,10 +204,10 @@ module Kind
   module Of
     # -- Boolean
 
-    def self.Boolean(object = nil, options = {})
+    def self.Boolean(object = Undefined, options = {})
       default = options[:or]
 
-      return Kind::Of::Boolean if object.nil? && default.nil?
+      return Kind::Of::Boolean if object == Undefined && default.nil?
 
       bool = object.nil? ? default : object
 
@@ -228,10 +230,10 @@ module Kind
 
     # -- Lambda
 
-    def self.Lambda(object = nil, options = {})
+    def self.Lambda(object = Undefined, options = {})
       default = options[:or]
 
-      return Kind::Of::Lambda if object.nil? && default.nil?
+      return Kind::Of::Lambda if object == Undefined && default.nil?
 
       func = object || default
 

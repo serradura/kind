@@ -21,13 +21,23 @@ class Kind::OfTypesWithANamespaceTest < Minitest::Test
 
     #---
 
-    err1 = assert_raises(Kind::Error) { Kind.of.Account::User([]) }
-    assert_equal('[] expected to be a kind of Account::User', err1.message)
+    assert_raises_kind_error('nil expected to be a kind of Account::User') do
+      Kind.of.Account::User(nil)
+    end
+
+    assert_raises_kind_error('[] expected to be a kind of Account::User') do
+      Kind.of.Account::User([])
+    end
 
     # -
 
-    err2 = assert_raises(Kind::Error) { Kind.of.Account::User::Membership([]) }
-    assert_equal('[] expected to be a kind of Account::User::Membership', err2.message)
+    assert_raises_kind_error('nil expected to be a kind of Account::User::Membership') do
+      Kind.of.Account::User::Membership(nil)
+    end
+
+    assert_raises_kind_error('[] expected to be a kind of Account::User::Membership') do
+      Kind.of.Account::User::Membership([])
+    end
 
     # ---
 
@@ -41,13 +51,15 @@ class Kind::OfTypesWithANamespaceTest < Minitest::Test
 
     # ---
 
-    error1 = assert_raises(Kind::Error) { Kind.of.Account::User::Membership(nil, or: 'default') }
-    assert_equal('"default" expected to be a kind of Account::User::Membership', error1.message)
+    assert_raises_kind_error('"default" expected to be a kind of Account::User') do
+      Kind.of.Account::User(nil, or: 'default')
+    end
 
     # -
 
-    error2 = assert_raises(Kind::Error) { Kind.of.Account::User::Membership(nil, or: 'default') }
-    assert_equal('"default" expected to be a kind of Account::User::Membership', error2.message)
+    assert_raises_kind_error('"default" expected to be a kind of Account::User::Membership') do
+      Kind.of.Account::User::Membership(nil, or: 'default')
+    end
 
     # ---
 
