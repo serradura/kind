@@ -71,6 +71,8 @@ sum('1', 1) # Kind::Error ("\"1\" expected to be a kind of Numeric")
 By default, basic verifications are strict. So, when you perform `Kind.of.Hash(value)`, if the given value was a Hash, the value itself will be returned, but if it isn't the right type, an error will be raised.
 
 ```ruby
+Kind.of.Hash(nil)    # raise Kind::Error, "nil expected to be a kind of Hash"
+
 Kind.of.Hash('')     # raise Kind::Error, "'' expected to be a kind of Hash"
 
 Kind.of.Hash({a: 1}) # {a: 1}
