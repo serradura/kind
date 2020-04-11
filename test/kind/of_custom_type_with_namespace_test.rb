@@ -14,7 +14,7 @@ module Account
   end
 end
 
-class Kind::OfTypesWithANamespaceTest < Minitest::Test
+class Kind::OfCustomTypeWithNamespaceTest < Minitest::Test
   def test_the_type_checker_generated_from_a_type_with_a_namespace
     user = Account::User.new
     membership = Account::User::Membership.new
