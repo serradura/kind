@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class Kind::CheckersTest < Minitest::Test
+class Kind::OfCheckersTest < Minitest::Test
   # -- Classes
 
   def test_if_a_value_is_a_kind_of_class
