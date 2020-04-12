@@ -192,7 +192,7 @@ class Kind::MaybeTest < Minitest::Test
       Kind::Optional[5]
         .then { |value| value * 5 }
         .then { |value| value + 10 }
-        .value_or(0)
+        .value_or { 0 }
 
     assert_equal(35, result2)
   end

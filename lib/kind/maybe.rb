@@ -2,21 +2,14 @@
 
 module Kind
   module Maybe
-    def self.none?(value)
-      value == nil || value == Undefined
-    end
+    module Value
+      def self.none?(value)
+        value == nil || value == Undefined
+      end
 
-    def self.some?(value)
-      !none?(value)
-    end
-
-    def self.new(value)
-      result_type = some?(value) ? Some : None
-      result_type.new(value.is_a?(Result) ? value.value : value)
-    end
-
-    def self.[](value);
-      new(value)
+      def self.some?(value)
+        !none?(value)
+      end
     end
 
     class Result
@@ -26,17 +19,7 @@ module Kind
         @value = value
       end
 
-      INVALID_DEFAULT_ARG = 'the default value must be defined as an argument or block'.freeze
-
-      def value_or(default = Undefined, &block)
-        return @value if some?
-
-        if default == Undefined && !block
-          raise ArgumentError, INVALID_DEFAULT_ARG
-        else
-          Maybe.some?(default) ? default : block.call
-        end
-      end
+      def value_or(default, &block); end
 
       def none?; end
 
@@ -44,20 +27,20 @@ module Kind
 
       def map(&fn); end
 
-      def try(method_name = Undefined, &block)
-        fn = method_name == Undefined ? block : Kind.of.Symbol(method_name).to_proc
-
-        if Maybe.some?(value)
-          result = fn.call(value)
-
-          return result if Maybe.some?(result)
-        end
-      end
-
-      private_constant :INVALID_DEFAULT_ARG
+      def try(method_name, &block); end
     end
 
+    private_constant :Result
+
     class None < Result
+      INVALID_DEFAULT_ARG = 'the default value must be defined as an argument or block'.freeze
+
+      def value_or(default = Undefined, &block)
+        raise ArgumentError, INVALID_DEFAULT_ARG if default == Undefined && !block
+
+        Maybe::Value.some?(default) ? default : block.call
+      end
+
       def none?; true; end
 
       def map(&fn)
@@ -65,26 +48,56 @@ module Kind
       end
 
       alias_method :then, :map
+
+      def try(method_name = Undefined, &block)
+        Kind.of.Symbol(method_name) if method_name != Undefined
+
+        nil
+      end
+
+      private_constant :INVALID_DEFAULT_ARG
     end
 
-    NONE_WITH_NIL = None.new(nil)
-    NONE_WITH_UNDEFINED = None.new(Undefined)
+    NONE_WITH_NIL_VALUE = None.new(nil)
+    NONE_WITH_UNDEFINED_VALUE = None.new(Undefined)
+
+    private_constant :NONE_WITH_NIL_VALUE, :NONE_WITH_UNDEFINED_VALUE
 
     class Some < Result
+      def value_or(default = Undefined, &block)
+        @value
+      end
+
       def none?; false; end
 
       def map(&fn)
-        result = yield(@value)
+        result = fn.call(@value)
 
-        return NONE_WITH_NIL if result == nil
-        return NONE_WITH_UNDEFINED if result == Undefined
-        return Some.new(result)
+        return NONE_WITH_NIL_VALUE if result == nil
+        return NONE_WITH_UNDEFINED_VALUE if result == Undefined
+
+        Some.new(result)
       end
 
       alias_method :then, :map
+
+      def try(method_name = Undefined, &block)
+        fn = method_name == Undefined ? block : Kind.of.Symbol(method_name).to_proc
+
+        result = fn.call(value)
+
+        return result if Maybe::Value.some?(result)
+      end
     end
 
-    private_constant :Result, :NONE_WITH_NIL, :NONE_WITH_UNDEFINED
+    def self.new(value)
+      result_type = Maybe::Value.none?(value) ? None : Some
+      result_type.new(value.is_a?(Result) ? value.value : value)
+    end
+
+    def self.[](value);
+      new(value)
+    end
   end
 
   Optional = Maybe
