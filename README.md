@@ -210,31 +210,31 @@ module Account
   end
 end
 
-Kind.of.Account::User(Account::User.new)  # #<Account::User:0x0000...>
+Kind.of.Account::User({}) # Kind::Error ({} expected to be a kind of Account::User)
 
-Kind.of.Account::User({})        # Kind::Error ({} expected to be a kind of Account::User)
+Kind.of.Account::User(Account::User.new)  # #<Account::User:0x0000...>
 
 Kind.of.Account::User.or_nil({}) # nil
 
-Kind.of.Account::User.instance?({})   # false
-Kind.of.Account::User.instance?(User) # true
+Kind.of.Account::User.instance?({})                # false
+Kind.of.Account::User.instance?(Account::User.new) # true
 
-Kind.of.Account::User.class?(Hash)  # false
-Kind.of.Account::User.class?(User)  # true
+Kind.of.Account::User.class?(Hash)           # false
+Kind.of.Account::User.class?(Account::User)  # true
 
 # ---
 
-Kind.of.Account::User::Membership(Account::User::Membership.new)  # #<Account::User::Membership:0x0000...>
+Kind.of.Account::User::Membership({}) # Kind::Error ({} expected to be a kind of Account::User::Membership)
 
-Kind.of.Account::User::Membership({})        # Kind::Error ({} expected to be a kind of Account::User::Membership)
+Kind.of.Account::User::Membership(Account::User::Membership.new)  # #<Account::User::Membership:0x0000...>
 
 Kind.of.Account::User::Membership.or_nil({}) # nil
 
-Kind.of.Account::User::Membership.instance?({})   # false
-Kind.of.Account::User::Membership.instance?(User) # true
+Kind.of.Account::User::Membership.instance?({})                            # false
+Kind.of.Account::User::Membership.instance?(Account::User::Membership.new) # true
 
-Kind.of.Account::User::Membership.class?(Hash)  # false
-Kind.of.Account::User::Membership.class?(User)  # true
+Kind.of.Account::User::Membership.class?(Hash)                      # false
+Kind.of.Account::User::Membership.class?(Account::User::Membership) # true
 ```
 
 [⬆️ Back to Top](#table-of-contents-)
