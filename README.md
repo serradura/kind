@@ -337,7 +337,7 @@ puts optional.value_or { 1 } # 1
 
 ### Kind::Optional[] and Kind::Optional#then
 
-You can use `Kind::Option[]` (brackets) instead of the `.new` to transform values in a `Kind::Optional`. Another alias is `.then` to the `.map` method.
+You can use `Kind::Optional[]` (brackets) instead of the `.new` to transform values in a `Kind::Optional`. Another alias is `.then` to the `.map` method.
 
 ```ruby
 result =
