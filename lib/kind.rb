@@ -2,7 +2,7 @@
 
 require 'kind/version'
 require 'kind/undefined'
-require 'kind/optional'
+require 'kind/maybe'
 require 'kind/error'
 require 'kind/is'
 require 'kind/checker'
