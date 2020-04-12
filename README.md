@@ -276,7 +276,7 @@ The list of types (classes and modules) available to use with `Kind.of.*` or `Ki
 - `Kind.is.Class()`
 - `Kind.is.Module()`
 - `Kind.is.Boolean()`
-- `Kind.is.Callable()`: verifies if the given value `respond_to?(:call)` or if it's a class/module, if its `public_instance_methods.include?(:call)`.
+- `Kind.is.Callable()`: verifies if the given value `respond_to?(:call)` or if it's a class/module and if its `public_instance_methods.include?(:call)`.
 
 [⬆️ Back to Top](#table-of-contents-)
 
