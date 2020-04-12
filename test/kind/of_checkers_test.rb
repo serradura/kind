@@ -538,6 +538,47 @@ class Kind::OfCheckersTest < Minitest::Test
     assert_equal(sub, Kind::Of::Lambda.or_nil(sub))
   end
 
+  # --- Callable
+
+  def test_if_a_value_is_callable
+    klass = Class.new { def self.call; end }
+    instance = klass.new
+
+    sum = proc { |a, b| a + b }
+    sub = lambda { |a, b| a - b }
+
+    # ---
+
+    refute Kind.of.Callable.instance?({})
+    refute Kind.of.Callable.instance?(instance)
+    assert Kind.of.Callable.instance?(sum)
+    assert Kind.of.Callable.instance?(sub)
+    assert Kind.of.Callable.instance?(klass)
+
+    assert Kind.of.Callable.class?(Proc)
+    assert Kind.of.Callable.class?(klass)
+
+    assert_nil Kind.of.Callable.or_nil('')
+    assert_nil Kind.of.Callable.or_nil(instance)
+    assert_equal(sub, Kind.of.Callable.or_nil(sub))
+    assert_equal(klass, Kind.of.Callable.or_nil(klass))
+
+    # ---
+
+    refute Kind::Of::Callable.instance?({})
+    refute Kind::Of::Callable.instance?(instance)
+    assert Kind::Of::Callable.instance?(sum)
+    assert Kind::Of::Callable.instance?(sub)
+    assert Kind::Of::Callable.instance?(klass)
+
+    assert Kind::Of::Callable.class?(Proc)
+    assert Kind::Of::Callable.class?(klass)
+
+    assert_nil Kind::Of::Callable.or_nil('')
+    assert_nil Kind::Of::Callable.or_nil(instance)
+    assert_equal(sub, Kind::Of::Callable.or_nil(sub))
+    assert_equal(klass, Kind::Of::Callable.or_nil(klass))
+  end
   # --- Queue
 
   def test_if_a_value_is_a_kind_of_queue
