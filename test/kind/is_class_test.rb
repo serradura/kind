@@ -129,4 +129,15 @@ class Kind::IsClassTest < Minitest::Test
     assert Kind.is.Boolean(Class.new(TrueClass))
     assert Kind.is.Boolean(Class.new(FalseClass))
   end
+
+  def test_if_a_value_is_callable
+    refute Kind.is.Callable(String)
+
+    assert Kind.is.Callable(Proc)
+    assert Kind.is.Callable(Method)
+
+    klass = Class.new { def self.call; end }
+
+    assert Kind.is.Callable(klass)
+  end
 end

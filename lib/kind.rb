@@ -37,6 +37,10 @@ module Kind
       klass = Kind.of.Class(value)
       klass <= TrueClass || klass <= FalseClass
     end
+
+    def self.Callable(value)
+      value.respond_to?(:call) || (value.is_a?(Module) && value.public_instance_methods.include?(:call))
+    end
   end
 
   module Of
@@ -87,6 +91,32 @@ module Kind
 
       def self.instance?(value)
         value.is_a?(__kind) && value.lambda?
+      end
+    end)
+
+    # -- Callable
+
+    def self.Callable(object = Undefined, options = {})
+      default = options[:or]
+
+      return Kind::Of::Callable if object == Undefined && default.nil?
+
+      callable = object.nil? ? default : object
+
+      return callable if callable.respond_to?(:call)
+
+      raise Kind::Error.new('Callable'.freeze, callable)
+    end
+
+    const_set(:Callable, ::Module.new do
+      extend Checker
+
+      def self.__kind; Object; end
+
+      def self.class?(value); Kind::Is::Callable(value); end
+
+      def self.instance?(value);
+        value.respond_to?(:call)
       end
     end)
   end
