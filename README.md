@@ -26,6 +26,7 @@ One of the goals of this project is to do simple type checking like `"some strin
   - [Special type checkers](#special-type-checkers)
     - [Kind.of](#kindof)
     - [Kind.is](#kindis)
+- [Kind::Undefined](#kindundefined)
 - [Development](#development)
 - [Contributing](#contributing)
 - [License](#license)
@@ -271,6 +272,14 @@ The list of types (classes and modules) available to use with `Kind.of.*` or `Ki
 - `Kind.of.Class()`
 - `Kind.of.Module()`
 - `Kind.of.Boolean()`
+
+[⬆️ Back to Top](#table-of-contents-)
+
+## Kind::Undefined
+
+The [`Kind::Undefined`](https://github.com/serradura/kind/blob/834f6b8ebdc737de8e5628986585f30c1a5aa41b/lib/kind/undefined.rb) constant is used as the default argument of type checkers. This is necessary [to know if no arguments were passed to the type check methods](https://github.com/serradura/kind/blob/834f6b8ebdc737de8e5628986585f30c1a5aa41b/lib/kind.rb#L45-L48). But, you can use it in your codebase too, especially if you need to distinguish the usage of `nil` as a method argument.
+
+If you are interested, check out [the tests](https://github.com/serradura/kind/blob/834f6b8ebdc737de8e5628986585f30c1a5aa41b/test/kind/undefined_test.rb) to understand its methods.
 
 [⬆️ Back to Top](#table-of-contents-)
 
