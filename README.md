@@ -27,9 +27,9 @@ One of the goals of this project is to do simple type checking like `"some strin
     - [Kind.of](#kindof)
     - [Kind.is](#kindis)
 - [Kind::Undefined](#kindundefined)
-- [Kind::Optional](#kindoptional)
-  - [Kind::Optional[] and Kind::Optional#then](#kindoptional-and-kindoptionalthen)
-  - [Kind::Optional#try](#kindoptionaltry)
+- [Kind::Maybe](#kindmaybe)
+  - [Kind::Maybe[] and Kind::Maybe#then](#kindmaybe-and-kindmaybethen)
+  - [Kind::Maybe#try](#kindmaybetry)
 - [Development](#development)
 - [Contributing](#contributing)
 - [License](#license)
@@ -288,15 +288,15 @@ If you are interested, check out [the tests](https://github.com/serradura/kind/b
 
 [⬆️ Back to Top](#table-of-contents-)
 
-## Kind::Optional
+## Kind::Maybe
 
-The `Kind::Optional` is used when a series of computations (in a chain of map callings) could return `nil` or `Kind::Undefined` at any point.
+The `Kind::Maybe` is used when a series of computations (in a chain of map callings) could return `nil` or `Kind::Undefined` at any point.
 
 ```ruby
 optional =
-  Kind::Optional.new(2)
-                .map { |value| value * 2 }
-                .map { |value| value * 2 }
+  Kind::Maybe.new(2)
+             .map { |value| value * 2 }
+             .map { |value| value * 2 }
 
 puts optional.value # 8
 puts optional.some? # true
@@ -309,9 +309,9 @@ puts optional.value_or { 0 } # 8
 #################
 
 optional =
-  Kind::Optional.new(3)
-                .map { nil }
-                .map { |value| value * 3 }
+  Kind::Maybe.new(3)
+             .map { nil }
+             .map { |value| value * 3 }
 
 puts optional.value # nil
 puts optional.some? # false
@@ -324,9 +324,9 @@ puts optional.value_or { 0 } # 0
 #############################
 
 optional =
-  Kind::Optional.new(4)
-                .map { Kind::Undefined }
-                .map { |value| value * 4 }
+  Kind::Maybe.new(4)
+             .map { Kind::Undefined }
+             .map { |value| value * 4 }
 
 puts optional.value # Kind::Undefined
 puts optional.some? # false
@@ -335,13 +335,13 @@ puts optional.value_or(1) # 1
 puts optional.value_or { 1 } # 1
 ```
 
-### Kind::Optional[] and Kind::Optional#then
+### Kind::Maybe[] and Kind::Maybe#then
 
-You can use `Kind::Optional[]` (brackets) instead of the `.new` to transform values in a `Kind::Optional`. Another alias is `.then` to the `.map` method.
+You can use `Kind::Maybe[]` (brackets) instead of the `.new` to transform values in a `Kind::Maybe`. Another alias is `.then` to the `.map` method.
 
 ```ruby
 result =
-  Kind::Optional[5]
+  Kind::Maybe[5]
     .then { |value| value * 5 }
     .then { |value| value + 17 }
     .value_or(0)
@@ -349,30 +349,36 @@ result =
 puts result # 42
 ```
 
-### Kind::Optional#try
+### Kind::Maybe#try
 
 If you don't want to use a map to access the value, you could use the `#try` method to access it. So, if the value wasn't `nil` or `Kind::Undefined`, it will be returned.
 
 ```ruby
-p Kind::Optional['foo'].try(:upcase) # "FOO"
+object = 'foo'
 
-p Kind::Optional['bar'].try { |value| value.upcase } # "BAR"
+p Kind::Maybe[object].try(:upcase) # "FOO"
+
+p Kind::Maybe[object].try { |value| value.upcase } # "FOO"
 
 #############
 # Nil value #
 #############
 
-p Kind::Optional[nil].try(:upcase) # nil
+object = nil
 
-p Kind::Optional[nil].try { |value| value.upcase } # nil
+p Kind::Maybe[object].try(:upcase) # nil
+
+p Kind::Maybe[object].try { |value| value.upcase } # nil
 
 #########################
 # Kind::Undefined value #
 #########################
 
-p Kind::Optional[Kind::Undefined].try(:upcase) # nil
+object = Kind::Undefined
 
-p Kind::Optional[Kind::Undefined].try { |value| value.upcase } # nil
+p Kind::Maybe[object].try(:upcase) # nil
+
+p Kind::Maybe[object].try { |value| value.upcase } # nil
 ```
 
 [⬆️ Back to Top](#table-of-contents-)
