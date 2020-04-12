@@ -27,6 +27,9 @@ One of the goals of this project is to do simple type checking like `"some strin
     - [Kind.of](#kindof)
     - [Kind.is](#kindis)
 - [Kind::Undefined](#kindundefined)
+- [Kind::Optional](#kindoptional)
+  - [Kind::Optional[] and Kind::Optional#then](#kindoptional-and-kindoptionalthen)
+  - [Kind::Optional#try](#kindoptionaltry)
 - [Development](#development)
 - [Contributing](#contributing)
 - [License](#license)
@@ -280,6 +283,95 @@ The list of types (classes and modules) available to use with `Kind.of.*` or `Ki
 The [`Kind::Undefined`](https://github.com/serradura/kind/blob/834f6b8ebdc737de8e5628986585f30c1a5aa41b/lib/kind/undefined.rb) constant is used as the default argument of type checkers. This is necessary [to know if no arguments were passed to the type check methods](https://github.com/serradura/kind/blob/834f6b8ebdc737de8e5628986585f30c1a5aa41b/lib/kind.rb#L45-L48). But, you can use it in your codebase too, especially if you need to distinguish the usage of `nil` as a method argument.
 
 If you are interested, check out [the tests](https://github.com/serradura/kind/blob/834f6b8ebdc737de8e5628986585f30c1a5aa41b/test/kind/undefined_test.rb) to understand its methods.
+
+[⬆️ Back to Top](#table-of-contents-)
+
+## Kind::Optional
+
+The `Kind::Optional` is used when a series of computations (in a chain of map callings) could return `nil` or `Kind::Undefined` at any point.
+
+```ruby
+optional =
+  Kind::Optional.new(2)
+                .map { |value| value * 2 }
+                .map { |value| value * 2 }
+
+puts optional.value # 8
+puts optional.some? # true
+puts optional.none? # false
+puts optional.value_or(0) # 8
+puts optional.value_or { 0 } # 8
+
+#################
+# Returning nil #
+#################
+
+optional =
+  Kind::Optional.new(3)
+                .map { nil }
+                .map { |value| value * 3 }
+
+puts optional.value # nil
+puts optional.some? # false
+puts optional.none? # true
+puts optional.value_or(0) # 0
+puts optional.value_or { 0 } # 0
+
+#############################
+# Returning Kind::Undefined #
+#############################
+
+optional =
+  Kind::Optional.new(4)
+                .map { Kind::Undefined }
+                .map { |value| value * 4 }
+
+puts optional.value # Kind::Undefined
+puts optional.some? # false
+puts optional.none? # true
+puts optional.value_or(1) # 1
+puts optional.value_or { 1 } # 1
+```
+
+### Kind::Optional[] and Kind::Optional#then
+
+You can use `Kind::Option[]` (brackets) instead of the `.new` to transform values in a `Kind::Optional`. Another alias is `.then` to the `.map` method.
+
+```ruby
+result =
+  Kind::Optional[5]
+    .then { |value| value * 5 }
+    .then { |value| value + 17 }
+    .value_or(0)
+
+puts result # 42
+```
+
+### Kind::Optional#try
+
+If you don't want to use a map to access the value, you could use the `#try` method to access it. So, if the value wasn't `nil` or `Kind::Undefined`, it will be returned.
+
+```ruby
+p Kind::Optional['foo'].try(:upcase) # "FOO"
+
+p Kind::Optional['bar'].try { |value| value.upcase } # "BAR"
+
+#############
+# Nil value #
+#############
+
+p Kind::Optional[nil].try(:upcase) # nil
+
+p Kind::Optional[nil].try { |value| value.upcase } # nil
+
+#########################
+# Kind::Undefined value #
+#########################
+
+p Kind::Optional[Kind::Undefined].try(:upcase) # nil
+
+p Kind::Optional[Kind::Undefined].try { |value| value.upcase } # nil
+```
 
 [⬆️ Back to Top](#table-of-contents-)
 
