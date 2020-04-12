@@ -101,7 +101,7 @@ module Kind
 
       return Kind::Of::Callable if object == Undefined && default.nil?
 
-      callable = object.nil? ? default : object
+      callable = object || default
 
       return callable if callable.respond_to?(:call)
 
@@ -113,7 +113,9 @@ module Kind
 
       def self.__kind; Object; end
 
-      def self.class?(value); Kind::Is::Callable(value); end
+      def self.class?(value)
+        Kind::Is::Callable(value)
+      end
 
       def self.instance?(value);
         value.respond_to?(:call)
