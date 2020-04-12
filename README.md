@@ -30,6 +30,7 @@ One of the goals of this project is to do simple type checking like `"some strin
 - [Kind::Maybe](#kindmaybe)
   - [Kind::Maybe[] and Kind::Maybe#then](#kindmaybe-and-kindmaybethen)
   - [Kind::Maybe#try](#kindmaybetry)
+  - [Kind::Optional](#kindoptional)
 - [Development](#development)
 - [Contributing](#contributing)
 - [License](#license)
@@ -379,6 +380,33 @@ object = Kind::Undefined
 p Kind::Maybe[object].try(:upcase) # nil
 
 p Kind::Maybe[object].try { |value| value.upcase } # nil
+```
+
+[⬆️ Back to Top](#table-of-contents-)
+
+### Kind::Optional
+
+The `Kind::Optional` constant is an alias for `Kind::Maybe`. e.g:
+
+```ruby
+result1 =
+  Kind::Optional
+    .new(5)
+    .map { |value| value * 5 }
+    .map { |value| value - 10 }
+    .value_or(0)
+
+puts result1 # 15
+
+# ---
+
+result2 =
+  Kind::Optional[5]
+    .then { |value| value * 5 }
+    .then { |value| value + 10 }
+    .value_or { 0 }
+
+puts result2 # 35
 ```
 
 [⬆️ Back to Top](#table-of-contents-)
