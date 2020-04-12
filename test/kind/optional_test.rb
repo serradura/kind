@@ -1,6 +1,12 @@
 require 'test_helper'
 
 class Kind::OptionalTest < Minitest::Test
+  def test_optional_constructor
+    optional = Kind::Optional.new(0)
+
+    assert_equal(0, Kind::Optional.new(optional).value)
+  end
+
   def test_optional_value
     optional1 = Kind::Optional.new(2)
 

@@ -8,8 +8,8 @@ module Kind
 
     attr_reader :value
 
-    def initialize(value)
-      @value = value
+    def initialize(arg)
+      @value = arg.is_a?(Kind::Optional) ? arg.value : arg
     end
 
     INVALID_DEFAULT_ARG = 'the default value must be defined as an argument or block'.freeze
