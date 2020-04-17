@@ -19,18 +19,24 @@ module Kind
         @value = value
       end
 
-      def value_or(default, &block); end
+      def value_or(method_name = Undefined, &block)
+        raise NotImplementedError
+      end
 
-      def none?; end
+      def none?
+        raise NotImplementedError
+      end
 
       def some?; !none?; end
 
-      def map(&fn); end
+      def map(&fn)
+        raise NotImplementedError
+      end
 
-      def try(method_name, &block); end
+      def try(method_name = Undefined, &block)
+        raise NotImplementedError
+      end
     end
-
-    private_constant :Result
 
     class None < Result
       INVALID_DEFAULT_ARG = 'the default value must be defined as an argument or block'.freeze
