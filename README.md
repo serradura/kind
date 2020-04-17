@@ -25,18 +25,17 @@ One of the goals of this project is to do simple type checking like `"some strin
     - [Registering new (custom) type checkers](#registering-new-custom-type-checkers)
       - [What happens if a custom type checker has a namespace?](#what-happens-if-a-custom-type-checker-has-a-namespace)
 - [Type checkers](#type-checkers)
-- [Classes' type checker](#classes-type-checker)
-  - [Module type checkers](#module-type-checkers)
-  - [Special type checkers](#special-type-checkers)
-    - [Kind.of](#kindof)
+  - [Classes' type checkers](#classes-type-checkers)
+  - [Modules' type checkers](#modules-type-checkers)
+  - [Specials' type checkers](#specials-type-checkers)
 - [Kind::Undefined](#kindundefined)
-  - [Kind.of.<Type>.or_undefined()](#kindoftypeor_undefined)
+  - [Kind.of.\<Type\>.or_undefined()](#kindoftypeor_undefined)
 - [Kind::Maybe](#kindmaybe)
   - [Kind::Maybe[] and Kind::Maybe#then](#kindmaybe-and-kindmaybethen)
   - [Kind::Maybe#try](#kindmaybetry)
   - [Kind.of.Maybe()](#kindofmaybe)
   - [Kind::Optional](#kindoptional)
-  - [Kind::Empty](#kindempty)
+- [Kind::Empty](#kindempty)
 - [Development](#development)
 - [Contributing](#contributing)
 - [License](#license)
@@ -215,10 +214,10 @@ kind_of_user.object_id == Kind.of(User).object_id # true
 # Kind.is() can be used to check a class/module #
 # --------------------------------------------- #
 
-class Admin < User
+class AdminUser < User
 end
 
-Kind.is(Admin, User) # true
+Kind.is(User, AdminUser) # true
 ```
 
 #### Registering new (custom) type checkers
@@ -310,7 +309,7 @@ Kind.of.Account::User::Membership.class?(Account::User::Membership) # true
 
 The list of types (classes and modules) available to use with `Kind.of.*` or `Kind.is.*` are:
 
-## Classes' type checker
+### Classes' type checkers
 
 - `Kind.of.String`
 - `Kind.of.Symbol`
@@ -330,14 +329,12 @@ The list of types (classes and modules) available to use with `Kind.of.*` or `Ki
 - `Kind.of.IO`
 - `Kind.of.File`
 
-### Module type checkers
+### Modules' type checkers
 
 - `Kind.of.Enumerable`
 - `Kind.of.Comparable`
 
-### Special type checkers
-
-#### Kind.of
+### Specials' type checkers
 
 - `Kind.of.Class()`
 - `Kind.of.Module()`
@@ -356,7 +353,7 @@ The [`Kind::Undefined`](https://github.com/serradura/kind/blob/834f6b8ebdc737de8
 
 If you are interested, check out [the tests](https://github.com/serradura/kind/blob/834f6b8ebdc737de8e5628986585f30c1a5aa41b/test/kind/undefined_test.rb) to understand its methods.
 
-### Kind.of.<Type>.or_undefined()
+### Kind.of.\<Type\>.or_undefined()
 
 If you interested in use `Kind::Undefined` you can use the method `.or_undefined` with any of the [available type checkers](#type-checkers). e.g:
 
@@ -521,7 +518,7 @@ PS: The `Kind.of.Optional` is available to check if some value is a `Kind::Optio
 
 [⬆️ Back to Top](#table-of-contents-)
 
-### Kind::Empty
+## Kind::Empty
 
 There is a common need to define default argument values. In case you don't know, depending on the argument data type, when a  method is invoked a new object will be created in the program memory to fills some default argument value. e.g:
 
