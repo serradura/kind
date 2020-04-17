@@ -2,19 +2,14 @@
 
 module Kind
   module Is
-    def self.call(expected, value)
-      expected_mod = Kind::Of.Module(expected)
-      mod = Kind::Of.Module(value)
-
-      mod <= expected_mod || false
+    def self.call(expected, object)
+      __call__(Kind::Of.Module(expected), object)
     end
 
-    def self.Class(value)
-      value.is_a?(::Class)
-    end
+    def self.__call__(expected_kind, object)
+      kind = Kind::Of.Module(object)
 
-    def self.Module(value)
-      value == ::Module || (value.is_a?(::Module) && !self.Class(value))
+      kind <= expected_kind || false
     end
   end
 end
