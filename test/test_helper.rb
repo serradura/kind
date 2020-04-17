@@ -19,7 +19,18 @@ class Minitest::Test
     raise "Expected to raise #{exception} w/ message #{msg}, none raised"
   end
 
-  def assert_raises_kind_error(message, &block)
-    assert_raises_with_message(Kind::Error, message, &block)
+  def assert_raises_kind_error(arg, &block)
+    msg =
+      case arg
+      when String, Regexp then arg
+      when Hash then "#{arg.fetch(:given)} expected to be a kind of #{arg.fetch(:expected)}"
+      else raise ArgumentError, 'argument must be a string, regexp or hash'
+      end
+
+    assert_raises_with_message(Kind::Error, msg, &block)
+  end
+
+  def assert_kind_undefined(object)
+    assert_equal(Kind::Undefined, object)
   end
 end
