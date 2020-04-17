@@ -21,16 +21,22 @@ One of the goals of this project is to do simple type checking like `"some strin
   - [Verifying the kind of some object](#verifying-the-kind-of-some-object)
   - [Verifying the kind of some class/module](#verifying-the-kind-of-some-classmodule)
   - [How to create a new type checker?](#how-to-create-a-new-type-checker)
-    - [What happens if a custom type checker has a namespace?](#what-happens-if-a-custom-type-checker-has-a-namespace)
-- [Built-in type checkers](#built-in-type-checkers)
+    - [Creating/Verifiyng type checkers dynamically](#creatingverifiyng-type-checkers-dynamically)
+    - [Registering new (custom) type checkers](#registering-new-custom-type-checkers)
+      - [What happens if a custom type checker has a namespace?](#what-happens-if-a-custom-type-checker-has-a-namespace)
+- [Type checkers](#type-checkers)
+- [Classes' type checker](#classes-type-checker)
+  - [Module type checkers](#module-type-checkers)
   - [Special type checkers](#special-type-checkers)
     - [Kind.of](#kindof)
-    - [Kind.is](#kindis)
 - [Kind::Undefined](#kindundefined)
+  - [Kind.of.<Type>.or_undefined()](#kindoftypeor_undefined)
 - [Kind::Maybe](#kindmaybe)
   - [Kind::Maybe[] and Kind::Maybe#then](#kindmaybe-and-kindmaybethen)
   - [Kind::Maybe#try](#kindmaybetry)
+  - [Kind.of.Maybe()](#kindofmaybe)
   - [Kind::Optional](#kindoptional)
+  - [Kind::Empty](#kindempty)
 - [Development](#development)
 - [Contributing](#contributing)
 - [License](#license)
@@ -77,15 +83,12 @@ By default, basic verifications are strict. So, when you perform `Kind.of.Hash(v
 
 ```ruby
 Kind.of.Hash(nil)    # raise Kind::Error, "nil expected to be a kind of Hash"
-
 Kind.of.Hash('')     # raise Kind::Error, "'' expected to be a kind of Hash"
-
 Kind.of.Hash({a: 1}) # {a: 1}
 
 # ---
 
 Kind.of.Boolean(nil)   # raise Kind::Error, "nil expected to be a kind of Boolean"
-
 Kind.of.Boolean(true)  # true
 Kind.of.Boolean(false) # false
 ```
@@ -107,11 +110,8 @@ As an alternative syntax, you can use the `Kind::Of` instead of the method. e.g:
 But if you don't need a strict type verification, use the `.or_nil`method
 
 ```ruby
-Kind.of.Hash.or_nil('')
-# nil
-
-Kind.of.Hash.or_nil({a: 1})
-# {a: 1}
+Kind.of.Hash.or_nil('')     # nil
+Kind.of.Hash.or_nil({a: 1}) # {a: 1}
 
 # ---
 
@@ -130,6 +130,22 @@ Kind.of.Hash.instance?('')
 Kind.of.Boolean.instance?('')    # false
 Kind.of.Boolean.instance?(true)  # true
 Kind.of.Boolean.instance?(false) # true
+```
+
+Also, there are aliases to perform the strict type verification. e.g:
+
+```ruby
+Kind.of.Hash[nil]  # raise Kind::Error, "nil expected to be a kind of Hash"
+Kind.of.Hash['']   # raise Kind::Error, "'' expected to be a kind of Hash"
+Kind.of.Hash[a: 1] # {a: 1}
+Kind.of.Hash['', or: {}] # {}
+
+# or
+
+Kind.of.Hash.instance(nil)  # raise Kind::Error, "nil expected to be a kind of Hash"
+Kind.of.Hash.instance('')   # raise Kind::Error, "'' expected to be a kind of Hash"
+Kind.of.Hash.instance(a: 1) # {a: 1}
+Kind.of.Hash.instance('', or: {}) # {}
 ```
 
 ### Verifying the kind of some class/module
@@ -155,6 +171,57 @@ Kind.of.Hash.class?(ActiveSupport::HashWithIndifferentAccess) # true
 [⬆️ Back to Top](#table-of-contents-)
 
 ### How to create a new type checker?
+
+There are two ways to do this, you can create type checkers dynamically or register new ones.
+
+#### Creating/Verifiyng type checkers dynamically
+
+```ruby
+class User
+end
+
+user = User.new
+
+# ------------------------ #
+# Verifiyng the value kind #
+# ------------------------ #
+
+Kind.of(User, user) # <User ...>
+Kind.of(User, {})   # Kind::Error ({} expected to be a kind of User)
+
+Kind.of(Hash, {})   # {}
+Kind.of(Hash, user) # Kind::Error (<User ...> expected to be a kind of Hash)
+
+# ---------------------------------- #
+# Creating type checkers dynamically #
+# ---------------------------------- #
+
+kind_of_user = Kind.of(User)
+
+kind_of_user.or_nil({}) # nil
+
+kind_of_user.instance?({})   # false
+kind_of_user.instance?(User) # true
+
+kind_of_user.class?(Hash)  # false
+kind_of_user.class?(User)  # true
+
+# Create type checkers dynamically is cheap
+# because of a singleton object is created to be available for use.
+
+kind_of_user.object_id == Kind.of(User).object_id # true
+
+# --------------------------------------------- #
+# Kind.is() can be used to check a class/module #
+# --------------------------------------------- #
+
+class Admin < User
+end
+
+Kind.is(Admin, User) # true
+```
+
+#### Registering new (custom) type checkers
 
 Use `Kind::Types.add()`. e.g:
 
@@ -191,7 +258,7 @@ Kind.of.User.class?(User)  # true
 
 [⬆️ Back to Top](#table-of-contents-)
 
-#### What happens if a custom type checker has a namespace?
+##### What happens if a custom type checker has a namespace?
 
 The type checker will preserve the namespace. ;)
 
@@ -239,28 +306,34 @@ Kind.of.Account::User::Membership.class?(Account::User::Membership) # true
 
 [⬆️ Back to Top](#table-of-contents-)
 
-## Built-in type checkers
+## Type checkers
 
 The list of types (classes and modules) available to use with `Kind.of.*` or `Kind.is.*` are:
 
-| Classes    | Modules    |
-| ---------- | ---------- |
-| String     | Enumerable |
-| Symbol     | Comparable |
-| Numeric    |            |
-| Integer    |            |
-| Float      |            |
-| Regexp     |            |
-| Time       |            |
-| Array      |            |
-| Range      |            |
-| Hash       |            |
-| Struct     |            |
-| Enumerator |            |
-| Method     |            |
-| Proc       |            |
-| IO         |            |
-| File       |            |
+## Classes' type checker
+
+- `Kind.of.String`
+- `Kind.of.Symbol`
+- `Kind.of.Numeric`
+- `Kind.of.Integer`
+- `Kind.of.Float`
+- `Kind.of.Regexp`
+- `Kind.of.Time`
+- `Kind.of.Array`
+- `Kind.of.Range`
+- `Kind.of.Hash`
+- `Kind.of.Struct`
+- `Kind.of.Enumerator`
+- `Kind.of.Set`
+- `Kind.of.Method`
+- `Kind.of.Proc`
+- `Kind.of.IO`
+- `Kind.of.File`
+
+### Module type checkers
+
+- `Kind.of.Enumerable`
+- `Kind.of.Comparable`
 
 ### Special type checkers
 
@@ -270,14 +343,10 @@ The list of types (classes and modules) available to use with `Kind.of.*` or `Ki
 - `Kind.of.Module()`
 - `Kind.of.Lambda()`
 - `Kind.of.Boolean()`
-- `Kind.of.Callable()`
+- `Kind.of.Callable()`: verifies if the given value `respond_to?(:call)` or if it's a class/module and if its `public_instance_methods.include?(:call)`.
+- `Kind.of.Maybe()` or its alias `Kind.of.Optional()`
 
-#### Kind.is
-
-- `Kind.is.Class()`
-- `Kind.is.Module()`
-- `Kind.is.Boolean()`
-- `Kind.is.Callable()`: verifies if the given value `respond_to?(:call)` or if it's a class/module and if its `public_instance_methods.include?(:call)`.
+PS: Remember, you can use the `Kind.is.*` method to check if some given value is a class/module with all type checkers above.
 
 [⬆️ Back to Top](#table-of-contents-)
 
@@ -286,6 +355,15 @@ The list of types (classes and modules) available to use with `Kind.of.*` or `Ki
 The [`Kind::Undefined`](https://github.com/serradura/kind/blob/834f6b8ebdc737de8e5628986585f30c1a5aa41b/lib/kind/undefined.rb) constant is used as the default argument of type checkers. This is necessary [to know if no arguments were passed to the type check methods](https://github.com/serradura/kind/blob/834f6b8ebdc737de8e5628986585f30c1a5aa41b/lib/kind.rb#L45-L48). But, you can use it in your codebase too, especially if you need to distinguish the usage of `nil` as a method argument.
 
 If you are interested, check out [the tests](https://github.com/serradura/kind/blob/834f6b8ebdc737de8e5628986585f30c1a5aa41b/test/kind/undefined_test.rb) to understand its methods.
+
+### Kind.of.<Type>.or_undefined()
+
+If you interested in use `Kind::Undefined` you can use the method `.or_undefined` with any of the [available type checkers](#type-checkers). e.g:
+
+```ruby
+Kind.of.String.or_undefined(nil)         # Kind::Undefined
+Kind.of.String.or_undefined("something") # "something"
+```
 
 [⬆️ Back to Top](#table-of-contents-)
 
@@ -384,6 +462,36 @@ p Kind::Maybe[object].try { |value| value.upcase } # nil
 
 [⬆️ Back to Top](#table-of-contents-)
 
+### Kind.of.Maybe()
+
+You can use the `Kind.of.Maybe()` to know if the given value is a kind of `Kind::Maybe`object. e.g:
+
+```ruby
+def double(maybe_number)
+  Kind.of.Maybe(maybe_number)
+    .map { |value| value * 2 }
+    .value_or(0)
+end
+
+number = Kind::Maybe[4]
+
+puts double(number) # 8
+
+# -------------------------------------------------------#
+# All the type checker methods are available to use too. #
+# -------------------------------------------------------#
+
+Kind.of.Maybe.instance?(number) # true
+
+Kind.of.Maybe.or_nil(number) # <Kind::Maybe::Some @value=4 ...>
+
+Kind.of.Maybe.instance(number) # <Kind::Maybe::Some @value=4 ...>
+Kind.of.Maybe.instance(4) # Kind::Error (4 expected to be a kind of Kind::Maybe::Result)
+
+Kind.of.Maybe[number] # <Kind::Maybe::Some @value=4 ...>
+Kind.of.Maybe[4] # Kind::Error (4 expected to be a kind of Kind::Maybe::Result)
+```
+
 ### Kind::Optional
 
 The `Kind::Optional` constant is an alias for `Kind::Maybe`. e.g:
@@ -408,6 +516,55 @@ result2 =
 
 puts result2 # 35
 ```
+
+PS: The `Kind.of.Optional` is available to check if some value is a `Kind::Optional`.
+
+[⬆️ Back to Top](#table-of-contents-)
+
+### Kind::Empty
+
+There is a common need to define default argument values. In case you don't know, depending on the argument data type, when a  method is invoked a new object will be created in the program memory to fills some default argument value. e.g:
+
+```ruby
+def something(params = {})
+  params.object_id
+end
+
+puts something # 70312470300460
+puts something # 70312470295800
+puts something # 70312470278400
+puts something # 70312470273800
+```
+
+So, to avoid an unnecessary allocation in memory, the `kind` gem exposes some frozen objects to be used as default values.
+
+- `Kind::Empty::SET`
+- `Kind::Empty::HASH`
+- `Kind::Empty::ARRAY`
+- `Kind::Empty::STRING`
+
+Usage example:
+
+```ruby
+def do_something(value, with_options: Kind::Empty::HASH)
+  # ...
+end
+```
+
+One last thing, if there is no constant declared as Empty, the `kind` gem will define `Empty` as an alias for `Kind::Empty`. Knowing this, the previous example could be written like this:
+
+```ruby
+def do_something(value, with_options: Empty::HASH)
+  # ...
+end
+```
+
+Follows the list of constants, if the alias is available to be created:
+
+- `Empty::SET`
+- `Empty::HASH`
+- `Empty::ARRAY`
+- `Empty::STRING`
 
 [⬆️ Back to Top](#table-of-contents-)
 
