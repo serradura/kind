@@ -7,6 +7,36 @@ class Kind::MaybeTest < Minitest::Test
     assert_equal(0, Kind::Maybe.new(optional).value)
   end
 
+  def test_maybe_result
+    object = Object.new
+
+    maybe_result = Kind::Maybe::Result.new(object)
+
+    assert_same(object, maybe_result.value)
+
+    assert_raises(NotImplementedError) { maybe_result.none? }
+    assert_raises(NotImplementedError) { maybe_result.some? }
+    assert_raises(NotImplementedError) { maybe_result.map { 0 } }
+    assert_raises(NotImplementedError) { maybe_result.try(:anything) }
+    assert_raises(NotImplementedError) { maybe_result.try { |value| value.anything } }
+    assert_raises(NotImplementedError) { maybe_result.value_or(2) }
+    assert_raises(NotImplementedError) { maybe_result.value_or { 3 } }
+  end
+
+  def test_maybe_when_some
+    assert_predicate(Kind::Maybe.new(2), :some?)
+
+    refute_predicate(Kind::Maybe.new(nil), :some?)
+    refute_predicate(Kind::Maybe.new(Kind::Undefined), :some?)
+  end
+
+  def test_maybe_when_none
+    assert_predicate(Kind::Maybe.new(nil), :none?)
+    assert_predicate(Kind::Maybe.new(Kind::Undefined), :none?)
+
+    refute_predicate(Kind::Maybe.new(1), :none?)
+  end
+
   def test_maybe_value
     optional1 = Kind::Maybe.new(2)
 
@@ -57,20 +87,6 @@ class Kind::MaybeTest < Minitest::Test
       ArgumentError,
       'the default value must be defined as an argument or block'
     ) { optional3.value_or }
-  end
-
-  def test_maybe_when_some
-    assert_predicate(Kind::Maybe.new(2), :some?)
-
-    refute_predicate(Kind::Maybe.new(nil), :some?)
-    refute_predicate(Kind::Maybe.new(Kind::Undefined), :some?)
-  end
-
-  def test_maybe_when_none
-    assert_predicate(Kind::Maybe.new(nil), :none?)
-    assert_predicate(Kind::Maybe.new(Kind::Undefined), :none?)
-
-    refute_predicate(Kind::Maybe.new(1), :none?)
   end
 
   def test_maybe_map_when_none

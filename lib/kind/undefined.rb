@@ -3,7 +3,7 @@
 module Kind
   Undefined = Object.new.tap do |undefined|
     def undefined.inspect
-      @inspect ||= 'Undefined'.freeze
+      @inspect ||= 'Kind::Undefined'.freeze
     end
 
     def undefined.to_s
