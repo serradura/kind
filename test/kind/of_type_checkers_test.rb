@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class Kind::OfBuiltInTypesTest < Minitest::Test
+class Kind::OfTypeCheckersTest < Minitest::Test
   # -- Class: String
 
   def test_if_the_object_is_a_kind_of_string
@@ -234,6 +234,25 @@ class Kind::OfBuiltInTypesTest < Minitest::Test
     assert_raises_kind_error('"default" expected to be a kind of Enumerator') { Kind.of.Enumerator(nil, or: 'default') }
   end
 
+  # -- Class: Set
+
+  def test_if_the_object_is_a_kind_of_set
+    assert_raises_kind_error('[] expected to be a kind of Set') { Kind.of.Set([]) }
+    assert_raises_kind_error('nil expected to be a kind of Set') { Kind.of.Set(nil) }
+
+    # ---
+
+    object = Set.new
+
+    assert_same(object, Kind.of.Set(object))
+
+    assert_equal(object, Kind.of.Set(nil, or: object))
+
+    # ---
+
+    assert_raises_kind_error('"default" expected to be a kind of Set') { Kind.of.Set(nil, or: 'default') }
+  end
+
   # -- Class: Method
 
   def test_if_the_object_is_a_kind_of_method
@@ -361,8 +380,8 @@ class Kind::OfBuiltInTypesTest < Minitest::Test
   # -- Class: Queue
 
   def test_if_the_object_is_a_kind_of_queue
-    assert_raises_kind_error('[] expected to be a kind of Queue') { Kind.of.Queue([]) }
-    assert_raises_kind_error('nil expected to be a kind of Queue') { Kind.of.Queue(nil) }
+    assert_raises_kind_error('[] expected to be a kind of Thread::Queue') { Kind.of.Queue([]) }
+    assert_raises_kind_error('nil expected to be a kind of Thread::Queue') { Kind.of.Queue(nil) }
 
     # ---
 
@@ -374,7 +393,49 @@ class Kind::OfBuiltInTypesTest < Minitest::Test
 
     # ---
 
-    assert_raises_kind_error('"default" expected to be a kind of Queue') { Kind.of.Queue(nil, or: 'default') }
+    assert_raises_kind_error('"default" expected to be a kind of Thread::Queue') { Kind.of.Queue(nil, or: 'default') }
+  end
+
+  # -- Class: Kind::Maybe
+
+  def test_if_the_object_is_a_kind_of_maybe
+    assert_raises_kind_error('[] expected to be a kind of Kind::Maybe::Result') { Kind.of.Maybe([]) }
+    assert_raises_kind_error('nil expected to be a kind of Kind::Maybe::Result') { Kind.of.Maybe(nil) }
+
+    # ---
+
+    some = Kind::Maybe[1]
+    none = Kind::Maybe[nil]
+
+    assert_same(some, Kind.of.Maybe(some))
+    assert_equal(some, Kind.of.Maybe(nil, or: some))
+
+    assert_same(none, Kind.of.Maybe(none))
+    assert_equal(none, Kind.of.Maybe(nil, or: none))
+
+    # ---
+
+    assert_raises_kind_error('"default" expected to be a kind of Kind::Maybe::Result') { Kind.of.Maybe(nil, or: 'default') }
+  end
+
+  def test_if_the_object_is_a_kind_of_optional
+    assert_raises_kind_error('[] expected to be a kind of Kind::Maybe::Result') { Kind.of.Optional([]) }
+    assert_raises_kind_error('nil expected to be a kind of Kind::Maybe::Result') { Kind.of.Optional(nil) }
+
+    # ---
+
+    some = Kind::Optional[1]
+    none = Kind::Optional[nil]
+
+    assert_same(some, Kind.of.Optional(some))
+    assert_equal(some, Kind.of.Optional(nil, or: some))
+
+    assert_same(none, Kind.of.Optional(none))
+    assert_equal(none, Kind.of.Optional(nil, or: none))
+
+    # ---
+
+    assert_raises_kind_error('"default" expected to be a kind of Kind::Maybe::Result') { Kind.of.Optional(nil, or: 'default') }
   end
 
   # -- Module: Enumerable
