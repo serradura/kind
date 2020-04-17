@@ -92,6 +92,13 @@ class Kind::IsClassTest < Minitest::Test
     assert Kind.is.Enumerator(Class.new(Enumerator))
   end
 
+  def test_if_a_value_is_a_set_class_or_subclass
+    refute Kind.is.Set(Object)
+
+    assert Kind.is.Set(Set)
+    assert Kind.is.Set(Class.new(Set))
+  end
+
   def test_if_a_value_is_a_method_class_or_subclass
     refute Kind.is.Method(Object)
 
@@ -118,6 +125,29 @@ class Kind::IsClassTest < Minitest::Test
 
     assert Kind.is.File(File)
     assert Kind.is.File(Class.new(File))
+  end
+
+  def test_if_a_value_is_a_queue_class_or_subclass
+    refute Kind.is.Queue(Object)
+
+    assert Kind.is.Queue(Queue)
+    assert Kind.is.Queue(Class.new(Queue))
+  end
+
+  def test_if_a_value_is_a_maybe_class_or_subclass
+    refute Kind.is.Maybe(Object)
+
+    assert Kind.is.Maybe(Kind::Maybe::Result)
+    assert Kind.is.Maybe(Kind::Maybe::Some)
+    assert Kind.is.Maybe(Kind::Maybe::None)
+
+    # ---
+
+    refute Kind.is.Optional(Object)
+
+    assert Kind.is.Optional(Kind::Optional::Result)
+    assert Kind.is.Optional(Kind::Optional::Some)
+    assert Kind.is.Optional(Kind::Optional::None)
   end
 
   def test_if_a_value_is_a_boolean_class_or_subclass

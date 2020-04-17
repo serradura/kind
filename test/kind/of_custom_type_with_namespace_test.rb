@@ -63,6 +63,16 @@ class Kind::OfCustomTypeWithNamespaceTest < Minitest::Test
 
     # ---
 
+    assert_raises_kind_error(given: 'nil', expected: 'Account::User') { Kind.of.Account::User.instance(nil) }
+    assert_raises_kind_error(given: 'Kind::Undefined', expected: 'Account::User') { Kind.of.Account::User.instance(Kind::Undefined) }
+    assert_raises_kind_error(given: ':a', expected: 'Account::User') { Kind.of.Account::User.instance(:a) }
+    assert_equal(user, Kind.of.Account::User.instance(user))
+    assert_equal(user, Kind.of.Account::User.instance(:a, or: user))
+    assert_equal(user, Kind.of.Account::User.instance(nil, or: user))
+    assert_equal(user, Kind.of.Account::User.instance(Kind::Undefined, or: user))
+    assert_raises_kind_error(given: 'nil', expected: 'Account::User') { Kind.of.Account::User.instance(nil, or: Kind::Undefined) }
+    assert_raises_kind_error(given: 'Kind::Undefined', expected: 'Account::User') { Kind.of.Account::User.instance(Kind::Undefined, or: nil) }
+
     refute Kind.of.Account::User.instance?({})
     assert Kind.of.Account::User.instance?(user)
 
@@ -73,7 +83,28 @@ class Kind::OfCustomTypeWithNamespaceTest < Minitest::Test
     assert_nil Kind.of.Account::User.or_nil({})
     assert_equal(user, Kind.of.Account::User.or_nil(user))
 
+    assert_kind_undefined Kind.of.Account::User.or_undefined({})
+    assert_equal(user, Kind.of.Account::User.or_undefined(user))
+
     # -
+
+    assert_same(Kind::Of::Account::User, Kind.of.Account::User)
+
+    Kind::Of::Account::User.stub(:instance, -> (obj, opt) { [obj, opt] }) do
+      assert_equal([user, {}], Kind.of.Account::User[user])
+    end
+
+    # ---
+
+    assert_raises_kind_error(given: 'nil', expected: 'Account::User::Membership') { Kind.of.Account::User::Membership.instance(nil) }
+    assert_raises_kind_error(given: 'Kind::Undefined', expected: 'Account::User::Membership') { Kind.of.Account::User::Membership.instance(Kind::Undefined) }
+    assert_raises_kind_error(given: ':a', expected: 'Account::User::Membership') { Kind.of.Account::User::Membership.instance(:a) }
+    assert_equal(membership, Kind.of.Account::User::Membership.instance(membership))
+    assert_equal(membership, Kind.of.Account::User::Membership.instance(:a, or: membership))
+    assert_equal(membership, Kind.of.Account::User::Membership.instance(nil, or: membership))
+    assert_equal(membership, Kind.of.Account::User::Membership.instance(Kind::Undefined, or: membership))
+    assert_raises_kind_error(given: 'nil', expected: 'Account::User::Membership') { Kind.of.Account::User::Membership.instance(nil, or: Kind::Undefined) }
+    assert_raises_kind_error(given: 'Kind::Undefined', expected: 'Account::User::Membership') { Kind.of.Account::User::Membership.instance(Kind::Undefined, or: nil) }
 
     refute Kind.of.Account::User::Membership.instance?({})
     assert Kind.of.Account::User::Membership.instance?(membership)
@@ -84,6 +115,17 @@ class Kind::OfCustomTypeWithNamespaceTest < Minitest::Test
 
     assert_nil Kind.of.Account::User::Membership.or_nil({})
     assert_equal(membership, Kind.of.Account::User::Membership.or_nil(membership))
+
+    assert_kind_undefined Kind.of.Account::User::Membership.or_undefined({})
+    assert_equal(membership, Kind.of.Account::User::Membership.or_undefined(membership))
+
+    # -
+
+    assert_same(Kind::Of::Account::User::Membership, Kind.of.Account::User::Membership)
+
+    Kind::Of::Account::User::Membership.stub(:instance, -> (obj, opt) { [obj, opt] }) do
+      assert_equal([membership, {}], Kind.of.Account::User::Membership[membership])
+    end
 
     # ---
 

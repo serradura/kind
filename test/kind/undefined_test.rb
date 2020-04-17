@@ -2,7 +2,7 @@ require 'test_helper'
 
 class Kind::UndefinedTest < Minitest::Test
   def test_inspect
-    assert_equal('Undefined', Kind::Undefined.inspect)
+    assert_equal('Kind::Undefined', Kind::Undefined.inspect)
   end
 
   def test_to_s
