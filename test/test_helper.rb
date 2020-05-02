@@ -33,4 +33,20 @@ class Minitest::Test
   def assert_kind_undefined(object)
     assert_equal(Kind::Undefined, object)
   end
+
+  def assert_kind_is(expected, *valid)
+    result = Array(valid).all? do |type|
+      Kind::Is.public_send(expected, type) && Kind.is.public_send(expected, type)
+    end
+
+    assert(result)
+  end
+
+  def refute_kind_is(expected, *valid)
+    result = Array(valid).any? do |type|
+      Kind::Is.public_send(expected, type) && Kind.is.public_send(expected, type)
+    end
+
+    refute(result)
+  end
 end
