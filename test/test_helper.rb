@@ -133,7 +133,7 @@ class Minitest::Test
       end)
 
       #
-      # Kind.of.<Type>.or_nil?()
+      # Kind.of.<Type>.or_nil()
       #
       # Kind.of.String.or_nil(:a) == nil
       assert_nil(kind_checker.or_nil(invalid_instances.sample))
@@ -141,7 +141,7 @@ class Minitest::Test
       assert_equal(valid_instance1, kind_checker.or_nil(valid_instance1))
 
       #
-      # Kind.of.<Type>.or_nil?()
+      # Kind.of.<Type>.or_undefined()
       #
       # Kind.of.String.or_undefined(:a) == Kind::Undefined
       assert_kind_undefined(kind_checker.or_undefined(invalid_instances.sample))
@@ -160,6 +160,28 @@ class Minitest::Test
         # Kind.of.String.class?(String) == true
         kind_checker.class?(class_or_mod)
       end)
+
+      #
+      # Kind.of.<Type>.as_maybe()
+      #
+      assert_instance_of(Kind::Maybe::None, kind_checker.as_maybe(invalid_instances.sample))
+
+      assert(invalid_instances.map(&kind_checker.as_maybe).all?(&:none?))
+
+      assert_instance_of(Kind::Maybe::Some, kind_checker.as_maybe(valid_instances.sample))
+
+      assert(valid_instances.map(&kind_checker.as_maybe).all?(&:some?))
+
+      #
+      # Kind.of.<Type>.as_optional()
+      #
+      assert_instance_of(Kind::Optional::None, kind_checker.as_optional(invalid_instances.sample))
+
+      assert(invalid_instances.map(&kind_checker.as_optional).all?(&:none?))
+
+      assert_instance_of(Kind::Optional::Some, kind_checker.as_optional(valid_instances.sample))
+
+      assert(valid_instances.map(&kind_checker.as_optional).all?(&:some?))
     end
 
     # Kind::Of::String === Kind.of.String
