@@ -29,6 +29,25 @@ module Kind
     def or_undefined(value)
       or_nil(value) || Kind::Undefined
     end
+
+    def as_maybe(value = Kind::Undefined)
+      return __as_maybe__(value) if value != Kind::Undefined
+
+      as_maybe_to_proc
+    end
+
+    def as_optional(value = Kind::Undefined)
+      as_maybe(value)
+    end
+
+    def __as_maybe__(value)
+      Kind::Maybe.new(or_nil(value))
+    end
+
+    def as_maybe_to_proc
+      @as_maybe_to_proc ||=
+        -> checker { -> value { checker.__as_maybe__(value) } }.call(self)
+    end
   end
 
   private_constant :Checkable
