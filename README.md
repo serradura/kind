@@ -12,7 +12,7 @@ Basic type system for Ruby.
 
 As a creator of Ruby gems, I have a common need that I have to handle in many of my projects: type checking of method arguments.
 
-One of the goals of this project is to do simple type checking like `"some string".is_a?(String)`, but using a bunch of basic abstractions. So, after reading this README and realizing that you need something more robust, I recommend to you check out the [dry-types gem](https://dry-rb.org/gems/dry-types).
+One of the goals of this project is to do simple type checking like `"some string".is_a?(String)`, but using a bunch of basic abstractions. So, after reading this README and realizing that you need something more robust, I recommend you check out the [dry-types gem](https://dry-rb.org/gems/dry-types).
 
 ## Table of Contents <!-- omit in toc -->
 - [Required Ruby version](#required-ruby-version)
@@ -81,7 +81,7 @@ sum('1', 1) # Kind::Error ("\"1\" expected to be a kind of Numeric")
 By default, basic verifications are strict. So, when you perform `Kind.of.Hash(value)`, if the given value was a Hash, the value itself will be returned, but if it isn't the right type, an error will be raised.
 
 ```ruby
-Kind.of.Hash(nil)    # raise Kind::Error, "nil expected to be a kind of Hash"
+Kind.of.Hash(nil)    # **raise Kind::Error, "nil expected to be a kind of Hash"**
 Kind.of.Hash('')     # raise Kind::Error, "'' expected to be a kind of Hash"
 Kind.of.Hash({a: 1}) # {a: 1}
 
@@ -104,9 +104,9 @@ Kind.of.Hash(value, or: {})    # {}
 Kind.of.Boolean(nil, or: true) # true
 ```
 
-As an alternative syntax, you can use the `Kind::Of` instead of the method. e.g: `Kind::Of::Hash('')`
+As an alternative syntax, you can use the `Kind::Of` instead of the `Kind.of` method. e.g: `Kind::Of::Hash('')`
 
-But if you don't need a strict type verification, use the `.or_nil`method
+But if you don't need a strict type verification, use the `.or_nil` method.
 
 ```ruby
 Kind.of.Hash.or_nil('')     # nil
@@ -205,8 +205,8 @@ kind_of_user.instance?(User) # true
 kind_of_user.class?(Hash)  # false
 kind_of_user.class?(User)  # true
 
-# Create type checkers dynamically is cheap
-# because of a singleton object is created to be available for use.
+# Creating type checkers dynamically is cheap
+# because a singleton object is created to be available for use.
 
 kind_of_user.object_id == Kind.of(User).object_id # true
 
@@ -228,7 +228,7 @@ Use `Kind::Types.add()`. e.g:
 class User
 end
 
-# You can define it at the end of the file which has the class/module.
+# You can define it at the end of the file class/module where class/module was declared.
 
 Kind::Types.add(User)
 
@@ -520,7 +520,7 @@ PS: The `Kind.of.Optional` is available to check if some value is a `Kind::Optio
 
 ## Kind::Empty
 
-There is a common need to define default argument values. In case you don't know, depending on the argument data type, when a  method is invoked a new object will be created in the program memory to fills some default argument value. e.g:
+When you define a method that has default arguments, for certain data types, you will always create a new object in memory. e.g:
 
 ```ruby
 def something(params = {})
