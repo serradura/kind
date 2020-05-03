@@ -63,120 +63,32 @@ class Kind::OfCheckersWithNamespaceTest < Minitest::Test
 
     # ---
 
-    assert_raises_kind_error(given: 'nil', expected: 'Account::User') { Kind.of.Account::User.instance(nil) }
-    assert_raises_kind_error(given: 'Kind::Undefined', expected: 'Account::User') { Kind.of.Account::User.instance(Kind::Undefined) }
-    assert_raises_kind_error(given: ':a', expected: 'Account::User') { Kind.of.Account::User.instance(:a) }
-    assert_equal(user, Kind.of.Account::User.instance(user))
-    assert_equal(user, Kind.of.Account::User.instance(:a, or: user))
-    assert_equal(user, Kind.of.Account::User.instance(nil, or: user))
-    assert_equal(user, Kind.of.Account::User.instance(Kind::Undefined, or: user))
-    assert_raises_kind_error(given: 'nil', expected: 'Account::User') { Kind.of.Account::User.instance(nil, or: Kind::Undefined) }
-    assert_raises_kind_error(given: 'Kind::Undefined', expected: 'Account::User') { Kind.of.Account::User.instance(Kind::Undefined, or: nil) }
+    assert_kind_checkers(
+      Kind.of.Account::User,
+      Kind::Of::Account::User,
+      kind_name: 'Account::User',
+      instance: {
+        valid: [user],
+        invalid: [membership]
+      },
+      class: {
+        valid: [Account::User, Class.new(Account::User)],
+        invalid: [Account::User::Membership]
+      }
+    )
 
-    refute Kind.of.Account::User.instance?({})
-    assert Kind.of.Account::User.instance?(user)
-
-    assert_equal(false, Kind.of.Account::User.class?(Hash))
-    assert_equal(true, Kind.of.Account::User.class?(Account::User))
-    assert_equal(true, Kind.of.Account::User.class?(Class.new(Account::User)))
-
-    assert_nil Kind.of.Account::User.or_nil({})
-    assert_equal(user, Kind.of.Account::User.or_nil(user))
-
-    assert_kind_undefined Kind.of.Account::User.or_undefined({})
-    assert_equal(user, Kind.of.Account::User.or_undefined(user))
-
-    # -
-
-    assert_same(Kind::Of::Account::User, Kind.of.Account::User)
-
-    Kind::Of::Account::User.stub(:instance, -> (obj, opt) { [obj, opt] }) do
-      assert_equal([user, {}], Kind.of.Account::User[user])
-    end
-
-    # ---
-
-    assert_raises_kind_error(given: 'nil', expected: 'Account::User::Membership') { Kind.of.Account::User::Membership.instance(nil) }
-    assert_raises_kind_error(given: 'Kind::Undefined', expected: 'Account::User::Membership') { Kind.of.Account::User::Membership.instance(Kind::Undefined) }
-    assert_raises_kind_error(given: ':a', expected: 'Account::User::Membership') { Kind.of.Account::User::Membership.instance(:a) }
-    assert_equal(membership, Kind.of.Account::User::Membership.instance(membership))
-    assert_equal(membership, Kind.of.Account::User::Membership.instance(:a, or: membership))
-    assert_equal(membership, Kind.of.Account::User::Membership.instance(nil, or: membership))
-    assert_equal(membership, Kind.of.Account::User::Membership.instance(Kind::Undefined, or: membership))
-    assert_raises_kind_error(given: 'nil', expected: 'Account::User::Membership') { Kind.of.Account::User::Membership.instance(nil, or: Kind::Undefined) }
-    assert_raises_kind_error(given: 'Kind::Undefined', expected: 'Account::User::Membership') { Kind.of.Account::User::Membership.instance(Kind::Undefined, or: nil) }
-
-    refute Kind.of.Account::User::Membership.instance?({})
-    assert Kind.of.Account::User::Membership.instance?(membership)
-
-    assert_equal(false, Kind.of.Account::User::Membership.class?(Hash))
-    assert_equal(true, Kind.of.Account::User::Membership.class?(Account::User::Membership))
-    assert_equal(true, Kind.of.Account::User::Membership.class?(Class.new(Account::User::Membership)))
-
-    assert_nil Kind.of.Account::User::Membership.or_nil({})
-    assert_equal(membership, Kind.of.Account::User::Membership.or_nil(membership))
-
-    assert_kind_undefined Kind.of.Account::User::Membership.or_undefined({})
-    assert_equal(membership, Kind.of.Account::User::Membership.or_undefined(membership))
-
-    # -
-
-    assert_same(Kind::Of::Account::User::Membership, Kind.of.Account::User::Membership)
-
-    Kind::Of::Account::User::Membership.stub(:instance, -> (obj, opt) { [obj, opt] }) do
-      assert_equal([membership, {}], Kind.of.Account::User::Membership[membership])
-    end
-
-    # ---
-
-    refute Kind::Of::Account::User.instance?({})
-    assert Kind::Of::Account::User.instance?(user)
-
-    refute Kind::Of::Account::User.class?(Hash)
-    assert Kind::Of::Account::User.class?(Account::User)
-    assert Kind::Of::Account::User.class?(Class.new(Account::User))
-
-    assert_nil Kind::Of::Account::User.or_nil({})
-    assert_equal(user, Kind::Of::Account::User.or_nil(user))
-
-    # -
-
-    refute Kind::Of::Account::User::Membership.instance?({})
-    assert Kind::Of::Account::User::Membership.instance?(membership)
-
-    assert_equal(false, Kind::Of::Account::User::Membership.class?(Hash))
-    assert_equal(true, Kind::Of::Account::User::Membership.class?(Account::User::Membership))
-    assert_equal(true, Kind::Of::Account::User::Membership.class?(Class.new(Account::User::Membership)))
-
-    assert_nil Kind::Of::Account::User::Membership.or_nil({})
-    assert_equal(membership, Kind::Of::Account::User::Membership.or_nil(membership))
-
-    # ---
-
-    refute Kind.is.Account::User(Object)
-
-    assert Kind.is.Account::User(Account::User)
-    assert Kind.is.Account::User(Class.new(Account::User))
-
-    # -
-
-    refute Kind::Is::Account::User(Object)
-
-    assert Kind::Is::Account::User(Account::User)
-    assert Kind::Is::Account::User(Class.new(Account::User))
-
-    # --
-
-    refute Kind.is.Account::User::Membership(Object)
-
-    assert Kind.is.Account::User::Membership(Account::User::Membership)
-    assert Kind.is.Account::User::Membership(Class.new(Account::User::Membership))
-
-    # -
-
-    refute Kind::Is::Account::User::Membership(Object)
-
-    assert Kind::Is::Account::User::Membership(Account::User::Membership)
-    assert Kind::Is::Account::User::Membership(Class.new(Account::User::Membership))
+    assert_kind_checkers(
+      Kind.of.Account::User::Membership,
+      Kind::Of::Account::User::Membership,
+      kind_name: 'Account::User::Membership',
+      instance: {
+        valid: [membership],
+        invalid: [user]
+      },
+      class: {
+        valid: [Account::User::Membership, Class.new(Account::User::Membership)],
+        invalid: [Account::User]
+      }
+    )
   end
 end

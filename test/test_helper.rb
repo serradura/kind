@@ -58,6 +58,17 @@ class Minitest::Test
     kind_checker_from_method = Kind.of.public_send(checker_name)
     kind_checker_from_constant = Kind::Of.const_get(checker_name)
 
+    kind_name = Kind.of.String(options[:kind_name], or: checker_name.to_s) # "String"
+
+    assert_kind_checkers(
+      kind_checker_from_method,
+      kind_checker_from_constant,
+      options.merge(kind_name: kind_name)
+    )
+  end
+
+  #   assert_kind_checkers(Kind.of.String,           Kind::Of::String,           {})
+  def assert_kind_checkers(kind_checker_from_method, kind_checker_from_constant, options)
     # { instance: { valid: ['a', 'b'], invalid: [:a, {}] } }
     instance_data = Kind.of.Hash(options.fetch(:instance))
     valid_instances = Array(instance_data.fetch(:valid))     # ['a', 'b']
@@ -71,7 +82,7 @@ class Minitest::Test
     valid_class_or_mod = Array(class_or_mod_data.fetch(:valid))     # [String, Class.new(String)]
     invalid_class_or_mod = Array(class_or_mod_data.fetch(:invalid)) # [Symbol]
 
-    kind_name = Kind.of.String(options[:kind_name], or: checker_name.to_s) # "String"
+    kind_name = Kind.of.String(options.fetch(:kind_name)) # "String"
 
     [
       kind_checker_from_method,
