@@ -2,172 +2,142 @@ require 'test_helper'
 
 class Kind::IsClassTest < Minitest::Test
   def test_if_a_value_is_a_class_or_subclass
-    assert Kind.is.Class(Class)
+    assert_kind_is(:Class, Class, String)
 
-    assert Kind.is.Class(Object)
+    refute_kind_is(:Class, Enumerable, Object.new)
   end
 
   def test_if_a_value_is_a_string_class_or_subclass
-    refute Kind.is.String(Object)
+    assert_kind_is(:String, String, Class.new(String))
 
-    assert Kind.is.String(String)
-    assert Kind.is.String(Class.new(String))
+    refute_kind_is(:String, Object)
   end
 
   def test_if_a_value_is_a_symbol_class_or_subclass
-    refute Kind.is.Symbol(Object)
+    assert_kind_is(:Symbol, Symbol, Class.new(Symbol))
 
-    assert Kind.is.Symbol(Symbol)
-    assert Kind.is.Symbol(Class.new(Symbol))
+    refute_kind_is(:Symbol, Object)
   end
 
   def test_if_a_value_is_a_numeric_class_or_subclass
-    refute Kind.is.Numeric(Object)
+    assert_kind_is(:Numeric, Integer, Float, Numeric)
 
-    assert Kind.is.Numeric(Integer)
-    assert Kind.is.Numeric(Float)
-    assert Kind.is.Numeric(Class.new(Numeric))
+    refute_kind_is(:Numeric, Object)
   end
 
   def test_if_a_value_is_a_integer_class_or_subclass
-    refute Kind.is.Integer(Object)
+    assert_kind_is(:Integer, Integer, Class.new(Integer))
 
-    assert Kind.is.Integer(Integer)
-    assert Kind.is.Integer(Class.new(Integer))
+    refute_kind_is(:Integer, Object, Float, Numeric)
   end
 
   def test_if_a_value_is_a_float_class_or_subclass
-    refute Kind.is.Float(Object)
+    assert_kind_is(:Float, Float, Class.new(Float))
 
-    assert Kind.is.Float(Float)
-    assert Kind.is.Float(Class.new(Float))
+    refute_kind_is(:Float, Object, Integer, Numeric)
   end
 
   def test_if_a_value_is_a_regexp_class_or_subclass
-    refute Kind.is.Regexp(Object)
+    assert_kind_is(:Regexp, Regexp, Class.new(Regexp))
 
-    assert Kind.is.Regexp(Regexp)
-    assert Kind.is.Regexp(Class.new(Regexp))
+    refute_kind_is(:Regexp, Object)
   end
 
   def test_if_a_value_is_a_time_class_or_subclass
-    refute Kind.is.Time(Object)
+    assert_kind_is(:Time, Time, Class.new(Time))
 
-    assert Kind.is.Time(Time)
-    assert Kind.is.Time(Class.new(Time))
+    refute_kind_is(:Time, Object)
   end
 
   def test_if_a_value_is_an_array_class_or_subclass
-    refute Kind.is.Array(Object)
+    assert_kind_is(:Array, Array, Class.new(Array))
 
-    assert Kind.is.Array(Array)
-    assert Kind.is.Array(Class.new(Array))
+    refute_kind_is(:Array, Object)
   end
 
   def test_if_a_value_is_a_range_class_or_subclass
-    refute Kind.is.Range(Object)
+    assert_kind_is(:Range, Range, Class.new(Range))
 
-    assert Kind.is.Range(Range)
-    assert Kind.is.Range(Class.new(Range))
+    refute_kind_is(:Range, Object)
   end
 
   def test_if_a_value_is_a_hash_class_or_subclass
-    refute Kind.is.Hash(Object)
+    assert_kind_is(:Hash, Hash, Class.new(Hash))
 
-    assert Kind.is.Hash(Hash)
-    assert Kind.is.Hash(Class.new(Hash))
+    refute_kind_is(:Hash, Object)
   end
 
   def test_if_a_value_is_a_struct_class_or_subclass
-    refute Kind.is.Struct(Object)
+    assert_kind_is(:Struct, Struct, Class.new(Struct))
 
-    assert Kind.is.Struct(Struct)
-    assert Kind.is.Struct(Class.new(Struct))
+    refute_kind_is(:Struct, Object, Hash)
   end
 
   def test_if_a_value_is_a_enumerator_class_or_subclass
-    refute Kind.is.Enumerator(Object)
+    assert_kind_is(:Enumerator, Enumerator, Class.new(Enumerator))
 
-    assert Kind.is.Enumerator(Enumerator)
-    assert Kind.is.Enumerator(Class.new(Enumerator))
+    refute_kind_is(:Enumerator, Object, Hash)
   end
 
   def test_if_a_value_is_a_set_class_or_subclass
-    refute Kind.is.Set(Object)
+    assert_kind_is(:Set, Set, Class.new(Set))
 
-    assert Kind.is.Set(Set)
-    assert Kind.is.Set(Class.new(Set))
+    refute_kind_is(:Set, Object, Hash, Array)
   end
 
   def test_if_a_value_is_a_method_class_or_subclass
-    refute Kind.is.Method(Object)
+    assert_kind_is(:Method, Method, Class.new(Method))
 
-    assert Kind.is.Method(Method)
-    assert Kind.is.Method(Class.new(Method))
+    refute_kind_is(:Method, Object, Proc)
   end
 
   def test_if_a_value_is_a_proc_class_or_subclass
-    refute Kind.is.Proc(Object)
+    assert_kind_is(:Proc, Proc, Class.new(Proc))
 
-    assert Kind.is.Proc(Proc)
-    assert Kind.is.Proc(Class.new(Proc))
+    refute_kind_is(:Proc, Object, Method)
   end
 
   def test_if_a_value_is_an_io_class_or_subclass
-    refute Kind.is.IO(Object)
+    assert_kind_is(:IO, IO, Class.new(IO), File)
 
-    assert Kind.is.IO(IO)
-    assert Kind.is.IO(Class.new(IO))
+    refute_kind_is(:IO, Object, String)
   end
 
   def test_if_a_value_is_a_file_class_or_subclass
-    refute Kind.is.File(Object)
+    assert_kind_is(:File, File, Class.new(File))
 
-    assert Kind.is.File(File)
-    assert Kind.is.File(Class.new(File))
+    refute_kind_is(:File, Object, String)
   end
 
   def test_if_a_value_is_a_queue_class_or_subclass
-    refute Kind.is.Queue(Object)
+    assert_kind_is(:Queue, Queue, Class.new(Queue))
 
-    assert Kind.is.Queue(Queue)
-    assert Kind.is.Queue(Class.new(Queue))
+    refute_kind_is(:Queue, Object, Array)
   end
 
   def test_if_a_value_is_a_maybe_class_or_subclass
-    refute Kind.is.Maybe(Object)
+    assert_kind_is(:Maybe, Kind::Maybe::Result, Kind::Maybe::Some, Kind::Maybe::None)
 
-    assert Kind.is.Maybe(Kind::Maybe::Result)
-    assert Kind.is.Maybe(Kind::Maybe::Some)
-    assert Kind.is.Maybe(Kind::Maybe::None)
+    refute_kind_is(:Maybe, Object)
 
     # ---
 
-    refute Kind.is.Optional(Object)
+    assert_kind_is(:Optional, Kind::Optional::Result, Kind::Optional::Some, Kind::Optional::None)
 
-    assert Kind.is.Optional(Kind::Optional::Result)
-    assert Kind.is.Optional(Kind::Optional::Some)
-    assert Kind.is.Optional(Kind::Optional::None)
+    refute_kind_is(:Optional, Object)
   end
 
   def test_if_a_value_is_a_boolean_class_or_subclass
-    refute Kind.is.Boolean(Object)
+    assert_kind_is(:Boolean, TrueClass, FalseClass, Class.new(TrueClass), Class.new(FalseClass))
 
-    assert Kind.is.Boolean(TrueClass)
-    assert Kind.is.Boolean(FalseClass)
-
-    assert Kind.is.Boolean(Class.new(TrueClass))
-    assert Kind.is.Boolean(Class.new(FalseClass))
+    refute_kind_is(:Boolean, Object)
   end
 
   def test_if_a_value_is_callable
-    refute Kind.is.Callable(String)
-
-    assert Kind.is.Callable(Proc)
-    assert Kind.is.Callable(Method)
-
     klass = Class.new { def self.call; end }
 
-    assert Kind.is.Callable(klass)
+    assert_kind_is(:Callable, Proc, Method, klass)
+
+    refute_kind_is(:Callable, Object, String)
   end
 end
