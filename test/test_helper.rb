@@ -71,8 +71,8 @@ class Minitest::Test
   def assert_kind_checkers(kind_checker_from_method, kind_checker_from_constant, options)
     # { instance: { valid: ['a', 'b'], invalid: [:a, {}] } }
     instance_data = Kind.of.Hash(options.fetch(:instance))
-    valid_instances = Array(instance_data.fetch(:valid))     # ['a', 'b']
-    invalid_instances = Array(instance_data.fetch(:invalid)) # [:a, {}]
+    valid_instances = Array(instance_data.fetch(:valid))             # ['a', 'b']
+    invalid_instances = Array(instance_data.fetch(:invalid)) + [nil] # [:a, {}, nil]
 
     valid_instance1 = valid_instances[0]                    # 'a'
     valid_instance2 = valid_instances[1] || valid_instance1 # 'b'
