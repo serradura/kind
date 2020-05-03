@@ -2,25 +2,20 @@ require 'test_helper'
 
 class Kind::IsClassTest < Minitest::Test
   def test_if_a_value_is_a_module
-    assert Kind.is.Module(Module)
-    assert Kind.is.Module(Enumerable)
+    assert_kind_is(:Module, Module, Enumerable, Comparable)
 
-    refute Kind.is.Module(Object)
+    refute_kind_is(:Module, Class, Object)
   end
 
   def test_if_a_value_is_an_enumerable_module
-    assert Kind.is.Enumerable(Enumerable)
-    assert Kind.is.Module(Module.new { extend Enumerable })
+    assert_kind_is(:Enumerable, Enumerable, Module.new { extend(Enumerable) })
 
-    refute Kind.is.Enumerable(Module)
-    refute Kind.is.Enumerable(Comparable)
+    refute_kind_is(:Enumerable, Comparable, Module)
   end
 
   def test_if_a_value_is_a_comparable_module
-    assert Kind.is.Comparable(Comparable)
-    assert Kind.is.Module(Module.new { extend Comparable })
+    assert_kind_is(:Comparable, Comparable, Module.new { extend(Comparable) })
 
-    refute Kind.is.Comparable(Module)
-    refute Kind.is.Comparable(Enumerable)
+    refute_kind_is(:Comparable, Enumerable, Module)
   end
 end
