@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class Kind::OfTypeCheckersTest < Minitest::Test
+class Kind::OfCheckersMethodsTest < Minitest::Test
   # -- Class: String
 
   def test_if_the_object_is_a_kind_of_string
