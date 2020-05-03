@@ -49,4 +49,114 @@ class Minitest::Test
 
     refute(result)
   end
+
+  def assert_kind_checker(checker_name, options)
+    # checker_name = :String
+
+    # kind_checker_from_method = Kind.of.String
+    # kind_checker_from_constant = Kind::of::Sring
+    kind_checker_from_method = Kind.of.public_send(checker_name)
+    kind_checker_from_constant = Kind::Of.const_get(checker_name)
+
+    # { instance: { valid: ['a', 'b'], invalid: [:a, {}] } }
+    instance_data = Kind.of.Hash(options.fetch(:instance))
+    valid_instances = Array(instance_data.fetch(:valid))     # ['a', 'b']
+    invalid_instances = Array(instance_data.fetch(:invalid)) # [:a, {}]
+
+    valid_instance1 = valid_instances[0]                    # 'a'
+    valid_instance2 = valid_instances[1] || valid_instance1 # 'b'
+
+    # { class: { valid: [String, Class.new(String)], invalid: [Symbol] } }
+    class_or_mod_data = Kind.of.Hash(options[:class], or: options[:module])
+    valid_class_or_mod = Array(class_or_mod_data.fetch(:valid))     # [String, Class.new(String)]
+    invalid_class_or_mod = Array(class_or_mod_data.fetch(:invalid)) # [Symbol]
+
+    kind_name = Kind.of.String(options[:kind_name], or: checker_name.to_s) # "String"
+
+    [
+      kind_checker_from_method,
+      kind_checker_from_constant
+    ].each do |kind_checker|
+      #
+      # Kind.of.<Type>.instance()
+      #
+      # Kind.of.String.instance(nil) # raise Kind::Error, "nil expected to be a kind of String"
+      assert_raises_kind_error(given: 'nil', expected: kind_name) { kind_checker.instance(nil) }
+      # Kind.of.String.instance(Kind::Undefined) # raise Kind::Error, "Kind::Undefined expected to be a kind of String"
+      assert_raises_kind_error(given: 'Kind::Undefined', expected: kind_name) { kind_checker.instance(Kind::Undefined) }
+
+      invalid_instances.each do |invalid_instance|
+        # Kind.of.String.instance(:a) # raise Kind::Error, ":a expected to be a kind of String"
+        assert_raises_kind_error(given: invalid_instance.inspect, expected: kind_name) do
+          kind_checker.instance(invalid_instance)
+        end
+      end
+
+      valid_instances.each do |valid_instance|
+        # Kind.of.String.instance('a') == 'a'
+        assert_equal(valid_instance, kind_checker.instance(valid_instance))
+      end
+      # Kind.of.String.instance('b', or: 'a') == 'b'
+      assert_equal(valid_instance2, kind_checker.instance(valid_instance2, or: valid_instance1))
+      # Kind.of.String.instance(nil, or: 'a') == 'a'
+      assert_equal(valid_instance1, kind_checker.instance(nil, or: valid_instance1))
+      # Kind.of.String.instance(Kind::Undefined, or: 'a') == 'a'
+      assert_equal(valid_instance1, kind_checker.instance(Kind::Undefined, or: valid_instance1))
+
+      # Kind.of.String.instance(nil, or: Kind::Undefined) # raise Kind::Error, "nil expected to be a kind of String"
+      assert_raises_kind_error(given: 'nil', expected: kind_name) { kind_checker.instance(nil, or: Kind::Undefined) }
+      # Kind.of.String.instance(Kind::Undefined, or: nil) # raise Kind::Error, "Kind::Undefined expected to be a kind of String"
+      assert_raises_kind_error(given: 'Kind::Undefined', expected: kind_name) { kind_checker.instance(Kind::Undefined, or: nil) }
+
+      #
+      # Kind.of.<Type>.instance?()
+      #
+      refute(invalid_instances.any? do |invalid_instance|
+        # Kind.of.String.instance?('b') == true
+        kind_checker.instance?(invalid_instance)
+      end)
+
+      assert(valid_instances.all? do |valid_instance|
+        # Kind.of.String.instance?(:a) == false
+        kind_checker.instance?(valid_instance)
+      end)
+
+      #
+      # Kind.of.<Type>.or_nil?()
+      #
+      # Kind.of.String.or_nil(:a) == nil
+      assert_nil(kind_checker.or_nil(invalid_instances.sample))
+      # Kind.of.String.or_nil('b') == 'b'
+      assert_equal(valid_instance1, kind_checker.or_nil(valid_instance1))
+
+      #
+      # Kind.of.<Type>.or_nil?()
+      #
+      # Kind.of.String.or_undefined(:a) == Kind::Undefined
+      assert_kind_undefined(kind_checker.or_undefined(invalid_instances.sample))
+      # Kind.of.String.or_undefined('a') == 'a'
+      assert_equal(valid_instance2, kind_checker.or_undefined(valid_instance2))
+
+      #
+      # Kind.of.<Type>.class?()
+      #
+      refute(invalid_class_or_mod.any? do |class_or_mod|
+        # Kind.of.String.class?(Symbol) == false
+        kind_checker.class?(class_or_mod)
+      end)
+
+      assert(valid_class_or_mod.all? do |class_or_mod|
+        # Kind.of.String.class?(String) == true
+        kind_checker.class?(class_or_mod)
+      end)
+    end
+
+    # Kind::Of::String === Kind.of.String
+    assert_same(kind_checker_from_constant, kind_checker_from_method)
+
+    # Kind::Of::String['a'] == Kind::Of::String.instance('a')
+    kind_checker_from_constant.stub(:instance, -> (obj, opt) { [obj, opt] }) do
+      assert_equal([valid_instance1, {}], kind_checker_from_method[valid_instance1])
+    end
+  end
 end
