@@ -183,6 +183,9 @@ class Kind::MaybeTest < Minitest::Test
     assert_nil(Kind::Maybe[Kind::Undefined].try(:upcase))
     assert_nil(Kind::Maybe[Kind::Undefined].try { |value| value.upcase })
 
+    assert_equal(0, Kind::Maybe[{}].try(:fetch, :number, 0))
+    assert_equal('BAR', Kind::Maybe[{bar: 'BAR'}].try(:fetch, :bar))
+
     assert_raises_with_message(Kind::Error, '"upcase" expected to be a kind of Symbol') do
       Kind::Maybe['foo'].try('upcase')
     end
