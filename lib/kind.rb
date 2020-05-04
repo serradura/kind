@@ -88,7 +88,7 @@ module Kind
 
       def self.class?(value); Kind::Is.Class(value); end
 
-      def self.instance?(value); class?(value); end
+      def self.__is_instance__(value); class?(value); end
     end)
 
     # -- Module
@@ -128,13 +128,13 @@ module Kind
         if ::Kind::Maybe::Value.none?(default)
           __kind_undefined(value) { __kind_of(value) }
         else
-          return value if instance?(value)
+          return value if value != Kind::Undefined && instance?(value)
 
           __kind_undefined(default) { __kind_of(default) }
         end
       end
 
-      def self.instance?(value); class?(value); end
+      def self.__is_instance__(value); class?(value); end
     end)
 
     # -- Boolean
@@ -164,7 +164,7 @@ module Kind
         if ::Kind::Maybe::Value.none?(default)
           __kind_undefined(value) { Kind::Of::Boolean(value) }
         else
-          return value if instance?(value)
+          return value if value != Kind::Undefined && instance?(value)
 
           __kind_undefined(default) { Kind::Of::Boolean(default) }
         end
@@ -178,7 +178,7 @@ module Kind
         end
       end
 
-      def self.instance?(value);
+      def self.__is_instance__(value);
         value.is_a?(TrueClass) || value.is_a?(FalseClass)
       end
 
@@ -213,7 +213,7 @@ module Kind
         if ::Kind::Maybe::Value.none?(default)
           __kind_undefined(value) { Kind::Of::Lambda(value) }
         else
-          return value if instance?(value)
+          return value if value != Kind::Undefined && instance?(value)
 
           __kind_undefined(default) { Kind::Of::Lambda(default) }
         end
@@ -227,7 +227,7 @@ module Kind
         end
       end
 
-      def self.instance?(value)
+      def self.__is_instance__(value)
         value.is_a?(__kind) && value.lambda?
       end
     end)
@@ -261,7 +261,7 @@ module Kind
         if ::Kind::Maybe::Value.none?(default)
           __kind_undefined(value) { Kind::Of::Callable(value) }
         else
-          return value if instance?(value)
+          return value if value != Kind::Undefined && instance?(value)
 
           __kind_undefined(default) { Kind::Of::Callable(default) }
         end
@@ -275,7 +275,7 @@ module Kind
         end
       end
 
-      def self.instance?(value);
+      def self.__is_instance__(value);
         value.respond_to?(:call)
       end
     end)
