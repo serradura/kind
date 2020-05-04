@@ -12,7 +12,7 @@ Basic type system for Ruby.
 
 As a creator of Ruby gems, I have a common need that I have to handle in many of my projects: type checking of method arguments.
 
-One of the goals of this project is to do simple type checking like `"some string".is_a?(String)`, but using a bunch of basic abstractions. So, after reading this README and realizing that you need something more robust, I recommend you check out the [dry-types gem](https://dry-rb.org/gems/dry-types).
+One of the goals of this project is to do simple type checking like `"some string".is_a?(String)`, but, exposing useful abstractions to do it.
 
 ## Table of Contents <!-- omit in toc -->
 - [Required Ruby version](#required-ruby-version)
@@ -35,7 +35,9 @@ One of the goals of this project is to do simple type checking like `"some strin
   - [Kind::Maybe#try](#kindmaybetry)
   - [Kind.of.Maybe()](#kindofmaybe)
   - [Kind::Optional](#kindoptional)
+  - [Kind.of.<Type>.as_optional](#kindoftypeas_optional)
 - [Kind::Empty](#kindempty)
+- [Similar Projects](#similar-projects)
 - [Development](#development)
 - [Contributing](#contributing)
 - [License](#license)
@@ -129,6 +131,21 @@ Kind.of.Hash.instance?('')
 Kind.of.Boolean.instance?('')    # false
 Kind.of.Boolean.instance?(true)  # true
 Kind.of.Boolean.instance?(false) # true
+```
+
+**Note:** When `.instance?` is called without an argument, it will return a lambda which will perform the kind verification.
+
+```ruby
+collection = [
+  {number: 1},
+  'number 0',
+  {number: 2},
+  [0],
+]
+
+collection
+  .select(&Kind.of.Hash.instance?)
+  .reduce(0) { |total, item| total + item.fetch(:number, 0) } # 3
 ```
 
 Also, there are aliases to perform the strict type verification. e.g:
@@ -343,7 +360,7 @@ The list of types (classes and modules) available to use with `Kind.of.*` or `Ki
 - `Kind.of.Callable()`: verifies if the given value `respond_to?(:call)` or if it's a class/module and if its `public_instance_methods.include?(:call)`.
 - `Kind.of.Maybe()` or its alias `Kind.of.Optional()`
 
-PS: Remember, you can use the `Kind.is.*` method to check if some given value is a class/module with all type checkers above.
+**Note:** Remember, you can use the `Kind.is.*` method to check if some given value is a class/module with all type checkers above.
 
 [⬆️ Back to Top](#table-of-contents-)
 
@@ -434,6 +451,10 @@ object = 'foo'
 
 p Kind::Maybe[object].try(:upcase) # "FOO"
 
+p Kind::Maybe[{}].try(:fetch, :number, 0) # 0
+
+p Kind::Maybe[{number: 1}].try(:fetch, :number) # 1
+
 p Kind::Maybe[object].try { |value| value.upcase } # "FOO"
 
 #############
@@ -514,7 +535,119 @@ result2 =
 puts result2 # 35
 ```
 
-PS: The `Kind.of.Optional` is available to check if some value is a `Kind::Optional`.
+**Note:** The `Kind.of.Optional` is available to check if some value is a `Kind::Optional`.
+
+[⬆️ Back to Top](#table-of-contents-)
+
+### Kind.of.<Type>.as_optional
+
+It is very common the need to avoid some computing when a method receives a wrong input.
+In these scenarios, you could check the given input type as optional and avoid unexpected behavior. e.g:
+
+```ruby
+def person_name(params)
+  Kind::Of::Hash.as_optional(params)
+                .map { |data| data if data.values_at(:first_name, :last_name).compact.size == 2 }
+                .map { |data| "#{data[:first_name]} #{data[:last_name]}" }
+                .value_or { 'John Doe' }
+end
+
+person_name('')   # "John Doe"
+person_name(nil)  # "John Doe"
+
+person_name(first_name: 'Rodrigo')   # "John Doe"
+person_name(last_name: 'Serradura')  # "John Doe"
+
+person_name(first_name: 'Rodrigo', last_name: 'Serradura') # "Rodrigo Serradura"
+
+#
+# See below the previous implementation without using an optional.
+#
+def person_name(params)
+  if params.is_a?(Hash) && params.values_at(:first_name, :last_name).compact.size == 2
+    "#{params[:first_name]} #{params[:last_name]}"
+  else
+    'John Doe'
+  end
+end
+```
+
+> Note: You could use the `.as_optional` method (or it alias `as_maybe`) with any [type checker](https://github.com/serradura/kind/blob/b177fed9cc2b3347d63963a2a2fd99f989c51a9a/README.md#type-checkers).
+
+Let's see another example using a collection and how the method `.as_optional` works when it receives no argument.
+
+```ruby
+collection = [
+  {number: 1},
+  'number 0',
+  {number: 2},
+  [0],
+]
+
+collection
+  .select(&Kind.of.Hash.as_optional)
+  .reduce(0) do |total, item|
+    item.try { |data| data[:number] + total } || total
+  end
+
+collection
+  .map(&Kind.of.Hash.as_optional).select(&:some?)
+  .reduce(0) { |total, item| total + item.value[:number] }
+
+# Note: All the examples above return 3 as the sum of all hashes with numbers.
+```
+
+To finish follows an example of how to use optionals to handle arguments in coupled methods.
+
+```ruby
+module PersonIntroduction
+  extend self
+
+  def call(params)
+    optional_params = Kind::Of::Hash.as_optional(params)
+
+    "Hi my name is #{full_name(optional_params)}, I'm #{age(optional_params)} years old."
+  end
+
+  private
+
+    def full_name(optional)
+      optional.map { |data| "#{data[:first_name]} #{data[:last_name]}" }
+              .value_or { 'John Doe' }
+    end
+
+    def age(optional)
+      optional.map { |data| data[:age] }.value_or(0)
+    end
+end
+
+#
+# See below the previous implementation without using an optional.
+#
+module PersonIntroduction
+  extend self
+
+  def call(params)
+    "Hi my name is #{full_name(params)}, I'm #{age(params)}"
+  end
+
+  private
+
+    def full_name(params)
+      case params
+      when Hash then "#{params[:first_name]} #{params[:last_name]}"
+      else 'John Doe'
+      end
+    end
+
+    def age(params)
+      case params
+      when Hash then params.fetch(:age, 0)
+      else 0
+      end
+    end
+end
+```
 
 [⬆️ Back to Top](#table-of-contents-)
 
@@ -565,6 +698,10 @@ Follows the list of constants, if the alias is available to be created:
 
 [⬆️ Back to Top](#table-of-contents-)
 
+## Similar Projects
+
+- [dry-types](https://dry-rb.org/gems/dry-types)
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake test` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
@@ -574,7 +711,6 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/serradura/kind. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/serradura/kind/blob/master/CODE_OF_CONDUCT.md).
-
 
 ## License
 
