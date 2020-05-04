@@ -35,7 +35,7 @@ One of the goals of this project is to do simple type checking like `"some strin
   - [Kind::Maybe#try](#kindmaybetry)
   - [Kind.of.Maybe()](#kindofmaybe)
   - [Kind::Optional](#kindoptional)
-  - [Kind.of.<Type>.as_optional](#kindoftypeas_optional)
+  - [Kind.of.\<Type\>.as_optional](#kindoftypeas_optional)
 - [Kind::Empty](#kindempty)
 - [Similar Projects](#similar-projects)
 - [Development](#development)
@@ -548,7 +548,7 @@ puts result2 # 35
 
 [⬆️ Back to Top](#table-of-contents-)
 
-### Kind.of.<Type>.as_optional
+### Kind.of.\<Type\>.as_optional
 
 It is very common the need to avoid some computing when a method receives a wrong input.
 In these scenarios, you could check the given input type as optional and avoid unexpected behavior. e.g:
