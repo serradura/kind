@@ -11,15 +11,26 @@ module Kind
 
       return Kind::Of.(__kind, value) if ::Kind::Maybe::Value.none?(default)
 
-      instance?(value) ? value : Kind::Of.(__kind, default)
+      value != Kind::Undefined && instance?(value) ? value : Kind::Of.(__kind, default)
     end
 
     def [](value, options = options = Empty::HASH)
       instance(value, options)
     end
 
-    def instance?(value)
+    def instance?(value = Kind::Undefined)
+      return __is_instance__(value) if value != Kind::Undefined
+
+      is_instance_to_proc
+    end
+
+    def __is_instance__(value)
       value.is_a?(__kind)
+    end
+
+    def is_instance_to_proc
+      @is_instance_to_proc ||=
+        -> checker { -> value { checker.__is_instance__(value) } }.call(self)
     end
 
     def or_nil(value)

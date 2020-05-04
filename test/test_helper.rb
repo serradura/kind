@@ -127,10 +127,20 @@ class Minitest::Test
         kind_checker.instance?(invalid_instance)
       end)
 
+      assert_equal(
+        0,
+        invalid_instances.select(&kind_checker.instance?).size
+      )
+
       assert(valid_instances.all? do |valid_instance|
         # Kind.of.String.instance?(:a) == false
         kind_checker.instance?(valid_instance)
       end)
+
+      assert_equal(
+        valid_instances.size,
+        valid_instances.select(&kind_checker.instance?).size
+      )
 
       #
       # Kind.of.<Type>.or_nil()
