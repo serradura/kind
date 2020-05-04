@@ -87,10 +87,10 @@ module Kind
 
       alias_method :then, :map
 
-      def try(method_name = Undefined, &block)
+      def try(method_name = Undefined, *args, &block)
         fn = method_name == Undefined ? block : Kind.of.Symbol(method_name).to_proc
 
-        result = fn.call(value)
+        result = args.empty? ? fn.call(value) : fn.call(*args.unshift(value))
 
         return result if Maybe::Value.some?(result)
       end
