@@ -222,6 +222,15 @@ kind_of_user.instance?(User) # true
 kind_of_user.class?(Hash)  # false
 kind_of_user.class?(User)  # true
 
+# ------------------------------------ #
+# Using methods which returns a lambda #
+# ------------------------------------ #
+collection = [User.new, User.new, 0, {} nil, User.new]
+
+collection.select(&Kind.of(User).instance?).size == 3 # true
+
+collection.map(&Kind.of(User).as_optional).select(&:some?).size == 3 # true
+
 # Creating type checkers dynamically is cheap
 # because a singleton object is created to be available for use.
 
