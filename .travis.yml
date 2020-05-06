@@ -1,6 +1,8 @@
 ---
 language: ruby
 
+sudo: false
+
 cache: bundler
 
 rvm:
@@ -22,7 +24,7 @@ before_script:
   - chmod +x ./cc-test-reporter
   - "./cc-test-reporter before-build"
 
-script: bundle exec rake test
+script: "./.travis.sh"
 
 after_success:
   - "./cc-test-reporter after-build -t simplecov"
