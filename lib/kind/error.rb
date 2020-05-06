@@ -2,8 +2,18 @@
 
 module Kind
   class Error < TypeError
-    def initialize(kind_name, object)
-      super("#{object.inspect} expected to be a kind of #{kind_name}")
+    UNDEFINED_OBJECT = Object.new
+
+    private_constant :UNDEFINED_OBJECT
+
+    def initialize(arg, object = UNDEFINED_OBJECT)
+      if object == UNDEFINED_OBJECT
+        # Will be used when the exception was raised with a message. e.g:
+        # raise Kind::Error, "some message"
+        super(arg)
+      else
+        super("#{object.inspect} expected to be a kind of #{arg}")
+      end
     end
   end
 end

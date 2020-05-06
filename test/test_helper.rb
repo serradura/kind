@@ -1,14 +1,30 @@
 require 'simplecov'
 
 SimpleCov.start do
-  add_filter "/test/"
+  add_filter '/test/'
+  add_filter '/lib/kind/active_model/validation.rb'
 end
 
-$LOAD_PATH.unshift File.expand_path("../lib", __dir__)
-require "kind"
+$LOAD_PATH.unshift File.expand_path('../lib', __dir__)
 
-require "minitest/pride"
-require "minitest/autorun"
+require 'kind'
+
+ENV.fetch('ACTIVEMODEL_VERSION', '6.1.0').tap do |active_model_version|
+  if active_model_version < '6.1.0'
+    require 'kind/active_model/validation'
+
+    if active_model_version < '4.1'
+      require 'minitest/unit'
+
+      module Minitest
+        Test = MiniTest::Unit::TestCase
+      end
+    end
+  end
+end
+
+require 'minitest/pride'
+require 'minitest/autorun'
 
 class Minitest::Test
   def assert_raises_with_message(exception, msg, &block)
@@ -88,6 +104,14 @@ class Minitest::Test
       kind_checker_from_method,
       kind_checker_from_constant
     ].each do |kind_checker|
+      #
+      # Kind.of.<Type>.to_proc()
+      #
+      assert_equal(
+        valid_instances.size,
+        (valid_instances + invalid_instances).select(&kind_checker).size
+      )
+
       #
       # Kind.of.<Type>.instance()
       #
