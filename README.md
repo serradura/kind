@@ -668,7 +668,7 @@ end
 
 ## Kind::Validator (ActiveModel::Validations)
 
-This module enables the capability to validate types via [active model validations](https://api.rubyonrails.org/classes/ActiveModel/Validations.html). e.g
+This module enables the capability to validate types via [`ActiveModel::Validations >= 3.2, < 6.1.0`](https://api.rubyonrails.org/classes/ActiveModel/Validations.html). e.g
 
 ```ruby
 class Person
