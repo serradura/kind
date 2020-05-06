@@ -41,6 +41,8 @@ class Kind::OfTest < Minitest::Test
 
     kind_of_bar = Kind.of(Bar)
 
+    assert_equal(@bar, [@bar, @foo_bar].select(&kind_of_bar).first)
+
     assert_raises_kind_error(given: 'nil', expected: 'Bar') { kind_of_bar.instance(nil) }
     assert_raises_kind_error(given: 'Kind::Undefined', expected: 'Bar') { kind_of_bar.instance(Kind::Undefined) }
     assert_raises_kind_error(given: ':a', expected: 'Bar') { kind_of_bar.instance(:a) }
@@ -75,6 +77,8 @@ class Kind::OfTest < Minitest::Test
     # ---
 
     kind_of_foo_bar = Kind.of(Foo::Bar)
+
+    assert_equal(@foo_bar, [@bar, @foo_bar].select(&kind_of_foo_bar).first)
 
     assert_raises_kind_error(given: 'nil', expected: 'Foo::Bar') { kind_of_foo_bar.instance(nil) }
     assert_raises_kind_error(given: 'Kind::Undefined', expected: 'Foo::Bar') { kind_of_foo_bar.instance(Kind::Undefined) }
