@@ -21,15 +21,15 @@ module Kind
     def instance?(value = Kind::Undefined)
       return __is_instance__(value) if value != Kind::Undefined
 
-      is_instance_to_proc
+      to_proc
     end
 
     def __is_instance__(value)
       value.is_a?(__kind)
     end
 
-    def is_instance_to_proc
-      @is_instance_to_proc ||=
+    def to_proc
+      @to_proc ||=
         -> checker { -> value { checker.__is_instance__(value) } }.call(self)
     end
 
