@@ -105,6 +105,14 @@ class Minitest::Test
       kind_checker_from_constant
     ].each do |kind_checker|
       #
+      # Kind.of.<Type>.to_proc()
+      #
+      assert_equal(
+        valid_instances.size,
+        (valid_instances + invalid_instances).select(&kind_checker).size
+      )
+
+      #
       # Kind.of.<Type>.instance()
       #
       # Kind.of.String.instance(nil) # raise Kind::Error, "nil expected to be a kind of String"
