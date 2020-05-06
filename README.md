@@ -6,13 +6,13 @@
 
 # Kind <!-- omit in toc -->
 
-Basic type system for Ruby.
+A simple type system (at runtime) for Ruby - free of dependencies.
 
 **Motivation:**
 
 As a creator of Ruby gems, I have a common need that I have to handle in many of my projects: type checking of method arguments.
 
-One of the goals of this project is to do simple type checking like `"some string".is_a?(String)`, but, exposing useful abstractions to do it.
+One of the goals of this project is to do simple type checking like `"some string".is_a?(String)`, but, exposing useful abstractions to do it. e.g: [Kind.of.\<Type\> methods](#verifying-the-kind-of-some-object), [active model validations](#kindvalidator-activemodelvalidations), [maybe monad](#kindmaybe).
 
 ## Table of Contents <!-- omit in toc -->
 - [Required Ruby version](#required-ruby-version)
@@ -36,6 +36,10 @@ One of the goals of this project is to do simple type checking like `"some strin
   - [Kind.of.Maybe()](#kindofmaybe)
   - [Kind::Optional](#kindoptional)
   - [Kind.of.\<Type\>.as_optional](#kindoftypeas_optional)
+- [Kind::Validator (ActiveModel::Validations)](#kindvalidator-activemodelvalidations)
+  - [Usage](#usage-1)
+    - [Defining the default validation strategy](#defining-the-default-validation-strategy)
+    - [Using the `allow_nil` and `strict` options](#using-the-allow_nil-and-strict-options)
 - [Kind::Empty](#kindempty)
 - [Similar Projects](#similar-projects)
 - [Development](#development)
@@ -94,6 +98,17 @@ Kind.of.Boolean(true)  # true
 Kind.of.Boolean(false) # false
 ```
 
+> **Note:** `Kind.of.<Type>` supports the to_proc protocol.
+> But it won't perform a strict validation, instead, it will return true
+> when the value has the desired kind and false if it hasn't.
+
+```ruby
+collection = [ {number: 1}, 'number 2', {number: 3}, :number_4 ]
+
+collection
+  .select(&Kind.of.Hash) # [{number: 1}, {number: 3}]
+```
+
 When the verified value is nil, it is possible to define a default value with the same type to be returned.
 
 ```ruby
@@ -106,7 +121,7 @@ Kind.of.Hash(value, or: {})    # {}
 Kind.of.Boolean(nil, or: true) # true
 ```
 
-As an alternative syntax, you can use the `Kind::Of` instead of the `Kind.of` method. e.g: `Kind::Of::Hash('')`
+> **Note:** As an alternative syntax, you can use the `Kind::Of` instead of the `Kind.of` method. e.g: `Kind::Of::Hash('')`
 
 But if you don't need a strict type verification, use the `.or_nil` method.
 
@@ -133,19 +148,15 @@ Kind.of.Boolean.instance?(true)  # true
 Kind.of.Boolean.instance?(false) # true
 ```
 
-**Note:** When `.instance?` is called without an argument, it will return a lambda which will perform the kind verification.
+> **Note:** When `.instance?` is called without an argument,
+> it will return a lambda which will perform the kind verification.
 
 ```ruby
-collection = [
-  {number: 1},
-  'number 0',
-  {number: 2},
-  [0],
-]
+collection = [ {number: 1}, 'number 2', {number: 3}, :number_4 ]
 
 collection
   .select(&Kind.of.Hash.instance?)
-  .reduce(0) { |total, item| total + item.fetch(:number, 0) } # 3
+  .reduce(0) { |total, item| total + item.fetch(:number, 0) } # 4
 ```
 
 Also, there are aliases to perform the strict type verification. e.g:
@@ -573,7 +584,7 @@ person_name(first_name: 'Rodrigo', last_name: 'Serradura') # "Rodrigo Serradura"
 # See below the previous implementation without using an optional.
 #
 def person_name(params)
-  if params.is_a?(Hash) && params.values_at(:first_name, :last_name).compact.size == 2
+  if params.kind_of?(Hash) && params.values_at(:first_name, :last_name).compact.size == 2
     "#{params[:first_name]} #{params[:last_name]}"
   else
     'John Doe'
@@ -586,12 +597,7 @@ end
 Let's see another example using a collection and how the method `.as_optional` works when it receives no argument.
 
 ```ruby
-collection = [
-  {number: 1},
-  'number 0',
-  {number: 2},
-  [0],
-]
+collection = [ {number: 1}, 'number 0', {number: 2}, [0] ]
 
 collection
   .select(&Kind.of.Hash.as_optional)
@@ -613,9 +619,9 @@ module PersonIntroduction
   extend self
 
   def call(params)
-    optional_params = Kind::Of::Hash.as_optional(params)
+    optional = Kind::Of::Hash.as_optional(params)
 
-    "Hi my name is #{full_name(optional_params)}, I'm #{age(optional_params)} years old."
+    "Hi my name is #{full_name(optional)}, I'm #{age(optional)} years old."
   end
 
   private
@@ -637,7 +643,7 @@ module PersonIntroduction
   extend self
 
   def call(params)
-    "Hi my name is #{full_name(params)}, I'm #{age(params)}"
+    "Hi my name is #{full_name(params)}, I'm #{age(params)} years old."
   end
 
   private
@@ -656,6 +662,139 @@ module PersonIntroduction
       end
     end
 end
+```
+
+[⬆️ Back to Top](#table-of-contents-)
+
+## Kind::Validator (ActiveModel::Validations)
+
+This module enables the capability to validate types via [active model validations](https://api.rubyonrails.org/classes/ActiveModel/Validations.html). e.g
+
+```ruby
+class Person
+  include ActiveModel::Validations
+
+  attr_accessor :first_name, :last_name
+
+  validates :first_name, :last_name, kind: String
+end
+```
+
+And to make use of it, you will need to do an explicitly require. e.g:
+
+```ruby
+# In some Gemfile
+gem 'kind', require: 'kind/active_model/validation'
+
+# In some .rb file
+require 'kind/active_model/validation'
+```
+
+### Usage
+
+**[Object#kind_of?](https://ruby-doc.org/core-2.6.4/Object.html#method-i-kind_of-3F)**
+
+```ruby
+validates :name, kind: { of: String }
+# or
+validates :name, kind: { is_a: String }
+
+# Use an array to verify if the attribute
+# is an instance of one of the classes/modules.
+
+validates :status, kind: { of: [String, Symbol]}
+# or
+validates :status, kind: { is_a: [String, Symbol]}
+```
+
+**[Object#instance_of?](https://ruby-doc.org/core-2.6.4/Object.html#method-i-instance_of-3F)**
+
+```ruby
+validates :name, kind: { instance_of: String }
+
+# or use an array to verify if the attribute
+# is an instance of one of the classes/modules.
+
+validates :name, kind: { instance_of: [String, Symbol] }
+```
+
+
+**[Object#respond_to?](https://ruby-doc.org/core-2.6.4/Object.html#method-i-respond_to-3F)**
+
+```ruby
+validates :handler, kind: { respond_to: :call }
+```
+
+**Class == Class || Class < Class**
+
+```ruby
+# Verifies if the attribute value is the class or a subclass.
+
+validates :handler, kind: { klass: Handler }
+
+# or use the :is option
+
+validates :handler, kind: { is: Handler }
+```
+
+**Array.new.all? { |item| item.kind_of?(Class) }**
+
+```ruby
+validates :account_types, kind: { array_of: String }
+
+# or use an array to verify if the attribute
+# is an instance of one of the classes
+
+validates :account_types, kind: { array_of: [String, Symbol] }
+```
+
+**Array.new.all? { |item| expected_values.include?(item) }**
+
+```ruby
+# Verifies if the attribute value
+# is an array with some or all the expected values.
+
+validates :account_types, kind: { array_with: ['foo', 'bar'] }
+```
+
+#### Defining the default validation strategy
+
+By default, you can define the attribute type directly (without a hash). e.g.
+
+```ruby
+validates :name, kind: String
+# or
+validates :name, kind: [String, Symbol]
+```
+
+To changes this behavior you can set another strategy to validates the attributes types:
+
+```ruby
+Kind::Validator.default_strategy = :instance_of
+
+# Tip: Create an initializer if you are in a Rails application.
+```
+
+And these are the available options to define the default strategy:
+-  `is_a`
+-  `kind_of` *(default)*
+-  `instance_of`
+
+#### Using the `allow_nil` and `strict` options
+
+You can use the `allow_nil` option with any of the kind validations. e.g.
+
+```ruby
+validates :name, kind: String, allow_nil: true
+```
+
+And as any active model validation, kind validations works with the `strict: true`
+option and with the `validates!` method. e.g.
+
+```ruby
+validates :first_name, kind: String, strict: true
+# or
+validates! :last_name, kind: String
 ```
 
 [⬆️ Back to Top](#table-of-contents-)
