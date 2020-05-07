@@ -6,6 +6,24 @@ class Kind::IsTest < Minitest::Test
     assert Kind::Is.call(String, Class.new(String))
 
     assert_raises_kind_error(given: '""', expected: 'Module') { Kind::Is.('', String) }
+
+    # ---
+
+    assert Kind::Is.call(KindIsTest::Human1, KindIsTest::Human1)
+    assert Kind::Is.call(KindIsTest::Human1, KindIsTest::Person1)
+    assert Kind::Is.call(KindIsTest::Human1, KindIsTest::User1)
+
+    # ---
+
+    assert Kind::Is.call(KindIsTest::Human2, KindIsTest::Human2)
+    assert Kind::Is.call(KindIsTest::Human2, KindIsTest::Person2)
+    assert Kind::Is.call(KindIsTest::Human2, KindIsTest::User2)
+
+    # ---
+
+    assert Kind::Is.call(KindIsTest::Human3, KindIsTest::Human3)
+    assert Kind::Is.call(KindIsTest::Human3, KindIsTest::Person3)
+    assert Kind::Is.call(KindIsTest::Human3, KindIsTest::User3)
   end
 
   def test_the_kind_is_method
@@ -22,5 +40,23 @@ class Kind::IsTest < Minitest::Test
       ArgumentError,
       'wrong number of arguments (given 1, expected 2)'
     ) { Kind.is(String) }
+
+    # ---
+
+    assert Kind.is(KindIsTest::Human1, KindIsTest::Human1)
+    assert Kind.is(KindIsTest::Human1, KindIsTest::Person1)
+    assert Kind.is(KindIsTest::Human1, KindIsTest::User1)
+
+    # --
+
+    assert Kind.is(KindIsTest::Human2, KindIsTest::Human2)
+    assert Kind.is(KindIsTest::Human2, KindIsTest::Person2)
+    assert Kind.is(KindIsTest::Human2, KindIsTest::User2)
+
+    # --
+
+    assert Kind.is(KindIsTest::Human3, KindIsTest::Human3)
+    assert Kind.is(KindIsTest::Human3, KindIsTest::Person3)
+    assert Kind.is(KindIsTest::Human3, KindIsTest::User3)
   end
 end

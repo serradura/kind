@@ -2,10 +2,10 @@
 
 module Kind
   module Validator
-    DEFAULT_STRATEGIES = Set.new(%w[instance_of kind_of is_a]).freeze
+    DEFAULT_STRATEGIES = Set.new(%w[instance_of kind_of]).freeze
 
     class InvalidDefinition < ArgumentError
-      OPTIONS = 'Options to define one: :of, :instance_of, :respond_to, :klass, :array_of or :array_with'.freeze
+      OPTIONS = 'Options to define one: :of, :is, :respond_to, :instance_of, :array_of or :array_with'.freeze
 
       def initialize(attribute)
         super "invalid type definition for :#{attribute} attribute. #{OPTIONS}"

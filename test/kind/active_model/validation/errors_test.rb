@@ -29,7 +29,7 @@ if ENV['ACTIVEMODEL_VERSION']
     def test_the_exception_raised_because_of_the_wrong_definition
       expected_message = [
         'invalid type definition for :name attribute.',
-        'Options to define one: :of, :instance_of, :respond_to, :klass, :array_of or :array_with'
+        'Options to define one: :of, :is, :respond_to, :instance_of, :array_of or :array_with'
       ].join(' ')
 
       [
@@ -46,7 +46,7 @@ if ENV['ACTIVEMODEL_VERSION']
     def test_the_exception_raised_because_of_a_wrong_default
       expected_message = [
         'invalid type definition for :name attribute.',
-        'Options to define one: :of, :instance_of, :respond_to, :klass, :array_of or :array_with'
+        'Options to define one: :of, :is, :respond_to, :instance_of, :array_of or :array_with'
       ].join(' ')
 
       [
