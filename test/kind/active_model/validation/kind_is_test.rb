@@ -6,7 +6,7 @@ if ENV['ACTIVEMODEL_VERSION']
       klass.new.tap { |instance| options.each { |k, v| instance.public_send("#{k}=", v) } }
     end
 
-    def test_the_klass_validation
+    def test_the_kind_is_validation
       invalid_instance1 = build_instance(KindIsTest::Class1, human_kind: String)
 
       refute_predicate(invalid_instance1, :valid?)
@@ -101,19 +101,55 @@ if ENV['ACTIVEMODEL_VERSION']
 
     # ---
 
+    Bar = Class.new
+    Bara = Class.new(Bar)
+    Barb = Class.new(Bar)
+
+    class BarModel
+      include ActiveModel::Validations
+      attr_accessor :bar
+      validates :bar, kind: { is: [Bara, Barb] }, allow_nil: true
+    end
+
+    def test_kind_is_with_multiple_kinds
+      assert_predicate(build_instance(BarModel, bar: nil), :valid?)
+      assert_predicate(build_instance(BarModel, bar: Bara), :valid?)
+      assert_predicate(build_instance(BarModel, bar: Barb), :valid?)
+
+      # --
+
+      bar_model1 = build_instance(BarModel, bar: String)
+
+      refute_predicate(bar_model1, :valid?)
+      assert_equal(
+        ['must be the class or a subclass of `KindActiveModelValidationKindIsTest::Bara`, must be the class or a subclass of `KindActiveModelValidationKindIsTest::Barb`'],
+        bar_model1.errors[:bar]
+      )
+
+      bar_model2 = build_instance(BarModel, bar: Bar)
+
+      refute_predicate(bar_model2, :valid?)
+      assert_equal(
+        ['must be the class or a subclass of `KindActiveModelValidationKindIsTest::Bara`, must be the class or a subclass of `KindActiveModelValidationKindIsTest::Barb`'],
+        bar_model2.errors[:bar]
+      )
+    end
+
+    # ---
+
     class Foo
       include ActiveModel::Validations
-      attr_accessor :answer
-      validates! :answer, kind: { is: 42 }, allow_nil: true
+      attr_accessor :foo
+      validates! :foo, kind: { is: 42 }, allow_nil: true
     end
 
     def test_the_validation_argument_error
       assert_raises_kind_error("42 expected to be a kind of Class/Module") do
-        build_instance(Foo, answer: Array).valid?
+        build_instance(Foo, foo: Array).valid?
       end
 
       assert_raises_kind_error("42 expected to be a kind of Class/Module") do
-        build_instance(Foo, answer: []).valid?
+        build_instance(Foo, foo: []).valid?
       end
     end
   end
