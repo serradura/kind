@@ -55,7 +55,7 @@ module Kind
 
   module Is
     def self.Class(value)
-      value.is_a?(::Class)
+      value.kind_of?(::Class)
     end
 
     def self.Module(value)
@@ -63,12 +63,11 @@ module Kind
     end
 
     def self.Boolean(value)
-      klass = Kind.of.Class(value)
-      klass <= TrueClass || klass <= FalseClass
+      Kind.of.Class(value) <= TrueClass || value <= FalseClass
     end
 
     def self.Callable(value)
-      value.respond_to?(:call) || (value.is_a?(Module) && value.public_instance_methods.include?(:call))
+      value.respond_to?(:call)
     end
   end
 
@@ -102,7 +101,11 @@ module Kind
     const_set(:Module, ::Module.new do
       extend Checkable
 
-      def self.__kind; ::Module; end
+      def self.__kind_undefined(value)
+        __kind_error(Kind::Undefined) if value == Kind::Undefined
+
+        yield
+      end
 
       def self.__kind_error(value)
         raise Kind::Error.new('Module'.freeze, value)
@@ -114,11 +117,7 @@ module Kind
         __kind_error(value)
       end
 
-      def self.__kind_undefined(value)
-        __kind_error(Kind::Undefined) if value == Kind::Undefined
-
-        yield
-      end
+      def self.__kind; ::Module; end
 
       def self.class?(value); Kind::Is.Module(value); end
 
