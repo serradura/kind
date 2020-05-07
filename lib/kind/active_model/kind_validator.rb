@@ -18,8 +18,8 @@ class KindValidator < ActiveModel::EachValidator
 
       return validate_with_default_strategy(expected, value) if expected
 
-      return kind_of(expected, value) if expected = options[:of] || options[:is_a]
-      return is_class(expected, value) if expected = options[:is] || options[:klass]
+      return kind_of(expected, value) if expected = options[:of]
+      return kind_is(expected, value) if expected = options[:is]
       return respond_to(expected, value) if expected = options[:respond_to]
       return instance_of(expected, value) if expected = options[:instance_of]
       return array_with(expected, value) if expected = options[:array_with]
@@ -32,26 +32,30 @@ class KindValidator < ActiveModel::EachValidator
       send(Kind::Validator.default_strategy, expected, value)
     end
 
-    def instance_of(expected, value)
-      types = Array(expected)
-
-      return if types.any? { |type| value.instance_of?(type) }
-
-      "must be an instance of: #{types.map { |klass| klass.name }.join(', ')}"
-    end
-
     def kind_of(expected, value)
       types = Array(expected)
 
-      return if types.any? { |type| value.is_a?(type) }
+      return if types.any? { |type| value.kind_of?(type) }
 
       "must be a kind of: #{types.map { |klass| klass.name }.join(', ')}"
     end
 
-    def is_class(klass, value)
-      return if Kind.of.Class(value) == Kind.of.Class(klass) || value < klass
+    CLASS_OR_MODULE = 'Class/Module'.freeze
 
-      "must be the class or a subclass of `#{klass.name}`"
+    def kind_is(expected, value)
+      case expected
+      when Class
+        return if Kind.of.Class(value) == expected || value < expected
+
+        "must be the class or a subclass of `#{expected.name}`"
+      when Module
+        return if value.kind_of?(Class) && value <= expected
+        return if Kind.of.Module(value) == expected || value.kind_of?(expected)
+
+        "must include the `#{expected.name}` module"
+      else
+        raise Kind::Error.new(CLASS_OR_MODULE, expected)
+      end
     end
 
     def respond_to(method_name, value)
@@ -60,17 +64,25 @@ class KindValidator < ActiveModel::EachValidator
       "must respond to the method `#{method_name}`"
     end
 
-    def array_of(expected, value)
+    def instance_of(expected, value)
       types = Array(expected)
 
-      return if value.is_a?(Array) && !value.empty? && value.all? { |value| types.any? { |type| value.is_a?(type) } }
+      return if types.any? { |type| value.instance_of?(type) }
 
-      "must be an array of: #{types.map { |klass| klass.name }.join(', ')}"
+      "must be an instance of: #{types.map { |klass| klass.name }.join(', ')}"
     end
 
     def array_with(expected, value)
-      return if value.is_a?(Array) && !value.empty? && (value - Kind.of.Array(expected)).empty?
+      return if value.kind_of?(Array) && !value.empty? && (value - Kind.of.Array(expected)).empty?
 
       "must be an array with: #{expected.join(', ')}"
+    end
+
+    def array_of(expected, value)
+      types = Array(expected)
+
+      return if value.kind_of?(Array) && !value.empty? && value.all? { |value| types.any? { |type| value.kind_of?(type) } }
+
+      "must be an array of: #{types.map { |klass| klass.name }.join(', ')}"
     end
 end
