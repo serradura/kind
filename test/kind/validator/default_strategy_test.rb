@@ -79,7 +79,7 @@ if ENV['ACTIVEMODEL_VERSION']
     def test_the_invalid_default_strategy_error
       assert_raises_with_message(
         Kind::Validator::InvalidDefaultStrategy,
-        ':bar is an invalid option. Please use one of these: :instance_of, :kind_of, :is_a'
+        ':bar is an invalid option. Please use one of these: :instance_of, :kind_of'
       ) { Kind::Validator.default_strategy = :bar }
     end
   end
