@@ -195,6 +195,49 @@ Kind.of.Hash.class?(Hash) # true
 Kind.of.Hash.class?(ActiveSupport::HashWithIndifferentAccess) # true
 ```
 
+> **Note:** The `Kind.is` could check the inheritance of Classes/Modules.
+
+```ruby
+#
+# Verifying if the attribute value is the class or a subclass.
+#
+class Human; end
+class Person < Human; end
+class User < Human; end
+
+Kind.is(Human, User)   # true
+Kind.is(Human, Human)  # true
+Kind.is(Human, Person) # true
+
+Kind.is(Human, Struct) # false
+
+#
+# Verifying if the attribute value is the module or if it is a class that includes the module
+#
+module Human; end
+class Person; include Human; end
+class User; include Human; end
+
+Kind.is(Human, User)   # true
+Kind.is(Human, Human)  # true
+Kind.is(Human, Person) # true
+
+Kind.is(Human, Struct) # false
+
+#
+# Verifying if the attribute value is the module or if it is a module that extends the module
+#
+module Human; end
+module Person; extend Human; end
+module User; extend Human; end
+
+Kind.is(Human, User)   # true
+Kind.is(Human, Human)  # true
+Kind.is(Human, Person) # true
+
+Kind.is(Human, Struct) # false
+```
+
 [⬆️ Back to Top](#table-of-contents-)
 
 ### How to create a new type checker?
@@ -377,7 +420,7 @@ The list of types (classes and modules) available to use with `Kind.of.*` or `Ki
 - `Kind.of.Module()`
 - `Kind.of.Lambda()`
 - `Kind.of.Boolean()`
-- `Kind.of.Callable()`: verifies if the given value `respond_to?(:call)` or if it's a class/module and if its `public_instance_methods.include?(:call)`.
+- `Kind.of.Callable()`: verifies if the given value `respond_to?(:call)`.
 - `Kind.of.Maybe()` or its alias `Kind.of.Optional()`
 
 **Note:** Remember, you can use the `Kind.is.*` method to check if some given value is a class/module with all type checkers above.
@@ -696,15 +739,47 @@ require 'kind/active_model/validation'
 
 ```ruby
 validates :name, kind: { of: String }
-# or
-validates :name, kind: { is_a: String }
 
 # Use an array to verify if the attribute
 # is an instance of one of the classes/modules.
 
 validates :status, kind: { of: [String, Symbol]}
-# or
-validates :status, kind: { is_a: [String, Symbol]}
+```
+
+**[Kind.is](#verifying-the-kind-of-some-classmodule)**
+
+```ruby
+#
+# Verifying if the attribute value is the class or a subclass.
+#
+class Human; end
+class Person < Human; end
+class User < Human; end
+
+validates :human_kind, kind: { is: Human }
+
+#
+# Verifying if the attribute value is the module or if it is a class that includes the module
+#
+module Human; end
+class Person; include Human; end
+class User; include Human; end
+
+validates :human_kind, kind: { is: Human }
+
+#
+# Verifying if the attribute value is the module or if it is a module that extends the module
+#
+module Human; end
+module Person; extend Human; end
+module User; extend Human; end
+
+validates :human_kind, kind: { is: Human }
+
+# or use an array to verify if the attribute
+# is a kind of one those classes/modules.
+
+validates :human_kind, kind: { is: [Person, User] }
 ```
 
 **[Object#instance_of?](https://ruby-doc.org/core-2.6.4/Object.html#method-i-instance_of-3F)**
@@ -723,18 +798,6 @@ validates :name, kind: { instance_of: [String, Symbol] }
 
 ```ruby
 validates :handler, kind: { respond_to: :call }
-```
-
-**Class == Class || Class < Class**
-
-```ruby
-# Verifies if the attribute value is the class or a subclass.
-
-validates :handler, kind: { klass: Handler }
-
-# or use the :is option
-
-validates :handler, kind: { is: Handler }
 ```
 
 **Array.new.all? { |item| item.kind_of?(Class) }**
