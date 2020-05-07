@@ -136,8 +136,8 @@ class Kind::IsClassTest < Minitest::Test
   def test_if_a_value_is_callable
     klass = Class.new { def self.call; end }
 
-    assert_kind_is(:Callable, Proc, Method, klass)
+    assert_kind_is(:Callable, klass)
 
-    refute_kind_is(:Callable, Object, String)
+    refute_kind_is(:Callable, Object, String, Proc, Method)
   end
 end

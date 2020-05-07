@@ -335,8 +335,8 @@ class Kind::OfCheckersTest < Minitest::Test
         invalid: [instance]
       },
       class: {
-        valid: [Proc, Method],
-        invalid: [String]
+        valid: [klass],
+        invalid: [String, Method, Proc]
       }
     )
   end
