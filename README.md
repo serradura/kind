@@ -839,7 +839,6 @@ Kind::Validator.default_strategy = :instance_of
 ```
 
 And these are the available options to define the default strategy:
--  `is_a`
 -  `kind_of` *(default)*
 -  `instance_of`
 
