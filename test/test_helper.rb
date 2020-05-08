@@ -149,9 +149,12 @@ class Minitest::Test
       # Kind.of.<Type>.instance?()
       #
       refute(invalid_instances.any? do |invalid_instance|
-        # Kind.of.String.instance?('b') == true
+        # Kind.of.String.instance?(:b) == false
         kind_checker.instance?(invalid_instance)
       end)
+
+      # Kind.of.String.instance?(:a, :b) == false
+      refute(kind_checker.instance?(*invalid_instances))
 
       assert_equal(
         0,
@@ -159,9 +162,12 @@ class Minitest::Test
       )
 
       assert(valid_instances.all? do |valid_instance|
-        # Kind.of.String.instance?(:a) == false
+        # Kind.of.String.instance?('a') == true
         kind_checker.instance?(valid_instance)
       end)
+
+      # Kind.of.String.instance?('a', 'b')
+      assert(kind_checker.instance?(*valid_instances))
 
       assert_equal(
         valid_instances.size,
