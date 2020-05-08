@@ -81,7 +81,7 @@ class Minitest::Test
     assert_kind_checkers(
       kind_checker_from_method,
       kind_checker_from_constant,
-      options.merge(kind_name: kind_name)
+      options.merge(kind_name: kind_name, checker_name: checker_name)
     )
   end
 
@@ -101,6 +101,7 @@ class Minitest::Test
     invalid_class_or_mod = Array(class_or_mod_data.fetch(:invalid)) # [Symbol]
 
     kind_name = Kind.of.String(options.fetch(:kind_name)) # "String"
+    checker_name = options.fetch(:checker_name, kind_name)
 
     [
       kind_checker_from_method,
@@ -233,5 +234,48 @@ class Minitest::Test
     kind_checker_from_constant.stub(:instance, -> (obj, opt) { [obj, opt] }) do
       assert_equal([valid_instance1, {}], kind_checker_from_method[valid_instance1])
     end
+
+    # ---
+
+    #
+    # Kind.of.<Type>?
+    #
+    # Kind::Of if checker_name == 'String'
+    # Kind::Of::Account if checker_name == 'Account::User'
+    checker_name_parts = String(checker_name).split('::')
+    kind_of_scope =
+      checker_name_parts[0..-2].reduce(Kind::Of) do |kind_of, name|
+        kind_of.const_get(name, false)
+      end
+
+    # "String?" if checker_name == 'String'
+    # "User?" if checker_name == 'Account::User'
+    kind_of_is_instance = "#{checker_name_parts.last}?"
+
+    refute(invalid_instances.any? do |invalid_instance|
+      # Kind.of.String?(:b) == false
+      kind_of_scope.public_send(kind_of_is_instance, invalid_instance)
+    end)
+
+    # Kind.of.String?(:a, :b) == false
+    refute(kind_of_scope.public_send(kind_of_is_instance, *invalid_instances))
+
+    assert_equal(
+      0,
+      invalid_instances.select(&kind_of_scope.public_send(kind_of_is_instance)).size
+    )
+
+    assert(valid_instances.all? do |valid_instance|
+      # Kind.of.String?('a') == true
+      kind_of_scope.public_send(kind_of_is_instance, valid_instance)
+    end)
+
+    # Kind.of.String?('a', 'b')
+    assert(kind_of_scope.public_send(kind_of_is_instance, *valid_instances))
+
+    assert_equal(
+      valid_instances.size,
+      valid_instances.select(&kind_of_scope.public_send(kind_of_is_instance)).size
+    )
   end
 end

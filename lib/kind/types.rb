@@ -16,6 +16,12 @@ module Kind
       end
     RUBY
 
+    KIND_OF_IS = <<-RUBY
+      def self.%{method_name}?(*args)
+        Kind::Of::%{kind_name}.instance?(*args)
+      end
+    RUBY
+
     KIND_IS = <<-RUBY
       def self.%{method_name}(value = Undefined)
         return Kind::Is::%{kind_name} if value == Undefined
@@ -93,6 +99,7 @@ module Kind
 
           kind_of_mod.instance_eval(KIND_OF % params)
           kind_of_mod.const_set(method_name, kind_checker)
+          kind_of_mod.instance_eval(KIND_OF_IS % params)
         end
 
         unless kind_is_mod.respond_to?(method_name)
