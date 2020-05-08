@@ -18,10 +18,13 @@ module Kind
       instance(value, options)
     end
 
-    def instance?(value = Kind::Undefined)
-      return __is_instance__(value) if value != Kind::Undefined
+    def instance?(*args)
+      return to_proc if args.empty?
 
-      to_proc
+      return args.all? { |object| __is_instance__(object) } if args.size > 1
+
+      arg = args[0]
+      arg == Kind::Undefined ? to_proc : __is_instance__(arg)
     end
 
     def __is_instance__(value)
