@@ -215,4 +215,18 @@ class Kind::MaybeTest < Minitest::Test
 
     assert_equal(35, result2)
   end
+
+  def test_the_kind_none_method
+    [Kind.None, Kind::None].each do |kind_none|
+      assert_instance_of(Kind::Maybe::None, kind_none)
+
+      assert_nil(kind_none.value)
+    end
+
+    assert_same(Kind::None, Kind.None)
+
+    assert_raises_with_message(ArgumentError, 'wrong number of arguments (given 1, expected 0)') do
+      Kind::None(nil)
+    end
+  end
 end
