@@ -225,8 +225,37 @@ class Kind::MaybeTest < Minitest::Test
 
     assert_same(Kind::None, Kind.None)
 
+    # --
+
     assert_raises_with_message(ArgumentError, 'wrong number of arguments (given 1, expected 0)') do
       Kind::None(nil)
+    end
+  end
+
+  def test_the_kind_some_method
+    kind_some1 = Kind.Some(1)
+    kind_some2 = Kind::Some(1)
+
+    [kind_some1, kind_some2].each do |kind_some|
+      assert_instance_of(Kind::Maybe::Some, kind_some)
+
+      assert_equal(1, kind_some.value)
+    end
+
+    refute_same(kind_some1, kind_some2)
+
+    # --
+
+    assert_raises_with_message(ArgumentError, 'wrong number of arguments (given 0, expected 1)') do
+      Kind::Some()
+    end
+
+    # --
+
+    [nil, Kind::Undefined].each do |value|
+      assert_raises_with_message(Kind::Error, "value can't be nil or Kind::Undefined") do
+        Kind::Some(value)
+      end
     end
   end
 end
