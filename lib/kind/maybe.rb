@@ -16,7 +16,7 @@ module Kind
       attr_reader :value
 
       def initialize(value)
-        @value = value
+        @value = value.kind_of?(Result) ? value.value : value
       end
 
       def value_or(method_name = Undefined, &block)
@@ -79,6 +79,7 @@ module Kind
       def map(&fn)
         result = fn.call(@value)
 
+        return result if Maybe::None === result
         return NONE_WITH_NIL_VALUE if result == nil
         return NONE_WITH_UNDEFINED_VALUE if result == Undefined
 
@@ -98,7 +99,7 @@ module Kind
 
     def self.new(value)
       result_type = Maybe::Value.none?(value) ? None : Some
-      result_type.new(value.is_a?(Result) ? value.value : value)
+      result_type.new(value)
     end
 
     def self.[](value);
