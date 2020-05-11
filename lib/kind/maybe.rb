@@ -67,7 +67,7 @@ module Kind
     NONE_WITH_NIL_VALUE = None.new(nil)
     NONE_WITH_UNDEFINED_VALUE = None.new(Undefined)
 
-    private_constant :NONE_WITH_NIL_VALUE, :NONE_WITH_UNDEFINED_VALUE
+    private_constant :NONE_WITH_UNDEFINED_VALUE
 
     class Some < Result
       def value_or(default = Undefined, &block)
@@ -107,4 +107,10 @@ module Kind
   end
 
   Optional = Maybe
+
+  None = Maybe::NONE_WITH_NIL_VALUE
+
+  def self.None
+    Kind::None
+  end
 end
