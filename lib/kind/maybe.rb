@@ -67,7 +67,7 @@ module Kind
     NONE_WITH_NIL_VALUE = None.new(nil)
     NONE_WITH_UNDEFINED_VALUE = None.new(Undefined)
 
-    private_constant :NONE_WITH_UNDEFINED_VALUE
+    private_constant :NONE_WITH_NIL_VALUE, :NONE_WITH_UNDEFINED_VALUE
 
     class Some < Result
       def value_or(default = Undefined, &block)
@@ -104,13 +104,31 @@ module Kind
     def self.[](value);
       new(value)
     end
+
+    def self.none
+      NONE_WITH_NIL_VALUE
+    end
+
+    VALUE_CANT_BE_NONE = "value can't be nil or Kind::Undefined".freeze
+
+    private_constant :VALUE_CANT_BE_NONE
+
+    def self.some(value)
+      return Maybe::Some.new(value) if Value.some?(value)
+
+      raise Kind::Error, VALUE_CANT_BE_NONE
+    end
   end
 
   Optional = Maybe
 
-  None = Maybe::NONE_WITH_NIL_VALUE
+  None = Maybe.none
 
   def self.None
     Kind::None
+  end
+
+  def self.Some(value)
+    Maybe.some(value)
   end
 end
