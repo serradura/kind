@@ -258,4 +258,42 @@ class Kind::MaybeTest < Minitest::Test
       end
     end
   end
+
+  Add_A = -> params do
+    a, b = Kind.of.Hash(params, or: Empty::HASH).values_at(:a, :b)
+
+    a + b if Kind.of.Numeric?(a, b)
+  end
+
+  Add_B = -> params do
+    a, b = Kind.of.Hash(params, or: Empty::HASH).values_at(:a, :b)
+
+    return Kind::None unless Kind.of.Numeric.instance?(a, b)
+
+    Kind::Some(a + b)
+  end
+
+  Double_A = -> value {value * 2 if Kind.of.Numeric?(value) }
+
+  Double_B = -> value {Kind.of.Numeric?(value) ? Kind::Some(value * 2) : Kind::None }
+
+  def test_the_maybe_objects_in_a_chain_of_mappings
+    assert_equal(3, Kind::Maybe.new(a: 1, b: 2).then(&Add_A).value_or(0))
+    assert_equal(6, Kind::Maybe.new(a: 1, b: 2).then(&Add_A).then(&Double_B).value_or(0))
+
+    [ [], {}, nil ].each do |value|
+      assert_equal(0, Kind::Maybe.new(value).then(&Add_A).value_or(0))
+      assert_equal(0, Kind::Maybe.new(value).then(&Add_A).then(&Double_B).value_or(0))
+    end
+
+    # --
+
+    assert_equal(3, Kind::Maybe.new(a: 1, b: 2).then(&Add_B).value_or(0))
+    assert_equal(6, Kind::Maybe.new(a: 1, b: 2).then(&Add_B).then(&Double_A).value_or(0))
+
+    [ [], {}, nil ].each do |value|
+      assert_equal(0, Kind::Maybe.new(value).then(&Add_B).value_or(0))
+      assert_equal(0, Kind::Maybe.new(value).then(&Add_B).then(&Double_B).value_or(0))
+    end
+  end
 end

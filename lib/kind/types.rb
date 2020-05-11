@@ -12,7 +12,11 @@ module Kind
 
         return Kind::Of::%{kind_name} if object == Undefined && default.nil?
 
-        Kind::Of.(::%{kind_name_to_check}, (object || default))
+        is_instance = Kind::Of::%{kind_name}.__is_instance__(object)
+
+        return object if is_instance
+
+        Kind::Of.(::%{kind_name_to_check}, object && default ? default : object || default)
       end
     RUBY
 
