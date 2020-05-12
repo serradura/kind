@@ -738,7 +738,7 @@ you could use the methods `Kind::None` and `Kind::Some` to do this. e.g:
 Add = -> params do
   a, b = Kind.of.Hash(params, or: Empty::HASH).values_at(:a, :b)
 
-  return Kind::None unless Kind.of.Numeric.instance?(a, b)
+  return Kind::None unless Kind.of.Numeric?(a, b)
 
   Kind::Some(a + b)
 end
@@ -873,7 +873,7 @@ def person_name(params)
 end
 ```
 
-> Note: You could use the `.as_optional` method (or it alias `as_maybe`) with any [type checker](https://github.com/serradura/kind/blob/b177fed9cc2b3347d63963a2a2fd99f989c51a9a/README.md#type-checkers).
+> Note: You could use the `.as_optional` method (or it alias `.as_maybe`) with any [type checker](https://github.com/serradura/kind/blob/b177fed9cc2b3347d63963a2a2fd99f989c51a9a/README.md#type-checkers).
 
 Let's see another example using a collection and how the method `.as_optional` works when it receives no argument.
 
@@ -954,13 +954,13 @@ If you don't want to use a map to access the value, you could use the `#try` met
 ```ruby
 object = 'foo'
 
-p Kind::Maybe[object].try(:upcase) # "FOO"
+Kind::Maybe[object].try(:upcase) # "FOO"
 
-p Kind::Maybe[{}].try(:fetch, :number, 0) # 0
+Kind::Maybe[{}].try(:fetch, :number, 0) # 0
 
-p Kind::Maybe[{number: 1}].try(:fetch, :number) # 1
+Kind::Maybe[{number: 1}].try(:fetch, :number) # 1
 
-p Kind::Maybe[object].try { |value| value.upcase } # "FOO"
+Kind::Maybe[object].try { |value| value.upcase } # "FOO"
 
 #############
 # Nil value #
@@ -968,9 +968,9 @@ p Kind::Maybe[object].try { |value| value.upcase } # "FOO"
 
 object = nil
 
-p Kind::Maybe[object].try(:upcase) # nil
+Kind::Maybe[object].try(:upcase) # nil
 
-p Kind::Maybe[object].try { |value| value.upcase } # nil
+Kind::Maybe[object].try { |value| value.upcase } # nil
 
 #########################
 # Kind::Undefined value #
@@ -978,10 +978,12 @@ p Kind::Maybe[object].try { |value| value.upcase } # nil
 
 object = Kind::Undefined
 
-p Kind::Maybe[object].try(:upcase) # nil
+Kind::Maybe[object].try(:upcase) # nil
 
-p Kind::Maybe[object].try { |value| value.upcase } # nil
+Kind::Maybe[object].try { |value| value.upcase } # nil
 ```
+
+> **Note:** You can use the try method with the `Kind::Optional`.
 
 [⬆️ Back to Top](#table-of-contents-)
 
