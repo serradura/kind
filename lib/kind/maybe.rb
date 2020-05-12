@@ -117,7 +117,7 @@ module Kind
     def self.some(value)
       return Maybe::Some.new(value) if Value.some?(value)
 
-      raise Kind::Error, VALUE_CANT_BE_NONE
+      raise ArgumentError, VALUE_CANT_BE_NONE
     end
   end
 
