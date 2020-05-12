@@ -253,7 +253,7 @@ class Kind::MaybeTest < Minitest::Test
     # --
 
     [nil, Kind::Undefined].each do |value|
-      assert_raises_with_message(Kind::Error, "value can't be nil or Kind::Undefined") do
+      assert_raises_with_message(ArgumentError, "value can't be nil or Kind::Undefined") do
         Kind::Some(value)
       end
     end
