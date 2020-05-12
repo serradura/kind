@@ -112,8 +112,12 @@ class Minitest::Test
       #
       assert_equal(
         valid_instances.size,
-        (valid_instances + invalid_instances).select(&kind_checker).size
+        valid_instances.map(&kind_checker).size
       )
+
+      assert_raises_kind_error(given: invalid_instances[0].inspect, expected: kind_name) do
+        (valid_instances + invalid_instances).select(&kind_checker)
+      end
 
       #
       # Kind.of.<Type>.instance()
