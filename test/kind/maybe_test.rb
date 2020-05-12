@@ -56,6 +56,10 @@ class Kind::MaybeTest < Minitest::Test
   end
 
   def test_maybe_value_or_default
+    assert_nil(Kind::Maybe[nil].value_or(nil))
+
+    # ---
+
     optional1 = Kind::Maybe.new(2)
 
     assert_equal(2, optional1.value_or(0))
@@ -214,5 +218,86 @@ class Kind::MaybeTest < Minitest::Test
         .value_or { 0 }
 
     assert_equal(35, result2)
+  end
+
+  def test_the_kind_none_method
+    [Kind.None, Kind::None].each do |kind_none|
+      assert_instance_of(Kind::Maybe::None, kind_none)
+
+      assert_nil(kind_none.value)
+    end
+
+    assert_same(Kind::None, Kind.None)
+
+    # --
+
+    assert_raises_with_message(ArgumentError, 'wrong number of arguments (given 1, expected 0)') do
+      Kind::None(nil)
+    end
+  end
+
+  def test_the_kind_some_method
+    kind_some1 = Kind.Some(1)
+    kind_some2 = Kind::Some(1)
+
+    [kind_some1, kind_some2].each do |kind_some|
+      assert_instance_of(Kind::Maybe::Some, kind_some)
+
+      assert_equal(1, kind_some.value)
+    end
+
+    refute_same(kind_some1, kind_some2)
+
+    # --
+
+    assert_raises_with_message(ArgumentError, 'wrong number of arguments (given 0, expected 1)') do
+      Kind::Some()
+    end
+
+    # --
+
+    [nil, Kind::Undefined].each do |value|
+      assert_raises_with_message(ArgumentError, "value can't be nil or Kind::Undefined") do
+        Kind::Some(value)
+      end
+    end
+  end
+
+  Add_A = -> params do
+    a, b = Kind.of.Hash(params, or: Empty::HASH).values_at(:a, :b)
+
+    a + b if Kind.of.Numeric?(a, b)
+  end
+
+  Add_B = -> params do
+    a, b = Kind.of.Hash(params, or: Empty::HASH).values_at(:a, :b)
+
+    return Kind::None unless Kind.of.Numeric.instance?(a, b)
+
+    Kind::Some(a + b)
+  end
+
+  Double_A = -> value {value * 2 if Kind.of.Numeric?(value) }
+
+  Double_B = -> value {Kind.of.Numeric?(value) ? Kind::Some(value * 2) : Kind::None }
+
+  def test_the_maybe_objects_in_a_chain_of_mappings
+    assert_equal(3, Kind::Maybe.new(a: 1, b: 2).then(&Add_A).value_or(0))
+    assert_equal(6, Kind::Maybe.new(a: 1, b: 2).then(&Add_A).then(&Double_B).value_or(0))
+
+    [ [], {}, nil ].each do |value|
+      assert_equal(0, Kind::Maybe.new(value).then(&Add_A).value_or(0))
+      assert_equal(0, Kind::Maybe.new(value).then(&Add_A).then(&Double_B).value_or(0))
+    end
+
+    # --
+
+    assert_equal(3, Kind::Maybe.new(a: 1, b: 2).then(&Add_B).value_or(0))
+    assert_equal(6, Kind::Maybe.new(a: 1, b: 2).then(&Add_B).then(&Double_A).value_or(0))
+
+    [ [], {}, nil ].each do |value|
+      assert_equal(0, Kind::Maybe.new(value).then(&Add_B).value_or(0))
+      assert_equal(0, Kind::Maybe.new(value).then(&Add_B).then(&Double_B).value_or(0))
+    end
   end
 end

@@ -16,7 +16,7 @@ module Kind
       attr_reader :value
 
       def initialize(value)
-        @value = value
+        @value = value.kind_of?(Result) ? value.value : value
       end
 
       def value_or(method_name = Undefined, &block)
@@ -44,7 +44,7 @@ module Kind
       def value_or(default = Undefined, &block)
         raise ArgumentError, INVALID_DEFAULT_ARG if default == Undefined && !block
 
-        Maybe::Value.some?(default) ? default : block.call
+        default != Undefined ? default : block.call
       end
 
       def none?; true; end
@@ -79,6 +79,7 @@ module Kind
       def map(&fn)
         result = fn.call(@value)
 
+        return result if Maybe::None === result
         return NONE_WITH_NIL_VALUE if result == nil
         return NONE_WITH_UNDEFINED_VALUE if result == Undefined
 
@@ -98,13 +99,37 @@ module Kind
 
     def self.new(value)
       result_type = Maybe::Value.none?(value) ? None : Some
-      result_type.new(value.is_a?(Result) ? value.value : value)
+      result_type.new(value)
     end
 
     def self.[](value);
       new(value)
     end
+
+    def self.none
+      NONE_WITH_NIL_VALUE
+    end
+
+    VALUE_CANT_BE_NONE = "value can't be nil or Kind::Undefined".freeze
+
+    private_constant :VALUE_CANT_BE_NONE
+
+    def self.some(value)
+      return Maybe::Some.new(value) if Value.some?(value)
+
+      raise ArgumentError, VALUE_CANT_BE_NONE
+    end
   end
 
   Optional = Maybe
+
+  None = Maybe.none
+
+  def self.None
+    Kind::None
+  end
+
+  def self.Some(value)
+    Maybe.some(value)
+  end
 end

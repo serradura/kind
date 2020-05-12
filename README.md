@@ -18,11 +18,14 @@ One of the goals of this project is to do simple type checking like `"some strin
 - [Required Ruby version](#required-ruby-version)
 - [Installation](#installation)
 - [Usage](#usage)
-  - [Verifying the kind of some object](#verifying-the-kind-of-some-object)
-  - [Verifying the kind of some class/module](#verifying-the-kind-of-some-classmodule)
+  - [Kind.of.\<Type\>() - Verifying the kind of some object](#kindoftype---verifying-the-kind-of-some-object)
+    - [Method aliases to perform a strict validation](#method-aliases-to-perform-a-strict-validation)
+  - [Kind.of.\<Type\>.or_nil()](#kindoftypeor_nil)
+  - [Kind.of.\<Type\>.instance?()](#kindoftypeinstance)
+  - [Kind.is.\<Type\>() - Verifying if some class/module is the expected kind.](#kindistype---verifying-if-some-classmodule-is-the-expected-kind)
   - [How to create a new type checker?](#how-to-create-a-new-type-checker)
     - [Creating/Verifiyng type checkers dynamically](#creatingverifiyng-type-checkers-dynamically)
-    - [Registering new (custom) type checkers](#registering-new-custom-type-checkers)
+    - [Registering new (custom) type checker](#registering-new-custom-type-checker)
       - [What happens if a custom type checker has a namespace?](#what-happens-if-a-custom-type-checker-has-a-namespace)
 - [Type checkers](#type-checkers)
   - [Classes' type checkers](#classes-type-checkers)
@@ -31,11 +34,15 @@ One of the goals of this project is to do simple type checking like `"some strin
 - [Kind::Undefined](#kindundefined)
   - [Kind.of.\<Type\>.or_undefined()](#kindoftypeor_undefined)
 - [Kind::Maybe](#kindmaybe)
-  - [Kind::Maybe[] and Kind::Maybe#then](#kindmaybe-and-kindmaybethen)
-  - [Kind::Maybe#try](#kindmaybetry)
+    - [Replacing blocks by lambdas](#replacing-blocks-by-lambdas)
+  - [Kind::Maybe[] and Kind::Maybe#then method aliases](#kindmaybe-and-kindmaybethen-method-aliases)
+    - [Replacing blocks by lambdas](#replacing-blocks-by-lambdas-1)
+  - [Kind::None() and Kind::Some()](#kindnone-and-kindsome)
   - [Kind.of.Maybe()](#kindofmaybe)
   - [Kind::Optional](#kindoptional)
+    - [Replacing blocks by lambdas](#replacing-blocks-by-lambdas-2)
   - [Kind.of.\<Type\>.as_optional](#kindoftypeas_optional)
+  - [Kind::Maybe#try](#kindmaybetry)
 - [Kind::Validator (ActiveModel::Validations)](#kindvalidator-activemodelvalidations)
   - [Usage](#usage-1)
     - [Defining the default validation strategy](#defining-the-default-validation-strategy)
@@ -82,14 +89,14 @@ sum(1, 1)   # 2
 sum('1', 1) # Kind::Error ("\"1\" expected to be a kind of Numeric")
 ```
 
-### Verifying the kind of some object
+### Kind.of.\<Type\>() - Verifying the kind of some object
 
 By default, basic verifications are strict. So, when you perform `Kind.of.Hash(value)`, if the given value was a Hash, the value itself will be returned, but if it isn't the right type, an error will be raised.
 
 ```ruby
-Kind.of.Hash(nil)    # **raise Kind::Error, "nil expected to be a kind of Hash"**
-Kind.of.Hash('')     # raise Kind::Error, "'' expected to be a kind of Hash"
-Kind.of.Hash({a: 1}) # {a: 1}
+Kind.of.Hash(nil)  # **raise Kind::Error, "nil expected to be a kind of Hash"**
+Kind.of.Hash('')   # raise Kind::Error, "'' expected to be a kind of Hash"
+Kind.of.Hash(a: 1) # {a: 1}
 
 # ---
 
@@ -99,14 +106,12 @@ Kind.of.Boolean(false) # false
 ```
 
 > **Note:** `Kind.of.<Type>` supports the to_proc protocol.
-> But it won't perform a strict validation, instead, it will return true
-> when the value has the desired kind and false if it hasn't.
+> And it will perform a strict validation as expected.
 
 ```ruby
 collection = [ {number: 1}, 'number 2', {number: 3}, :number_4 ]
 
-collection
-  .select(&Kind.of.Hash) # [{number: 1}, {number: 3}]
+collection.map(&Kind.of.Hash) # Kind::Error ("number 2" expected to be a kind of Hash)
 ```
 
 When the verified value is nil, it is possible to define a default value with the same type to be returned.
@@ -123,43 +128,7 @@ Kind.of.Boolean(nil, or: true) # true
 
 > **Note:** As an alternative syntax, you can use the `Kind::Of` instead of the `Kind.of` method. e.g: `Kind::Of::Hash('')`
 
-But if you don't need a strict type verification, use the `.or_nil` method.
-
-```ruby
-Kind.of.Hash.or_nil('')     # nil
-Kind.of.Hash.or_nil({a: 1}) # {a: 1}
-
-# ---
-
-Kind.of.Boolean.or_nil('')   # nil
-Kind.of.Boolean.or_nil(true) # true
-```
-
-And just for convenience, you can use the method `.instance?` to verify if the given object has the expected type.
-
-```ruby
-Kind.of.Hash.instance?('')
-# false
-
-# ---
-
-Kind.of.Boolean.instance?('')    # false
-Kind.of.Boolean.instance?(true)  # true
-Kind.of.Boolean.instance?(false) # true
-```
-
-> **Note:** When `.instance?` is called without an argument,
-> it will return a lambda which will perform the kind verification.
-
-```ruby
-collection = [ {number: 1}, 'number 2', {number: 3}, :number_4 ]
-
-collection
-  .select(&Kind.of.Hash.instance?)
-  .reduce(0) { |total, item| total + item.fetch(:number, 0) } # 4
-```
-
-Also, there are aliases to perform the strict type verification. e.g:
+#### Method aliases to perform a strict validation
 
 ```ruby
 Kind.of.Hash[nil]  # raise Kind::Error, "nil expected to be a kind of Hash"
@@ -175,7 +144,54 @@ Kind.of.Hash.instance(a: 1) # {a: 1}
 Kind.of.Hash.instance('', or: {}) # {}
 ```
 
-### Verifying the kind of some class/module
+### Kind.of.\<Type\>.or_nil()
+
+But if you don't need a strict type verification, use the `.or_nil` method.
+
+```ruby
+Kind.of.Hash.or_nil('')     # nil
+Kind.of.Hash.or_nil({a: 1}) # {a: 1}
+
+# ---
+
+Kind.of.Boolean.or_nil('')   # nil
+Kind.of.Boolean.or_nil(true) # true
+```
+
+### Kind.of.\<Type\>.instance?()
+
+Use the method `.instance?` to verify if the given object has the expected type.
+
+```ruby
+Kind.of.Hash.instance?('') # false
+
+# ---
+
+Kind.of.Boolean.instance?('')    # false
+Kind.of.Boolean.instance?(true)  # true
+Kind.of.Boolean.instance?(false) # true
+```
+
+> **Note:** When `.instance?` is called without an argument,
+> it will return a lambda which will perform the kind verification.
+
+```ruby
+collection = [ {number: 1}, 'number 2', {number: 3}, :number_4 ]
+
+collection
+  .select(&Kind.of.Hash.instance?) # [{:number=>1}, {:number=>3}]
+```
+
+> **Note:** You can use a different syntax to perform an instance verification.
+> To do this, use Kind.of.\<Type\>?()
+
+```ruby
+collection = [ {number: 1}, 'number 2', {number: 3}, :number_4 ]
+
+collection.select(&Kind.of.Hash?) # [{:number=>1}, {:number=>3}]
+```
+
+### Kind.is.\<Type\>() - Verifying if some class/module is the expected kind.
 
 You can use `Kind.is` to verify if some class has the expected type as its ancestor.
 
@@ -262,6 +278,22 @@ Kind.of(User, {})   # Kind::Error ({} expected to be a kind of User)
 Kind.of(Hash, {})   # {}
 Kind.of(Hash, user) # Kind::Error (<User ...> expected to be a kind of Hash)
 
+# ----------------------------------------- #
+# Verifiyng if the value is a kind instance #
+# ----------------------------------------- #
+
+Kind.of?(Numeric, 1)      # true
+Kind.of?(Numeric, 1, 2.0) # true
+
+Kind.of?(Numeric, '1')      # false
+Kind.of?(Numeric, 1, '2.0') # false
+
+# Note: Kind.of?(Type) without arguments will return a
+#       lambda that will perform an instance verification
+#
+[1, '2', 3.0, '4']
+  .select(&Kind.of?(Numeric)) # [1, 3.0]
+
 # ---------------------------------- #
 # Creating type checkers dynamically #
 # ---------------------------------- #
@@ -300,7 +332,7 @@ end
 Kind.is(User, AdminUser) # true
 ```
 
-#### Registering new (custom) type checkers
+#### Registering new (custom) type checker
 
 Use `Kind::Types.add()`. e.g:
 
@@ -491,7 +523,27 @@ puts optional.value_or(1) # 1
 puts optional.value_or { 1 } # 1
 ```
 
-### Kind::Maybe[] and Kind::Maybe#then
+#### Replacing blocks by lambdas
+
+```ruby
+Add = -> params do
+  a, b = Kind.of.Hash(params, or: Empty::HASH).values_at(:a, :b)
+
+  a + b if Kind.of.Numeric?(a, b)
+end
+
+# --
+
+  Kind::Maybe.new(a: 1, b: 2).map(&Add).value_or(0) # 3
+
+  # --
+
+  Kind::Maybe.new([]).map(&Add).value_or(0) # 0
+  Kind::Maybe.new({}).map(&Add).value_or(0) # 0
+  Kind::Maybe.new(nil).map(&Add).value_or(0) # 0
+```
+
+### Kind::Maybe[] and Kind::Maybe#then method aliases
 
 You can use `Kind::Maybe[]` (brackets) instead of the `.new` to transform values in a `Kind::Maybe`. Another alias is `.then` to the `.map` method.
 
@@ -505,43 +557,57 @@ result =
 puts result # 42
 ```
 
-### Kind::Maybe#try
-
-If you don't want to use a map to access the value, you could use the `#try` method to access it. So, if the value wasn't `nil` or `Kind::Undefined`, it will be returned.
+#### Replacing blocks by lambdas
 
 ```ruby
-object = 'foo'
+Add = -> params do
+  a, b = Kind.of.Hash(params, or: Empty::HASH).values_at(:a, :b)
 
-p Kind::Maybe[object].try(:upcase) # "FOO"
+  a + b if Kind.of.Numeric.instance?(a, b)
+end
 
-p Kind::Maybe[{}].try(:fetch, :number, 0) # 0
+# --
 
-p Kind::Maybe[{number: 1}].try(:fetch, :number) # 1
+Kind::Maybe[a: 1, b: 2].then(&Add).value_or(0) # 3
 
-p Kind::Maybe[object].try { |value| value.upcase } # "FOO"
+# --
 
-#############
-# Nil value #
-#############
-
-object = nil
-
-p Kind::Maybe[object].try(:upcase) # nil
-
-p Kind::Maybe[object].try { |value| value.upcase } # nil
-
-#########################
-# Kind::Undefined value #
-#########################
-
-object = Kind::Undefined
-
-p Kind::Maybe[object].try(:upcase) # nil
-
-p Kind::Maybe[object].try { |value| value.upcase } # nil
+Kind::Maybe[1].then(&Add).value_or(0) # 0
+Kind::Maybe['2'].then(&Add).value_or(0) # 0
+Kind::Maybe[nil].then(&Add).value_or(0) # 0
 ```
 
-[⬆️ Back to Top](#table-of-contents-)
+### Kind::None() and Kind::Some()
+
+If you need to ensure the return of  `Kind::Maybe` results from your methods/lambdas,
+you could use the methods `Kind::None` and `Kind::Some` to do this. e.g:
+
+```ruby
+Add = -> params do
+  a, b = Kind.of.Hash(params, or: Empty::HASH).values_at(:a, :b)
+
+  return Kind::None unless Kind.of.Numeric.instance?(a, b)
+
+  Kind::Some(a + b)
+end
+
+# --
+
+Add.call(1)    # #<Kind::Maybe::None:0x0000... @value=nil>
+Add.call({})   # #<Kind::Maybe::None:0x0000... @value=nil>
+Add.call(a: 1) # #<Kind::Maybe::None:0x0000... @value=nil>
+Add.call(b: 2) # #<Kind::Maybe::None:0x0000... @value=nil>
+
+Add.call(a:1, b: 2) # #<Kind::Maybe::Some:0x0000... @value=3>
+
+# --
+
+Kind::Maybe[a: 1, b: 2].then(&Add).value_or(0) # 3
+
+Kind::Maybe[1].then(&Add).value_or(0) # 0
+Kind::Maybe['2'].then(&Add).value_or(0) # 0
+Kind::Maybe[nil].then(&Add).value_or(0) # 0
+```
 
 ### Kind.of.Maybe()
 
@@ -596,6 +662,26 @@ result2 =
     .value_or { 0 }
 
 puts result2 # 35
+```
+
+#### Replacing blocks by lambdas
+
+```ruby
+Add = -> params do
+  a, b = Kind.of.Hash(params, or: Empty::HASH).values_at(:a, :b)
+
+  a + b if Kind.of.Numeric.instance?(a, b)
+end
+
+# --
+
+Kind::Optional[a: 1, b: 2].then(&Add).value_or(0) # 3
+
+# --
+
+Kind::Optional[1].then(&Add).value_or(0) # 0
+Kind::Optional['2'].then(&Add).value_or(0) # 0
+Kind::Optional[nil].then(&Add).value_or(0) # 0
 ```
 
 **Note:** The `Kind.of.Optional` is available to check if some value is a `Kind::Optional`.
@@ -705,6 +791,44 @@ module PersonIntroduction
       end
     end
 end
+```
+
+[⬆️ Back to Top](#table-of-contents-)
+
+### Kind::Maybe#try
+
+If you don't want to use a map to access the value, you could use the `#try` method to access it. So, if the value wasn't `nil` or `Kind::Undefined`, it will be returned.
+
+```ruby
+object = 'foo'
+
+p Kind::Maybe[object].try(:upcase) # "FOO"
+
+p Kind::Maybe[{}].try(:fetch, :number, 0) # 0
+
+p Kind::Maybe[{number: 1}].try(:fetch, :number) # 1
+
+p Kind::Maybe[object].try { |value| value.upcase } # "FOO"
+
+#############
+# Nil value #
+#############
+
+object = nil
+
+p Kind::Maybe[object].try(:upcase) # nil
+
+p Kind::Maybe[object].try { |value| value.upcase } # nil
+
+#########################
+# Kind::Undefined value #
+#########################
+
+object = Kind::Undefined
+
+p Kind::Maybe[object].try(:upcase) # nil
+
+p Kind::Maybe[object].try { |value| value.upcase } # nil
 ```
 
 [⬆️ Back to Top](#table-of-contents-)

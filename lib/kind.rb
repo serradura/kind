@@ -29,6 +29,12 @@ module Kind
 
   private_constant :MODULE_OR_CLASS
 
+  private_class_method def self.__checkers__
+    @__checkers__ ||= {}
+  end
+
+  __checkers__
+
   def self.of(kind = Undefined, object = Undefined)
     return Of if kind == Undefined && object == Undefined
 
@@ -45,8 +51,8 @@ module Kind
     end
   end
 
-  private_class_method def self.__checkers__
-    @__checkers__ ||= {}
+  def self.of?(kind, *args)
+    Kind.of(kind).instance?(*args)
   end
 
   # --------------------- #
@@ -89,6 +95,10 @@ module Kind
 
       def self.__is_instance__(value); class?(value); end
     end)
+
+    def self.Class?(*args)
+      Kind::Of::Class.instance?(*args)
+    end
 
     # -- Module
 
@@ -135,6 +145,10 @@ module Kind
 
       def self.__is_instance__(value); class?(value); end
     end)
+
+    def self.Module?(*args)
+      Kind::Of::Module.instance?(*args)
+    end
 
     # -- Boolean
 
@@ -187,6 +201,10 @@ module Kind
       end
     end)
 
+    def self.Boolean?(*args)
+      Kind::Of::Boolean.instance?(*args)
+    end
+
     # -- Lambda
 
     def self.Lambda(object = Undefined, options = Empty::HASH)
@@ -230,6 +248,10 @@ module Kind
         value.is_a?(__kind) && value.lambda?
       end
     end)
+
+    def self.Lambda?(*args)
+      Kind::Of::Lambda.instance?(*args)
+    end
 
     # -- Callable
 
@@ -278,6 +300,10 @@ module Kind
         value.respond_to?(:call)
       end
     end)
+
+    def self.Callable?(*args)
+      Kind::Of::Callable.instance?(*args)
+    end
 
     # ---------------------- #
     # Built-in type checkers #

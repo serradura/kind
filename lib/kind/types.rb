@@ -12,7 +12,17 @@ module Kind
 
         return Kind::Of::%{kind_name} if object == Undefined && default.nil?
 
-        Kind::Of.(::%{kind_name_to_check}, (object || default))
+        is_instance = Kind::Of::%{kind_name}.__is_instance__(object)
+
+        return object if is_instance
+
+        Kind::Of.(::%{kind_name_to_check}, object && default ? default : object || default)
+      end
+    RUBY
+
+    KIND_OF_IS = <<-RUBY
+      def self.%{method_name}?(*args)
+        Kind::Of::%{kind_name}.instance?(*args)
       end
     RUBY
 
@@ -93,6 +103,7 @@ module Kind
 
           kind_of_mod.instance_eval(KIND_OF % params)
           kind_of_mod.const_set(method_name, kind_checker)
+          kind_of_mod.instance_eval(KIND_OF_IS % params)
         end
 
         unless kind_is_mod.respond_to?(method_name)
