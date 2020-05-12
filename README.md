@@ -163,13 +163,19 @@ Kind.of.Boolean.or_nil(true) # true
 Use the method `.instance?` to verify if the given object has the expected type.
 
 ```ruby
-Kind.of.Hash.instance?('') # false
+Kind.of.Hash.instance?({})                                # true
+Kind.of.Hash.instance?({}, HashWithIndifferentAccess.new) # true
+
+Kind.of.Hash.instance?('')     # false
+Kind.of.Hash.instance?({}, '') # false
 
 # ---
 
-Kind.of.Boolean.instance?('')    # false
-Kind.of.Boolean.instance?(true)  # true
-Kind.of.Boolean.instance?(false) # true
+Kind.of.Boolean.instance?(true)             # true
+Kind.of.Boolean.instance?(true, false)      # true
+
+Kind.of.Boolean.instance?(nil)              # false
+Kind.of.Boolean.instance?(false, true, nil) # false
 ```
 
 > **Note:** When `.instance?` is called without an argument,
@@ -186,6 +192,22 @@ collection
 > To do this, use Kind.of.\<Type\>?()
 
 ```ruby
+Kind.of.Hash?({})                                # true
+Kind.of.Hash?({}, HashWithIndifferentAccess.new) # true
+
+Kind.of.Hash?('')     # false
+Kind.of.Hash?({}, '') # false
+
+# ---
+
+Kind.of.Boolean?(true)        # true
+Kind.of.Boolean?(false, true) # true
+
+Kind.of.Boolean?(nil)              # false
+Kind.of.Boolean?(false, true, nil) # false
+
+# ---
+
 collection = [ {number: 1}, 'number 2', {number: 3}, :number_4 ]
 
 collection.select(&Kind.of.Hash?) # [{:number=>1}, {:number=>3}]
