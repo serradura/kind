@@ -18,22 +18,27 @@ module Kind
       instance(value, options)
     end
 
+    def to_proc
+      @to_proc ||=
+        -> checker { -> value { checker.instance(value) } }.call(self)
+    end
+
+    def __is_instance__(value)
+      value.kind_of?(__kind)
+    end
+
+    def is_instance_to_proc
+      @is_instance_to_proc ||=
+        -> checker { -> value { checker.__is_instance__(value) } }.call(self)
+    end
+
     def instance?(*args)
-      return to_proc if args.empty?
+      return is_instance_to_proc if args.empty?
 
       return args.all? { |object| __is_instance__(object) } if args.size > 1
 
       arg = args[0]
-      arg == Kind::Undefined ? to_proc : __is_instance__(arg)
-    end
-
-    def __is_instance__(value)
-      value.is_a?(__kind)
-    end
-
-    def to_proc
-      @to_proc ||=
-        -> checker { -> value { checker.__is_instance__(value) } }.call(self)
+      arg == Kind::Undefined ? is_instance_to_proc : __is_instance__(arg)
     end
 
     def or_nil(value)
@@ -44,6 +49,15 @@ module Kind
       or_nil(value) || Kind::Undefined
     end
 
+    def __as_maybe__(value)
+      Kind::Maybe.new(or_nil(value))
+    end
+
+    def as_maybe_to_proc
+      @as_maybe_to_proc ||=
+        -> checker { -> value { checker.__as_maybe__(value) } }.call(self)
+    end
+
     def as_maybe(value = Kind::Undefined)
       return __as_maybe__(value) if value != Kind::Undefined
 
@@ -52,15 +66,6 @@ module Kind
 
     def as_optional(value = Kind::Undefined)
       as_maybe(value)
-    end
-
-    def __as_maybe__(value)
-      Kind::Maybe.new(or_nil(value))
-    end
-
-    def as_maybe_to_proc
-      @as_maybe_to_proc ||=
-        -> checker { -> value { checker.__as_maybe__(value) } }.call(self)
     end
   end
 
