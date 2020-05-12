@@ -56,6 +56,10 @@ class Kind::MaybeTest < Minitest::Test
   end
 
   def test_maybe_value_or_default
+    assert_nil(Kind::Maybe[nil].value_or(nil))
+
+    # ---
+
     optional1 = Kind::Maybe.new(2)
 
     assert_equal(2, optional1.value_or(0))

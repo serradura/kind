@@ -44,7 +44,7 @@ module Kind
       def value_or(default = Undefined, &block)
         raise ArgumentError, INVALID_DEFAULT_ARG if default == Undefined && !block
 
-        Maybe::Value.some?(default) ? default : block.call
+        default != Undefined ? default : block.call
       end
 
       def none?; true; end
