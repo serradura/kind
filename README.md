@@ -31,6 +31,10 @@ One of the goals of this project is to do simple type checking like `"some strin
   - [Classes' type checkers](#classes-type-checkers)
   - [Modules' type checkers](#modules-type-checkers)
   - [Specials' type checkers](#specials-type-checkers)
+- [Kind::Validator (ActiveModel::Validations)](#kindvalidator-activemodelvalidations)
+  - [Usage](#usage-1)
+    - [Defining the default validation strategy](#defining-the-default-validation-strategy)
+    - [Using the `allow_nil` and `strict` options](#using-the-allow_nil-and-strict-options)
 - [Kind::Undefined](#kindundefined)
   - [Kind.of.\<Type\>.or_undefined()](#kindoftypeor_undefined)
 - [Kind::Maybe](#kindmaybe)
@@ -43,10 +47,6 @@ One of the goals of this project is to do simple type checking like `"some strin
     - [Replacing blocks by lambdas](#replacing-blocks-by-lambdas-2)
   - [Kind.of.\<Type\>.as_optional](#kindoftypeas_optional)
   - [Kind::Maybe#try](#kindmaybetry)
-- [Kind::Validator (ActiveModel::Validations)](#kindvalidator-activemodelvalidations)
-  - [Usage](#usage-1)
-    - [Defining the default validation strategy](#defining-the-default-validation-strategy)
-    - [Using the `allow_nil` and `strict` options](#using-the-allow_nil-and-strict-options)
 - [Kind::Empty](#kindempty)
 - [Similar Projects](#similar-projects)
 - [Development](#development)
@@ -459,6 +459,158 @@ The list of types (classes and modules) available to use with `Kind.of.*` or `Ki
 
 [⬆️ Back to Top](#table-of-contents-)
 
+## Kind::Validator (ActiveModel::Validations)
+
+This module enables the capability to validate types via [`ActiveModel::Validations >= 3.2, < 6.1.0`](https://api.rubyonrails.org/classes/ActiveModel/Validations.html). e.g
+
+```ruby
+class Person
+  include ActiveModel::Validations
+
+  attr_accessor :first_name, :last_name
+
+  validates :first_name, :last_name, kind: String
+end
+```
+
+And to make use of it, you will need to do an explicitly require. e.g:
+
+```ruby
+# In some Gemfile
+gem 'kind', require: 'kind/active_model/validation'
+
+# In some .rb file
+require 'kind/active_model/validation'
+```
+
+### Usage
+
+**[Object#kind_of?](https://ruby-doc.org/core-2.6.4/Object.html#method-i-kind_of-3F)**
+
+```ruby
+validates :name, kind: { of: String }
+
+# Use an array to verify if the attribute
+# is an instance of one of the classes/modules.
+
+validates :status, kind: { of: [String, Symbol]}
+```
+
+**[Kind.is](#verifying-the-kind-of-some-classmodule)**
+
+```ruby
+#
+# Verifying if the attribute value is the class or a subclass.
+#
+class Human; end
+class Person < Human; end
+class User < Human; end
+
+validates :human_kind, kind: { is: Human }
+
+#
+# Verifying if the attribute value is the module or if it is a class that includes the module
+#
+module Human; end
+class Person; include Human; end
+class User; include Human; end
+
+validates :human_kind, kind: { is: Human }
+
+#
+# Verifying if the attribute value is the module or if it is a module that extends the module
+#
+module Human; end
+module Person; extend Human; end
+module User; extend Human; end
+
+validates :human_kind, kind: { is: Human }
+
+# or use an array to verify if the attribute
+# is a kind of one those classes/modules.
+
+validates :human_kind, kind: { is: [Person, User] }
+```
+
+**[Object#instance_of?](https://ruby-doc.org/core-2.6.4/Object.html#method-i-instance_of-3F)**
+
+```ruby
+validates :name, kind: { instance_of: String }
+
+# or use an array to verify if the attribute
+# is an instance of one of the classes/modules.
+
+validates :name, kind: { instance_of: [String, Symbol] }
+```
+
+
+**[Object#respond_to?](https://ruby-doc.org/core-2.6.4/Object.html#method-i-respond_to-3F)**
+
+```ruby
+validates :handler, kind: { respond_to: :call }
+```
+
+**Array.new.all? { |item| item.kind_of?(Class) }**
+
+```ruby
+validates :account_types, kind: { array_of: String }
+
+# or use an array to verify if the attribute
+# is an instance of one of the classes
+
+validates :account_types, kind: { array_of: [String, Symbol] }
+```
+
+**Array.new.all? { |item| expected_values.include?(item) }**
+
+```ruby
+# Verifies if the attribute value
+# is an array with some or all the expected values.
+
+validates :account_types, kind: { array_with: ['foo', 'bar'] }
+```
+
+#### Defining the default validation strategy
+
+By default, you can define the attribute type directly (without a hash). e.g.
+
+```ruby
+validates :name, kind: String
+# or
+validates :name, kind: [String, Symbol]
+```
+
+To changes this behavior you can set another strategy to validates the attributes types:
+
+```ruby
+Kind::Validator.default_strategy = :instance_of
+
+# Tip: Create an initializer if you are in a Rails application.
+```
+
+And these are the available options to define the default strategy:
+-  `kind_of` *(default)*
+-  `instance_of`
+
+#### Using the `allow_nil` and `strict` options
+
+You can use the `allow_nil` option with any of the kind validations. e.g.
+
+```ruby
+validates :name, kind: String, allow_nil: true
+```
+
+And as any active model validation, kind validations works with the `strict: true`
+option and with the `validates!` method. e.g.
+
+```ruby
+validates :first_name, kind: String, strict: true
+# or
+validates! :last_name, kind: String
+```
+
+[⬆️ Back to Top](#table-of-contents-)
+
 ## Kind::Undefined
 
 The [`Kind::Undefined`](https://github.com/serradura/kind/blob/834f6b8ebdc737de8e5628986585f30c1a5aa41b/lib/kind/undefined.rb) constant is used as the default argument of type checkers. This is necessary [to know if no arguments were passed to the type check methods](https://github.com/serradura/kind/blob/834f6b8ebdc737de8e5628986585f30c1a5aa41b/lib/kind.rb#L45-L48). But, you can use it in your codebase too, especially if you need to distinguish the usage of `nil` as a method argument.
@@ -829,158 +981,6 @@ object = Kind::Undefined
 p Kind::Maybe[object].try(:upcase) # nil
 
 p Kind::Maybe[object].try { |value| value.upcase } # nil
-```
-
-[⬆️ Back to Top](#table-of-contents-)
-
-## Kind::Validator (ActiveModel::Validations)
-
-This module enables the capability to validate types via [`ActiveModel::Validations >= 3.2, < 6.1.0`](https://api.rubyonrails.org/classes/ActiveModel/Validations.html). e.g
-
-```ruby
-class Person
-  include ActiveModel::Validations
-
-  attr_accessor :first_name, :last_name
-
-  validates :first_name, :last_name, kind: String
-end
-```
-
-And to make use of it, you will need to do an explicitly require. e.g:
-
-```ruby
-# In some Gemfile
-gem 'kind', require: 'kind/active_model/validation'
-
-# In some .rb file
-require 'kind/active_model/validation'
-```
-
-### Usage
-
-**[Object#kind_of?](https://ruby-doc.org/core-2.6.4/Object.html#method-i-kind_of-3F)**
-
-```ruby
-validates :name, kind: { of: String }
-
-# Use an array to verify if the attribute
-# is an instance of one of the classes/modules.
-
-validates :status, kind: { of: [String, Symbol]}
-```
-
-**[Kind.is](#verifying-the-kind-of-some-classmodule)**
-
-```ruby
-#
-# Verifying if the attribute value is the class or a subclass.
-#
-class Human; end
-class Person < Human; end
-class User < Human; end
-
-validates :human_kind, kind: { is: Human }
-
-#
-# Verifying if the attribute value is the module or if it is a class that includes the module
-#
-module Human; end
-class Person; include Human; end
-class User; include Human; end
-
-validates :human_kind, kind: { is: Human }
-
-#
-# Verifying if the attribute value is the module or if it is a module that extends the module
-#
-module Human; end
-module Person; extend Human; end
-module User; extend Human; end
-
-validates :human_kind, kind: { is: Human }
-
-# or use an array to verify if the attribute
-# is a kind of one those classes/modules.
-
-validates :human_kind, kind: { is: [Person, User] }
-```
-
-**[Object#instance_of?](https://ruby-doc.org/core-2.6.4/Object.html#method-i-instance_of-3F)**
-
-```ruby
-validates :name, kind: { instance_of: String }
-
-# or use an array to verify if the attribute
-# is an instance of one of the classes/modules.
-
-validates :name, kind: { instance_of: [String, Symbol] }
-```
-
-
-**[Object#respond_to?](https://ruby-doc.org/core-2.6.4/Object.html#method-i-respond_to-3F)**
-
-```ruby
-validates :handler, kind: { respond_to: :call }
-```
-
-**Array.new.all? { |item| item.kind_of?(Class) }**
-
-```ruby
-validates :account_types, kind: { array_of: String }
-
-# or use an array to verify if the attribute
-# is an instance of one of the classes
-
-validates :account_types, kind: { array_of: [String, Symbol] }
-```
-
-**Array.new.all? { |item| expected_values.include?(item) }**
-
-```ruby
-# Verifies if the attribute value
-# is an array with some or all the expected values.
-
-validates :account_types, kind: { array_with: ['foo', 'bar'] }
-```
-
-#### Defining the default validation strategy
-
-By default, you can define the attribute type directly (without a hash). e.g.
-
-```ruby
-validates :name, kind: String
-# or
-validates :name, kind: [String, Symbol]
-```
-
-To changes this behavior you can set another strategy to validates the attributes types:
-
-```ruby
-Kind::Validator.default_strategy = :instance_of
-
-# Tip: Create an initializer if you are in a Rails application.
-```
-
-And these are the available options to define the default strategy:
--  `kind_of` *(default)*
--  `instance_of`
-
-#### Using the `allow_nil` and `strict` options
-
-You can use the `allow_nil` option with any of the kind validations. e.g.
-
-```ruby
-validates :name, kind: String, allow_nil: true
-```
-
-And as any active model validation, kind validations works with the `strict: true`
-option and with the `validates!` method. e.g.
-
-```ruby
-validates :first_name, kind: String, strict: true
-# or
-validates! :last_name, kind: String
 ```
 
 [⬆️ Back to Top](#table-of-contents-)
