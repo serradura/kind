@@ -29,6 +29,12 @@ module Kind
 
   private_constant :MODULE_OR_CLASS
 
+  private_class_method def self.__checkers__
+    @__checkers__ ||= {}
+  end
+
+  __checkers__
+
   def self.of(kind = Undefined, object = Undefined)
     return Of if kind == Undefined && object == Undefined
 
@@ -45,8 +51,8 @@ module Kind
     end
   end
 
-  private_class_method def self.__checkers__
-    @__checkers__ ||= {}
+  def self.of?(kind, *args)
+    Kind.of(kind).instance?(*args)
   end
 
   # --------------------- #

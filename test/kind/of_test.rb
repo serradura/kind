@@ -67,7 +67,23 @@ class Kind::OfTest < Minitest::Test
     # #instance?
     #
     refute kind_of_bar.instance?({})
+    refute kind_of_bar.instance?(@bar, {})
+
     assert kind_of_bar.instance?(@bar)
+    assert kind_of_bar.instance?(@bar, Bar.new)
+
+    assert_equal([@bar], [@bar, @foo_bar].select(&kind_of_bar.instance?))
+
+    #
+    # Kind.of?(<Type>, *args)
+    #
+    refute Kind.of?(Bar, {})
+    refute Kind.of?(Bar, @bar, {})
+
+    assert Kind.of?(Bar, @bar)
+    assert Kind.of?(Bar, @bar, Bar.new)
+
+    assert_equal([@bar], [@bar, @foo_bar].select(&Kind.of?(Bar)))
 
     #
     # #class?
@@ -129,7 +145,23 @@ class Kind::OfTest < Minitest::Test
     # #instance?
     #
     refute kind_of_foo_bar.instance?({})
+    refute kind_of_foo_bar.instance?(@foo_bar, {})
+
     assert kind_of_foo_bar.instance?(@foo_bar)
+    assert kind_of_foo_bar.instance?(@foo_bar, Foo::Bar.new)
+
+    assert_equal([@foo_bar], [@bar, @foo_bar].select(&kind_of_foo_bar.instance?))
+
+    #
+    # Kind.of?(<Type>, *args)
+    #
+    refute Kind.of?(Foo::Bar, {})
+    refute Kind.of?(Foo::Bar, @foo_bar, {})
+
+    assert Kind.of?(Foo::Bar, @foo_bar)
+    assert Kind.of?(Foo::Bar, @foo_bar, Foo::Bar.new)
+
+    assert_equal([@foo_bar], [@bar, @foo_bar].select(&Kind.of?(Foo::Bar)))
 
     #
     # #class?
