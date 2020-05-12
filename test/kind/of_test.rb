@@ -41,8 +41,18 @@ class Kind::OfTest < Minitest::Test
 
     kind_of_bar = Kind.of(Bar)
 
-    assert_equal(@bar, [@bar, @foo_bar].select(&kind_of_bar).first)
+    #
+    # #to_proc
+    #
+    assert_equal([@bar], [@bar].map(&kind_of_bar))
 
+    assert_raises_kind_error(given: @foo_bar.inspect, expected: 'Bar') do
+      [@bar, @foo_bar].map(&kind_of_bar)
+    end
+
+    #
+    # #instance
+    #
     assert_raises_kind_error(given: 'nil', expected: 'Bar') { kind_of_bar.instance(nil) }
     assert_raises_kind_error(given: 'Kind::Undefined', expected: 'Bar') { kind_of_bar.instance(Kind::Undefined) }
     assert_raises_kind_error(given: ':a', expected: 'Bar') { kind_of_bar.instance(:a) }
@@ -53,33 +63,74 @@ class Kind::OfTest < Minitest::Test
     assert_raises_kind_error(given: 'nil', expected: 'Bar') { kind_of_bar.instance(nil, or: Kind::Undefined) }
     assert_raises_kind_error(given: 'Kind::Undefined', expected: 'Bar') { kind_of_bar.instance(Kind::Undefined, or: nil) }
 
+    #
+    # #instance?
+    #
     refute kind_of_bar.instance?({})
-    assert kind_of_bar.instance?(@bar)
+    refute kind_of_bar.instance?(@bar, {})
 
+    assert kind_of_bar.instance?(@bar)
+    assert kind_of_bar.instance?(@bar, Bar.new)
+
+    assert_equal([@bar], [@bar, @foo_bar].select(&kind_of_bar.instance?))
+
+    #
+    # Kind.of?(<Type>, *args)
+    #
+    refute Kind.of?(Bar, {})
+    refute Kind.of?(Bar, @bar, {})
+
+    assert Kind.of?(Bar, @bar)
+    assert Kind.of?(Bar, @bar, Bar.new)
+
+    assert_equal([@bar], [@bar, @foo_bar].select(&Kind.of?(Bar)))
+
+    #
+    # #class?
+    #
     assert_equal(false, kind_of_bar.class?(Hash))
     assert_equal(true, kind_of_bar.class?(Bar))
     assert_equal(true, kind_of_bar.class?(Class.new(Bar)))
 
+    #
+    # #or_nil
+    #
     assert_nil kind_of_bar.or_nil({})
     assert_equal(@bar, kind_of_bar.or_nil(@bar))
 
+    #
+    # #or_undefined
+    #
     assert_kind_undefined kind_of_bar.or_undefined({})
     assert_equal(@bar, kind_of_bar.or_undefined(@bar))
+
+    #
+    # #[]
+    #
+    kind_of_bar.stub(:instance, -> (obj, opt) { [obj, opt] }) do
+      assert_equal([@bar, {}], kind_of_bar[@bar])
+    end
 
     assert_same(kind_of_bar, Kind.of(Bar))
 
     assert_instance_of(Kind::Checker, kind_of_bar)
 
-    kind_of_bar.stub(:instance, -> (obj, opt) { [obj, opt] }) do
-      assert_equal([@bar, {}], kind_of_bar[@bar])
-    end
-
     # ---
 
     kind_of_foo_bar = Kind.of(Foo::Bar)
 
-    assert_equal(@foo_bar, [@bar, @foo_bar].select(&kind_of_foo_bar).first)
+    #
+    # #to_proc
+    #
+    assert_equal([@foo_bar], [@foo_bar].map(&kind_of_foo_bar))
 
+    assert_raises_kind_error(given: @bar.inspect, expected: 'Foo::Bar') do
+      [@foo_bar, @bar].map(&kind_of_foo_bar)
+    end
+
+    #
+    # #instance
+    #
     assert_raises_kind_error(given: 'nil', expected: 'Foo::Bar') { kind_of_foo_bar.instance(nil) }
     assert_raises_kind_error(given: 'Kind::Undefined', expected: 'Foo::Bar') { kind_of_foo_bar.instance(Kind::Undefined) }
     assert_raises_kind_error(given: ':a', expected: 'Foo::Bar') { kind_of_foo_bar.instance(:a) }
@@ -90,26 +141,57 @@ class Kind::OfTest < Minitest::Test
     assert_raises_kind_error(given: 'nil', expected: 'Foo::Bar') { kind_of_foo_bar.instance(nil, or: Kind::Undefined) }
     assert_raises_kind_error(given: 'Kind::Undefined', expected: 'Foo::Bar') { kind_of_foo_bar.instance(Kind::Undefined, or: nil) }
 
+    #
+    # #instance?
+    #
     refute kind_of_foo_bar.instance?({})
-    assert kind_of_foo_bar.instance?(@foo_bar)
+    refute kind_of_foo_bar.instance?(@foo_bar, {})
 
+    assert kind_of_foo_bar.instance?(@foo_bar)
+    assert kind_of_foo_bar.instance?(@foo_bar, Foo::Bar.new)
+
+    assert_equal([@foo_bar], [@bar, @foo_bar].select(&kind_of_foo_bar.instance?))
+
+    #
+    # Kind.of?(<Type>, *args)
+    #
+    refute Kind.of?(Foo::Bar, {})
+    refute Kind.of?(Foo::Bar, @foo_bar, {})
+
+    assert Kind.of?(Foo::Bar, @foo_bar)
+    assert Kind.of?(Foo::Bar, @foo_bar, Foo::Bar.new)
+
+    assert_equal([@foo_bar], [@bar, @foo_bar].select(&Kind.of?(Foo::Bar)))
+
+    #
+    # #class?
+    #
     assert_equal(false, kind_of_foo_bar.class?(Hash))
     assert_equal(true, kind_of_foo_bar.class?(Foo::Bar))
     assert_equal(true, kind_of_foo_bar.class?(Class.new(Foo::Bar)))
 
+    #
+    # #or_nil
+    #
     assert_nil kind_of_foo_bar.or_nil({})
     assert_equal(@foo_bar, kind_of_foo_bar.or_nil(@foo_bar))
 
+    #
+    # #or_undefined
+    #
     assert_kind_undefined kind_of_foo_bar.or_undefined({})
     assert_equal(@foo_bar, kind_of_foo_bar.or_undefined(@foo_bar))
+
+    #
+    # #[]
+    #
+    kind_of_foo_bar.stub(:instance, -> (obj, opt) { [obj, opt] }) do
+      assert_equal([@foo_bar, {}], kind_of_foo_bar[@foo_bar])
+    end
 
     assert_same(kind_of_foo_bar, Kind.of(Foo::Bar))
 
     assert_instance_of(Kind::Checker, kind_of_foo_bar)
-
-    kind_of_foo_bar.stub(:instance, -> (obj, opt) { [obj, opt] }) do
-      assert_equal([@foo_bar, {}], kind_of_foo_bar[@foo_bar])
-    end
 
     # ---
 
