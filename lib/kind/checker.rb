@@ -11,7 +11,7 @@ module Kind
 
       return Kind::Of.(__kind, value) if ::Kind::Maybe::Value.none?(default)
 
-      value != Kind::Undefined && instance?(value) ? value : Kind::Of.(__kind, default)
+      Kind::Undefined != value && instance?(value) ? value : Kind::Of.(__kind, default)
     end
 
     def [](value, options = options = Empty::HASH)
@@ -38,7 +38,7 @@ module Kind
       return args.all? { |object| __is_instance__(object) } if args.size > 1
 
       arg = args[0]
-      arg == Kind::Undefined ? is_instance_to_proc : __is_instance__(arg)
+      Kind::Undefined == arg ? is_instance_to_proc : __is_instance__(arg)
     end
 
     def or_nil(value)
@@ -59,7 +59,7 @@ module Kind
     end
 
     def as_maybe(value = Kind::Undefined)
-      return __as_maybe__(value) if value != Kind::Undefined
+      return __as_maybe__(value) if Kind::Undefined != value
 
       as_maybe_to_proc
     end
