@@ -53,12 +53,12 @@ class KindValidator < ActiveModel::EachValidator
     def kind_is_not(expected, value)
       case expected
       when Class
-        return if Kind.of.Class(value) == expected || value < expected
+        return if expected == Kind.of.Class(value) || value < expected
 
         "must be the class or a subclass of `#{expected.name}`"
       when Module
         return if value.kind_of?(Class) && value <= expected
-        return if Kind.of.Module(value) == expected || value.kind_of?(expected)
+        return if expected == Kind.of.Module(value) || value.kind_of?(expected)
 
         "must include the `#{expected.name}` module"
       else

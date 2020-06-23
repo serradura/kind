@@ -4,7 +4,7 @@ module Kind
   module Maybe
     module Value
       def self.none?(value)
-        value == nil || value == Undefined
+        value.nil? || Undefined == value
       end
 
       def self.some?(value)
@@ -42,9 +42,9 @@ module Kind
       INVALID_DEFAULT_ARG = 'the default value must be defined as an argument or block'.freeze
 
       def value_or(default = Undefined, &block)
-        raise ArgumentError, INVALID_DEFAULT_ARG if default == Undefined && !block
+        raise ArgumentError, INVALID_DEFAULT_ARG if Undefined == default && !block
 
-        default != Undefined ? default : block.call
+        Undefined != default ? default : block.call
       end
 
       def none?; true; end
@@ -56,7 +56,7 @@ module Kind
       alias_method :then, :map
 
       def try(method_name = Undefined, &block)
-        Kind.of.Symbol(method_name) if method_name != Undefined
+        Kind.of.Symbol(method_name) if Undefined != method_name
 
         nil
       end
@@ -80,8 +80,8 @@ module Kind
         result = fn.call(@value)
 
         return result if Maybe::None === result
-        return NONE_WITH_NIL_VALUE if result == nil
-        return NONE_WITH_UNDEFINED_VALUE if result == Undefined
+        return NONE_WITH_NIL_VALUE if result.nil?
+        return NONE_WITH_UNDEFINED_VALUE if Undefined == result
 
         Some.new(result)
       end
@@ -89,7 +89,7 @@ module Kind
       alias_method :then, :map
 
       def try(method_name = Undefined, *args, &block)
-        fn = method_name == Undefined ? block : Kind.of.Symbol(method_name).to_proc
+        fn = Undefined == method_name ? block : Kind.of.Symbol(method_name).to_proc
 
         result = args.empty? ? fn.call(value) : fn.call(*args.unshift(value))
 
