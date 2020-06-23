@@ -10,7 +10,7 @@ module Kind
       def self.%{method_name}(object = Undefined, options = Empty::HASH)
         default = options[:or]
 
-        return Kind::Of::%{kind_name} if object == Undefined && default.nil?
+        return Kind::Of::%{kind_name} if Undefined == object && default.nil?
 
         is_instance = Kind::Of::%{kind_name}.__is_instance__(object)
 
@@ -28,7 +28,7 @@ module Kind
 
     KIND_IS = <<-RUBY
       def self.%{method_name}(value = Undefined)
-        return Kind::Is::%{kind_name} if value == Undefined
+        return Kind::Is::%{kind_name} if Undefined == value
 
         Kind::Is.__call__(::%{kind_name_to_check}, value)
       end
