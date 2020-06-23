@@ -19,7 +19,7 @@ module Kind
     end
 
     def undefined.default(value, default)
-      return self if value != self
+      return self if self != value
 
       default.respond_to?(:call) ? default.call : default
     end

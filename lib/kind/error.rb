@@ -7,7 +7,7 @@ module Kind
     private_constant :UNDEFINED_OBJECT
 
     def initialize(arg, object = UNDEFINED_OBJECT)
-      if object == UNDEFINED_OBJECT
+      if UNDEFINED_OBJECT == object
         # Will be used when the exception was raised with a message. e.g:
         # raise Kind::Error, "some message"
         super(arg)

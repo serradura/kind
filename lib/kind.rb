@@ -18,9 +18,9 @@ module Kind
   private_constant :WRONG_NUMBER_OF_ARGUMENTS
 
   def self.is(expected = Undefined, object = Undefined)
-    return Is if expected == Undefined && object == Undefined
+    return Is if Undefined == expected && Undefined == object
 
-    return Kind::Is.(expected, object) if object != Undefined
+    return Kind::Is.(expected, object) if Undefined != object
 
     raise ArgumentError, WRONG_NUMBER_OF_ARGUMENTS
   end
@@ -36,9 +36,9 @@ module Kind
   __checkers__
 
   def self.of(kind = Undefined, object = Undefined)
-    return Of if kind == Undefined && object == Undefined
+    return Of if Undefined == kind && Undefined == object
 
-    return Kind::Of.(kind, object) if object != Undefined
+    return Kind::Of.(kind, object) if Undefined != object
 
     __checkers__[kind] ||= begin
       kind_name = kind.name
@@ -65,7 +65,7 @@ module Kind
     end
 
     def self.Module(value)
-      value == ::Module || (value.is_a?(::Module) && !self.Class(value))
+      ::Module == value || (value.is_a?(::Module) && !self.Class(value))
     end
 
     def self.Boolean(value)
@@ -81,7 +81,7 @@ module Kind
     # -- Class
 
     def self.Class(object = Undefined)
-      return Class if object == Undefined
+      return Class if Undefined == object
 
       self.call(::Class, object)
     end
@@ -103,7 +103,7 @@ module Kind
     # -- Module
 
     def self.Module(object = Undefined)
-      return Module if object == Undefined
+      return Module if Undefined == object
 
       self.call(::Module, object)
     end
@@ -112,7 +112,7 @@ module Kind
       extend Checkable
 
       def self.__kind_undefined(value)
-        __kind_error(Kind::Undefined) if value == Kind::Undefined
+        __kind_error(Kind::Undefined) if Kind::Undefined == value
 
         yield
       end
@@ -137,7 +137,7 @@ module Kind
         if ::Kind::Maybe::Value.none?(default)
           __kind_undefined(value) { __kind_of(value) }
         else
-          return value if value != Kind::Undefined && instance?(value)
+          return value if Kind::Undefined != value && instance?(value)
 
           __kind_undefined(default) { __kind_of(default) }
         end
@@ -155,7 +155,7 @@ module Kind
     def self.Boolean(object = Undefined, options = Empty::HASH)
       default = options[:or]
 
-      return Kind::Of::Boolean if object == Undefined && default.nil?
+      return Kind::Of::Boolean if Undefined == object && default.nil?
 
       bool = object.nil? ? default : object
 
@@ -177,14 +177,14 @@ module Kind
         if ::Kind::Maybe::Value.none?(default)
           __kind_undefined(value) { Kind::Of::Boolean(value) }
         else
-          return value if value != Kind::Undefined && instance?(value)
+          return value if Kind::Undefined != value && instance?(value)
 
           __kind_undefined(default) { Kind::Of::Boolean(default) }
         end
       end
 
       def self.__kind_undefined(value)
-        if value == Kind::Undefined
+        if Kind::Undefined == value
           raise Kind::Error.new('Boolean'.freeze, Kind::Undefined)
         else
           yield
@@ -210,7 +210,7 @@ module Kind
     def self.Lambda(object = Undefined, options = Empty::HASH)
       default = options[:or]
 
-      return Kind::Of::Lambda if object == Undefined && default.nil?
+      return Kind::Of::Lambda if Undefined == object && default.nil?
 
       func = object || default
 
@@ -230,14 +230,14 @@ module Kind
         if ::Kind::Maybe::Value.none?(default)
           __kind_undefined(value) { Kind::Of::Lambda(value) }
         else
-          return value if value != Kind::Undefined && instance?(value)
+          return value if Kind::Undefined != value && instance?(value)
 
           __kind_undefined(default) { Kind::Of::Lambda(default) }
         end
       end
 
       def self.__kind_undefined(value)
-        if value == Kind::Undefined
+        if Kind::Undefined == value
           raise Kind::Error.new('Lambda'.freeze, Kind::Undefined)
         else
           yield
@@ -258,7 +258,7 @@ module Kind
     def self.Callable(object = Undefined, options = Empty::HASH)
       default = options[:or]
 
-      return Kind::Of::Callable if object == Undefined && default.nil?
+      return Kind::Of::Callable if Undefined == object && default.nil?
 
       callable = object || default
 
@@ -282,14 +282,14 @@ module Kind
         if ::Kind::Maybe::Value.none?(default)
           __kind_undefined(value) { Kind::Of::Callable(value) }
         else
-          return value if value != Kind::Undefined && instance?(value)
+          return value if Kind::Undefined != value && instance?(value)
 
           __kind_undefined(default) { Kind::Of::Callable(default) }
         end
       end
 
       def self.__kind_undefined(value)
-        if value == Kind::Undefined
+        if Kind::Undefined == value
           raise Kind::Error.new('Callable'.freeze, Kind::Undefined)
         else
           yield
