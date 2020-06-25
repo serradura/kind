@@ -201,13 +201,19 @@ class Kind::MaybeTest < Minitest::Test
 
     hash = {a: 1}
 
+    assert_nil(Kind::Maybe[nil].try(:upcase).value)
     assert_nil(Kind::Maybe[hash].try(:upcase).value)
+    assert_nil(Kind::Maybe[nil].try(:[], :b).value)
     assert_nil(Kind::Maybe[hash].try(:[], :b).value)
+
     assert_equal(1, Kind::Maybe[hash].try(:[], :a).value)
     assert_equal(0, Kind::Maybe[hash].try(:fetch, :b, 0).value)
 
+    assert_instance_of(Kind::Maybe::None, Kind::Maybe[nil].try(:upcase))
     assert_instance_of(Kind::Maybe::None, Kind::Maybe[hash].try(:upcase))
+    assert_instance_of(Kind::Maybe::None, Kind::Maybe[nil].try(:[], :b))
     assert_instance_of(Kind::Maybe::None, Kind::Maybe[hash].try(:[], :b))
+
     assert_instance_of(Kind::Maybe::Some,Kind::Maybe[hash].try(:[], :a))
     assert_instance_of(Kind::Maybe::Some, Kind::Maybe[hash].try(:fetch, :b, 0))
 
@@ -247,11 +253,15 @@ class Kind::MaybeTest < Minitest::Test
 
     assert_raises(NoMethodError) { Kind::Maybe[hash].try!(:upcase) }
 
+    assert_nil(Kind::Maybe[nil].try!(:[], :b).value)
     assert_nil(Kind::Maybe[hash].try!(:[], :b).value)
+
     assert_equal(1, Kind::Maybe[hash].try!(:[], :a).value)
     assert_equal(0, Kind::Maybe[hash].try!(:fetch, :b, 0).value)
 
+    assert_instance_of(Kind::Maybe::None, Kind::Maybe[nil].try!(:[], :b))
     assert_instance_of(Kind::Maybe::None, Kind::Maybe[hash].try!(:[], :b))
+
     assert_instance_of(Kind::Maybe::Some,Kind::Maybe[hash].try!(:[], :a))
     assert_instance_of(Kind::Maybe::Some, Kind::Maybe[hash].try!(:fetch, :b, 0))
 
