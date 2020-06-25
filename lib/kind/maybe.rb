@@ -68,11 +68,13 @@ module Kind
 
       alias_method :then, :map
 
-      def try(method_name = Undefined, &block)
+      def try!(method_name = Undefined, &block)
         Kind.of.Symbol(method_name) if Undefined != method_name
 
-        nil
+        NONE_WITH_NIL_VALUE
       end
+
+      alias_method :try, :try!
 
       private_constant :INVALID_DEFAULT_ARG
     end
@@ -92,22 +94,43 @@ module Kind
       def map(&fn)
         result = fn.call(@value)
 
-        return result if Maybe::None === result
-        return NONE_WITH_NIL_VALUE if result.nil?
-        return NONE_WITH_UNDEFINED_VALUE if Undefined == result
-
-        Some.new(result)
+        resolve(result)
       end
 
       alias_method :then, :map
 
-      def try(method_name = Undefined, *args, &block)
-        fn = Undefined == method_name ? block : Kind.of.Symbol(method_name).to_proc
+      def try!(method_name = Undefined, *args, &block)
+        Kind::Of::Symbol(method_name) if Undefined != method_name
 
-        result = args.empty? ? fn.call(value) : fn.call(*args.unshift(value))
-
-        return result if Maybe::Value.some?(result)
+        __try__(method_name, args, block)
       end
+
+      def try(method_name = Undefined, *args, &block)
+        if (Undefined != method_name && value.respond_to?(Kind::Of::Symbol(method_name))) ||
+           (Undefined == method_name && block)
+          __try__(method_name, args, block)
+        else
+          NONE_WITH_NIL_VALUE
+        end
+      end
+
+      private
+
+        def __try__(method_name = Undefined, args, block)
+          fn = Undefined == method_name ? block : method_name.to_proc
+
+          result = args.empty? ? fn.call(value) : fn.call(*args.unshift(value))
+
+          resolve(result)
+        end
+
+        def resolve(result)
+          return result if Maybe::None === result
+          return NONE_WITH_NIL_VALUE if result.nil?
+          return NONE_WITH_UNDEFINED_VALUE if Undefined == result
+
+          Some.new(result)
+        end
     end
 
     def self.new(value)
