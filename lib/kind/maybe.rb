@@ -68,7 +68,7 @@ module Kind
 
       alias_method :then, :map
 
-      def try!(method_name = Undefined, &block)
+      def try!(method_name = Undefined, *args, &block)
         Kind.of.Symbol(method_name) if Undefined != method_name
 
         NONE_WITH_NIL_VALUE
