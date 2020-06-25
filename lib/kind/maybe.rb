@@ -2,6 +2,19 @@
 
 module Kind
   module Maybe
+    class Typed
+      def initialize(kind)
+        @kind_checker = Kind.of(kind)
+      end
+
+      def wrap(value)
+        @kind_checker.as_maybe(value)
+      end
+
+      alias_method :new, :wrap
+      alias_method :[], :wrap
+    end
+
     module Value
       def self.none?(value)
         value.nil? || Undefined == value
@@ -102,7 +115,11 @@ module Kind
       result_type.new(value)
     end
 
-    def self.[](value);
+    def self.[](value)
+      new(value)
+    end
+
+    def self.wrap(value)
       new(value)
     end
 
@@ -131,5 +148,13 @@ module Kind
 
   def self.Some(value)
     Maybe.some(value)
+  end
+
+  def self.Maybe(kind)
+    Maybe::Typed.new(kind)
+  end
+
+  def self.Optional(kind)
+    Maybe::Typed.new(kind)
   end
 end
