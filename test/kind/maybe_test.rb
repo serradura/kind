@@ -147,6 +147,13 @@ class Kind::MaybeTest < Minitest::Test
 
     assert_instance_of(Kind::Maybe::None, Kind::Maybe[nil])
     assert_instance_of(Kind::Maybe::None, Kind::Maybe[Kind::Undefined])
+
+    # ---
+
+    assert_instance_of(Kind::Maybe::Some, Kind::Maybe.wrap(1))
+
+    assert_instance_of(Kind::Maybe::None, Kind::Maybe.wrap(nil))
+    assert_instance_of(Kind::Maybe::None, Kind::Maybe.wrap(Kind::Undefined))
   end
 
   def test_then_as_an_alias_of_map
@@ -195,7 +202,7 @@ class Kind::MaybeTest < Minitest::Test
     end
   end
 
-  def test_optional_is_maybe
+  def test_that_optional_is_an_maybe_alias
     assert_equal(Kind::Maybe, Kind::Optional)
 
     # ---
@@ -299,5 +306,25 @@ class Kind::MaybeTest < Minitest::Test
       assert_equal(0, Kind::Maybe.new(value).then(&Add_B).value_or(0))
       assert_equal(0, Kind::Maybe.new(value).then(&Add_B).then(&Double_B).value_or(0))
     end
+  end
+
+  def test_the_maybe_type_checker
+    assert_predicate(Kind::Maybe(Hash)[''], :none?)
+    assert_predicate(Kind::Maybe(Hash).new([]), :none?)
+    assert_predicate(Kind::Maybe(Hash).wrap(''), :none?)
+
+    assert_predicate(Kind::Maybe(Hash)[{}], :some?)
+    assert_predicate(Kind::Maybe(Hash).new({}), :some?)
+    assert_predicate(Kind::Maybe(Hash).wrap({}), :some?)
+
+    # ---
+
+    assert_predicate(Kind::Optional(Hash)[''], :none?)
+    assert_predicate(Kind::Optional(Hash).new([]), :none?)
+    assert_predicate(Kind::Optional(Hash).wrap(''), :none?)
+
+    assert_predicate(Kind::Optional(Hash)[{}], :some?)
+    assert_predicate(Kind::Optional(Hash).new({}), :some?)
+    assert_predicate(Kind::Optional(Hash).wrap({}), :some?)
   end
 end
