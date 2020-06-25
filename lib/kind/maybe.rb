@@ -71,7 +71,7 @@ module Kind
       def try(method_name = Undefined, &block)
         Kind.of.Symbol(method_name) if Undefined != method_name
 
-        nil
+        NONE_WITH_NIL_VALUE
       end
 
       private_constant :INVALID_DEFAULT_ARG
@@ -92,11 +92,7 @@ module Kind
       def map(&fn)
         result = fn.call(@value)
 
-        return result if Maybe::None === result
-        return NONE_WITH_NIL_VALUE if result.nil?
-        return NONE_WITH_UNDEFINED_VALUE if Undefined == result
-
-        Some.new(result)
+        resolve(result)
       end
 
       alias_method :then, :map
@@ -106,8 +102,18 @@ module Kind
 
         result = args.empty? ? fn.call(value) : fn.call(*args.unshift(value))
 
-        return result if Maybe::Value.some?(result)
+        resolve(result)
       end
+
+      private
+
+        def resolve(result)
+          return result if Maybe::None === result
+          return NONE_WITH_NIL_VALUE if result.nil?
+          return NONE_WITH_UNDEFINED_VALUE if Undefined == result
+
+          Some.new(result)
+        end
     end
 
     def self.new(value)
