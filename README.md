@@ -39,13 +39,14 @@ One of the goals of this project is to do simple type checking like `"some strin
   - [Kind.of.\<Type\>.or_undefined()](#kindoftypeor_undefined)
 - [Kind::Maybe](#kindmaybe)
     - [Replacing blocks by lambdas](#replacing-blocks-by-lambdas)
-  - [Kind::Maybe[] and Kind::Maybe#then method aliases](#kindmaybe-and-kindmaybethen-method-aliases)
+  - [Kind::Maybe[], Kind::Maybe.wrap() and Kind::Maybe#then method aliases](#kindmaybe-kindmaybewrap-and-kindmaybethen-method-aliases)
     - [Replacing blocks by lambdas](#replacing-blocks-by-lambdas-1)
   - [Kind::None() and Kind::Some()](#kindnone-and-kindsome)
   - [Kind.of.Maybe()](#kindofmaybe)
   - [Kind::Optional](#kindoptional)
     - [Replacing blocks by lambdas](#replacing-blocks-by-lambdas-2)
   - [Kind.of.\<Type\>.as_optional](#kindoftypeas_optional)
+  - [Kind::Maybe(<Type>)](#kindmaybetype)
   - [Kind::Maybe#try](#kindmaybetry)
 - [Kind::Empty](#kindempty)
 - [Similar Projects](#similar-projects)
@@ -717,13 +718,26 @@ end
   Kind::Maybe.new(nil).map(&Add).value_or(0) # 0
 ```
 
-### Kind::Maybe[] and Kind::Maybe#then method aliases
+### Kind::Maybe[], Kind::Maybe.wrap() and Kind::Maybe#then method aliases
 
 You can use `Kind::Maybe[]` (brackets) instead of the `.new` to transform values in a `Kind::Maybe`. Another alias is `.then` to the `.map` method.
 
 ```ruby
 result =
   Kind::Maybe[5]
+    .then { |value| value * 5 }
+    .then { |value| value + 17 }
+    .value_or(0)
+
+puts result # 42
+```
+
+You can also use `Kind::Maybe.wrap()` instead of the `.new` method.
+
+```ruby
+result =
+  Kind::Maybe
+    .wrap(5)
     .then { |value| value * 5 }
     .then { |value| value + 17 }
     .value_or(0)
@@ -965,6 +979,46 @@ module PersonIntroduction
       end
     end
 end
+```
+
+[⬆️ Back to Top](#table-of-contents-)
+
+### Kind::Maybe(<Type>)
+
+There is an alternative to `Kind.of.\<Type\>.as_optional`, you can use `Kind::Optional(<Type>)` to create a maybe monad which will return None if the given input hasn't the expected type. e.g:
+
+```ruby
+result1 =
+  Kind::Maybe(Numeric)
+    .wrap(5)
+    .then { |value| value * 5 }
+    .value_or { 0 }
+
+puts result1 # 25
+
+# ---
+
+result2 =
+  Kind::Optional(Numeric)
+    .wrap('5')
+    .then { |value| value * 5 }
+    .value_or { 0 }
+
+puts result2 # 0
+```
+
+This typed maybe has the same methods of `Kind::Maybe` class. e.g:
+
+```ruby
+Kind::Maybe(Numeric)[5]
+Kind::Maybe(Numeric).new(5)
+Kind::Maybe(Numeric).wrap(5)
+
+# ---
+
+Kind::Optional(Numeric)[5]
+Kind::Optional(Numeric).new(5)
+Kind::Optional(Numeric).wrap(5)
 ```
 
 [⬆️ Back to Top](#table-of-contents-)
