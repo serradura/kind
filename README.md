@@ -48,6 +48,7 @@ One of the goals of this project is to do simple type checking like `"some strin
   - [Kind.of.\<Type\>.as_optional](#kindoftypeas_optional)
   - [Kind::Maybe(<Type>)](#kindmaybetype)
   - [Kind::Maybe#try](#kindmaybetry)
+  - [Kind::Maybe#try!](#kindmaybetry-1)
 - [Kind::Empty](#kindempty)
 - [Similar Projects](#similar-projects)
 - [Development](#development)
@@ -883,10 +884,11 @@ In these scenarios, you could check the given input type as optional and avoid u
 
 ```ruby
 def person_name(params)
-  Kind::Of::Hash.as_optional(params)
-                .map { |data| data if data.values_at(:first_name, :last_name).compact.size == 2 }
-                .map { |data| "#{data[:first_name]} #{data[:last_name]}" }
-                .value_or { 'John Doe' }
+  Kind::Of::Hash
+    .as_optional(params)
+    .map { |data| data if data.values_at(:first_name, :last_name).compact.size == 2 }
+    .map { |data| "#{data[:first_name]} #{data[:last_name]}" }
+    .value_or { 'John Doe' }
 end
 
 person_name('')   # "John Doe"
@@ -906,6 +908,17 @@ def person_name(params)
   else
     'John Doe'
   end
+end
+
+#
+# You can also use Kind::Optional(<Type>) to achieve the same behavior
+#
+def person_name(params)
+  Kind::Optional(Hash)
+    .wrap(params)
+    .map { |data| data if data.values_at(:first_name, :last_name).compact.size == 2 }
+    .map { |data| "#{data[:first_name]} #{data[:last_name]}" }
+    .value_or { 'John Doe' }
 end
 ```
 
@@ -1025,18 +1038,18 @@ Kind::Optional(Numeric).wrap(5)
 
 ### Kind::Maybe#try
 
-If you don't want to use a map to access the value, you could use the `#try` method to access it. So, if the value wasn't `nil` or `Kind::Undefined`, it will be returned.
+If you don't want to use `#map/#then` to access the value, you could use the `#try` method to access it. So, if the value wasn't `nil` or `Kind::Undefined`, the some monad will be returned.
 
 ```ruby
 object = 'foo'
 
-Kind::Maybe[object].try(:upcase) # "FOO"
+Kind::Maybe[object].try(:upcase).value # "FOO"
 
-Kind::Maybe[{}].try(:fetch, :number, 0) # 0
+Kind::Maybe[{}].try(:fetch, :number, 0).value # 0
 
-Kind::Maybe[{number: 1}].try(:fetch, :number) # 1
+Kind::Maybe[{number: 1}].try(:fetch, :number).value # 1
 
-Kind::Maybe[object].try { |value| value.upcase } # "FOO"
+Kind::Maybe[object].try { |value| value.upcase }.value # "FOO"
 
 #############
 # Nil value #
@@ -1044,9 +1057,9 @@ Kind::Maybe[object].try { |value| value.upcase } # "FOO"
 
 object = nil
 
-Kind::Maybe[object].try(:upcase) # nil
+Kind::Maybe[object].try(:upcase).value # nil
 
-Kind::Maybe[object].try { |value| value.upcase } # nil
+Kind::Maybe[object].try { |value| value.upcase }.value # nil
 
 #########################
 # Kind::Undefined value #
@@ -1054,12 +1067,26 @@ Kind::Maybe[object].try { |value| value.upcase } # nil
 
 object = Kind::Undefined
 
-Kind::Maybe[object].try(:upcase) # nil
+Kind::Maybe[object].try(:upcase).value # nil
 
-Kind::Maybe[object].try { |value| value.upcase } # nil
+Kind::Maybe[object].try { |value| value.upcase }.value # nil
 ```
 
-> **Note:** You can use the try method with the `Kind::Optional`.
+> **Note:** You can use the `#try` method with `Kind::Optional` objects.
+
+[⬆️ Back to Top](#table-of-contents-)
+
+### Kind::Maybe#try!
+
+Has the same behavior of its `#try`, but it will raise an error if the value doesn't respond to the expected method.
+
+```ruby
+Kind::Maybe[{}].try(:upcase)  # => #<Kind::Maybe::None:0x0000... @value=nil>
+
+Kind::Maybe[{}].try!(:upcase) # => NoMethodError (undefined method `upcase' for {}:Hash)
+```
+
+> **Note:** You can also use the `#try!` method with `Kind::Optional` objects.
 
 [⬆️ Back to Top](#table-of-contents-)
 
