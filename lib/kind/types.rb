@@ -98,7 +98,7 @@ module Kind
           kind_name = params[:kind_name]
           params[:kind_name_to_check] ||= kind_name
 
-          kind_checker = ::Module.new { extend Checkable }
+          kind_checker = ::Module.new { extend Checker::Protocol }
           kind_checker.module_eval("def self.__kind; #{params[:kind_name_to_check]}; end")
 
           kind_of_mod.instance_eval(KIND_OF % params)

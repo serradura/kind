@@ -4,7 +4,7 @@ module Kind
   module Maybe
     class Typed
       def initialize(kind)
-        @kind_checker = Kind.of(kind)
+        @kind_checker = Kind::Checker::Factory.create(kind)
       end
 
       def wrap(value)

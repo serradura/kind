@@ -4,12 +4,12 @@ require 'kind/version'
 
 require 'kind/empty'
 require 'kind/undefined'
+require 'kind/checker'
 require 'kind/maybe'
 
 require 'kind/error'
 require 'kind/of'
 require 'kind/is'
-require 'kind/checker'
 require 'kind/types'
 
 module Kind
@@ -25,30 +25,12 @@ module Kind
     raise ArgumentError, WRONG_NUMBER_OF_ARGUMENTS
   end
 
-  MODULE_OR_CLASS = 'Module/Class'.freeze
-
-  private_constant :MODULE_OR_CLASS
-
-  private_class_method def self.__checkers__
-    @__checkers__ ||= {}
-  end
-
-  __checkers__
-
   def self.of(kind = Undefined, object = Undefined)
     return Of if Undefined == kind && Undefined == object
 
     return Kind::Of.(kind, object) if Undefined != object
 
-    __checkers__[kind] ||= begin
-      kind_name = kind.name
-
-      if Kind::Of.const_defined?(kind_name, false)
-        Kind::Of.const_get(kind_name)
-      else
-        Checker.new(Kind::Of.(Module, kind, MODULE_OR_CLASS))
-      end
-    end
+    Kind::Checker::Factory.create(kind)
   end
 
   def self.of?(kind, *args)
@@ -87,7 +69,7 @@ module Kind
     end
 
     const_set(:Class, ::Module.new do
-      extend Checkable
+      extend Checker::Protocol
 
       def self.__kind; ::Class; end
 
@@ -109,7 +91,7 @@ module Kind
     end
 
     const_set(:Module, ::Module.new do
-      extend Checkable
+      extend Checker::Protocol
 
       def self.__kind_undefined(value)
         __kind_error(Kind::Undefined) if Kind::Undefined == value
@@ -165,7 +147,7 @@ module Kind
     end
 
     const_set(:Boolean, ::Module.new do
-      extend Checkable
+      extend Checker::Protocol
 
       def self.__kind; [TrueClass, FalseClass].freeze; end
 
@@ -220,7 +202,7 @@ module Kind
     end
 
     const_set(:Lambda, ::Module.new do
-      extend Checkable
+      extend Checker::Protocol
 
       def self.__kind; ::Proc; end
 
@@ -268,7 +250,7 @@ module Kind
     end
 
     const_set(:Callable, ::Module.new do
-      extend Checkable
+      extend Checker::Protocol
 
       def self.__kind; Object; end
 
