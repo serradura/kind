@@ -68,11 +68,13 @@ module Kind
 
       alias_method :then, :map
 
-      def try(method_name = Undefined, &block)
+      def try!(method_name = Undefined, &block)
         Kind.of.Symbol(method_name) if Undefined != method_name
 
         NONE_WITH_NIL_VALUE
       end
+
+      alias_method :try, :try!
 
       private_constant :INVALID_DEFAULT_ARG
     end
@@ -97,15 +99,30 @@ module Kind
 
       alias_method :then, :map
 
+      def try!(method_name = Undefined, *args, &block)
+        Kind::Of::Symbol(method_name) if Undefined != method_name
+
+        __try__(method_name, args, block)
+      end
+
       def try(method_name = Undefined, *args, &block)
-        fn = Undefined == method_name ? block : Kind.of.Symbol(method_name).to_proc
-
-        result = args.empty? ? fn.call(value) : fn.call(*args.unshift(value))
-
-        resolve(result)
+        if (Undefined != method_name && value.respond_to?(Kind::Of::Symbol(method_name))) ||
+           (Undefined == method_name && block)
+          __try__(method_name, args, block)
+        else
+          NONE_WITH_NIL_VALUE
+        end
       end
 
       private
+
+        def __try__(method_name = Undefined, args, block)
+          fn = Undefined == method_name ? block : method_name.to_proc
+
+          result = args.empty? ? fn.call(value) : fn.call(*args.unshift(value))
+
+          resolve(result)
+        end
 
         def resolve(result)
           return result if Maybe::None === result
