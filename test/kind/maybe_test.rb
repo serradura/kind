@@ -234,6 +234,91 @@ class Kind::MaybeTest < Minitest::Test
     assert_instance_of(Kind::Maybe::None, Kind::Maybe[Kind::Undefined].try { |value| value.upcase })
   end
 
+  def test_the_dig_method
+    [nil, 1, '', /x/].each do |data|
+      assert_nil(Kind::Maybe[data].dig(:foo).value)
+      assert_nil(Kind::Maybe[data].dig(:foom, :bar).value)
+    end
+
+    # ---
+
+    a = [1, 2, 3]
+
+    assert_equal(1, Kind::Maybe[a].dig(0).value)
+    assert_equal(2, Kind::Maybe[a].dig(1).value)
+    assert_equal(3, Kind::Maybe[a].dig(2).value)
+    assert_equal(3, Kind::Maybe[a].dig(-1).value)
+
+    assert_nil(Kind::Maybe[a].dig(3).value)
+    assert_nil(Kind::Maybe[a].dig('foo').value)
+    assert_nil(Kind::Maybe[a].dig(:foo, 'bar').value)
+    assert_nil(Kind::Maybe[a].dig(:foo, :bar, 'baz').value)
+
+    # ---
+
+    h = { foo: {bar: {baz: 1}}}
+
+    assert_equal({bar: {baz: 1}}, Kind::Maybe[h].dig(:foo).value)
+    assert_equal({baz: 1}, Kind::Maybe[h].dig(:foo, :bar).value)
+    assert_equal(1, Kind::Maybe[h].dig(:foo, :bar, :baz).value)
+
+    assert_nil(Kind::Maybe[h].dig('foo').value)
+    assert_nil(Kind::Maybe[h].dig(:foo, 'bar').value)
+    assert_nil(Kind::Maybe[h].dig(:foo, :bar, 'baz').value)
+
+    # --
+
+    g = { 'foo' => [10, 11, 12] }
+
+    assert_equal([10, 11, 12], Kind::Maybe[g].dig('foo').value)
+    assert_equal(10, Kind::Maybe[g].dig('foo', 0).value)
+    assert_equal(11, Kind::Maybe[g].dig('foo', 1).value)
+    assert_equal(12, Kind::Maybe[g].dig('foo', 2).value)
+    assert_equal(12, Kind::Maybe[g].dig('foo', -1).value)
+
+    assert_nil(Kind::Maybe[g].dig(:foo).value)
+    assert_nil(Kind::Maybe[g].dig(:foo, 0).value)
+
+    # --
+
+    i = { foo: [{'bar' => [1, 2]}, {baz: [3, 4]}] }
+
+    assert_equal(1, Kind::Maybe[i].dig(:foo, 0, 'bar', 0).value)
+    assert_equal(2, Kind::Maybe[i].dig(:foo, 0, 'bar', 1).value)
+    assert_equal(2, Kind::Maybe[i].dig(:foo, 0, 'bar', -1).value)
+
+    assert_nil(Kind::Maybe[i].dig(:foo, 0, 'bar', 2).value)
+
+    assert_equal(3, Kind::Maybe[i].dig(:foo, 1, :baz, 0).value)
+    assert_equal(4, Kind::Maybe[i].dig(:foo, 1, :baz, 1).value)
+    assert_equal(4, Kind::Maybe[i].dig(:foo, 1, :baz, -1).value)
+
+    assert_nil(Kind::Maybe[i].dig(:foo, 0, :baz, 2).value)
+
+    # --
+
+    s = Struct.new(:a, :b).new(101, 102)
+    o = OpenStruct.new(c: 103, d: 104)
+    b = { struct: s, ostruct: o, data: [s, o]}
+
+    assert_equal(101, Kind::Maybe[s].dig(:a).value)
+    assert_equal(102, Kind::Maybe[b].dig(:struct, :b).value)
+    assert_equal(102, Kind::Maybe[b].dig(:data, 0, :b).value)
+    assert_equal(102, Kind::Maybe[b].dig(:data, 0, 'b').value)
+
+    assert_equal(103, Kind::Maybe[o].dig(:c).value)
+    assert_equal(104, Kind::Maybe[b].dig(:ostruct, :d).value)
+    assert_equal(104, Kind::Maybe[b].dig(:data, 1, :d).value)
+    assert_equal(104, Kind::Maybe[b].dig(:data, 1, 'd').value)
+
+    assert_nil(Kind::Maybe[s].dig(:f).value)
+    assert_nil(Kind::Maybe[o].dig(:f).value)
+    assert_nil(Kind::Maybe[b].dig(:struct, :f).value)
+    assert_nil(Kind::Maybe[b].dig(:ostruct, :f).value)
+    assert_nil(Kind::Maybe[b].dig(:data, 0, :f).value)
+    assert_nil(Kind::Maybe[b].dig(:data, 1, :f).value)
+  end
+
   def test_the_try_method_with_bang
     assert_raises_with_message(Kind::Error, '"upcase" expected to be a kind of Symbol') do
       Kind::Maybe['foo'].try!('upcase')
