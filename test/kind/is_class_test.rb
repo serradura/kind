@@ -85,6 +85,12 @@ class Kind::IsClassTest < Minitest::Test
     refute_kind_is(:Set, Object, Hash, Array)
   end
 
+  def test_if_a_value_is_a_open_struct_class_or_subclass
+    assert_kind_is(:OpenStruct, OpenStruct, Class.new(OpenStruct))
+
+    refute_kind_is(:OpenStruct, Object, Hash, Array)
+  end
+
   def test_if_a_value_is_a_method_class_or_subclass
     assert_kind_is(:Method, Method, Class.new(Method))
 
