@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'kind/dig'
+
 module Kind
   module Maybe
     class Typed
@@ -76,6 +78,10 @@ module Kind
 
       alias_method :try, :try!
 
+      def dig(*keys)
+        NONE_WITH_NIL_VALUE
+      end
+
       private_constant :INVALID_DEFAULT_ARG
     end
 
@@ -112,6 +118,10 @@ module Kind
         else
           NONE_WITH_NIL_VALUE
         end
+      end
+
+      def dig(*keys)
+        resolve(Kind::Dig.call(value, keys))
       end
 
       private
