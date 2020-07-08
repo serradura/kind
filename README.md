@@ -49,6 +49,7 @@ One of the goals of this project is to do simple type checking like `"some strin
   - [Kind::Maybe(<Type>)](#kindmaybetype)
   - [Kind::Maybe#try](#kindmaybetry)
   - [Kind::Maybe#try!](#kindmaybetry-1)
+  - [Kind::Maybe#dig](#kindmaybedig)
 - [Kind::Empty](#kindempty)
 - [Similar Projects](#similar-projects)
 - [Development](#development)
@@ -458,6 +459,7 @@ The list of types (classes and modules) available to use with `Kind.of.*` or `Ki
 - `Kind.of.Range`
 - `Kind.of.Hash`
 - `Kind.of.Struct`
+- `Kind.of.OpenStruct`
 - `Kind.of.Enumerator`
 - `Kind.of.Set`
 - `Kind.of.Method`
@@ -1087,6 +1089,71 @@ Kind::Maybe[{}].try!(:upcase) # => NoMethodError (undefined method `upcase' for 
 ```
 
 > **Note:** You can also use the `#try!` method with `Kind::Optional` objects.
+
+[⬆️ Back to Top](#table-of-contents-)
+
+### Kind::Maybe#dig
+
+Has the same behavior of Ruby dig methods ([Hash](https://ruby-doc.org/core-2.3.0/Hash.html#method-i-dig), [Array](https://ruby-doc.org/core-2.3.0/Array.html#method-i-dig), [Struct](https://ruby-doc.org/core-2.3.0/Struct.html#method-i-dig), [OpenStruct](https://ruby-doc.org/stdlib-2.3.0/libdoc/ostruct/rdoc/OpenStruct.html#method-i-dig)), but it will not raise an error if some value can't be digged.
+
+```ruby
+[nil, 1, '', /x/].each do |value|
+  p Kind::Maybe[value].dig(:foo).value # nil
+end
+
+# --
+
+a = [1, 2, 3]
+
+Kind::Maybe[a].dig(0).value # 1
+
+Kind::Maybe[a].dig(3).value # nil
+
+# --
+
+h = { foo: {bar: {baz: 1}}}
+
+Kind::Maybe[h].dig(:foo).value             # {bar: {baz: 1}}
+Kind::Maybe[h].dig(:foo, :bar).value       # {baz: 1}
+Kind::Maybe[h].dig(:foo, :bar, :baz).value # 1
+
+Kind::Maybe[h].dig(:foo, :bar, 'baz').value # nil
+
+# --
+
+i = { foo: [{'bar' => [1, 2]}, {baz: [3, 4]}] }
+
+Kind::Maybe[i].dig(:foo, 0, 'bar', 0).value # 1
+Kind::Maybe[i].dig(:foo, 0, 'bar', 1).value # 2
+Kind::Maybe[i].dig(:foo, 0, 'bar', -1).value # 2
+
+Kind::Maybe[i].dig(:foo, 0, 'bar', 2).value # nil
+
+# --
+
+s = Struct.new(:a, :b).new(101, 102)
+o = OpenStruct.new(c: 103, d: 104)
+b = { struct: s, ostruct: o, data: [s, o]}
+
+Kind::Maybe[s].dig(:a).value            # 101
+Kind::Maybe[b].dig(:struct, :b).value   # 102
+Kind::Maybe[b].dig(:data, 0, :b).value  # 102
+Kind::Maybe[b].dig(:data, 0, 'b').value # 102
+
+Kind::Maybe[o].dig(:c).value            # 103
+Kind::Maybe[b].dig(:ostruct, :d).value  # 104
+Kind::Maybe[b].dig(:data, 1, :d).value  # 104
+Kind::Maybe[b].dig(:data, 1, 'd').value # 104
+
+Kind::Maybe[s].dig(:f).value           # nil
+Kind::Maybe[o].dig(:f).value           # nil
+Kind::Maybe[b].dig(:struct, :f).value  # nil
+Kind::Maybe[b].dig(:ostruct, :f).value # nil
+Kind::Maybe[b].dig(:data, 0, :f).value # nil
+Kind::Maybe[b].dig(:data, 1, :f).value # nil
+```
+
+> **Note:** You can also use the `#dig` method with `Kind::Optional` objects.
 
 [⬆️ Back to Top](#table-of-contents-)
 
