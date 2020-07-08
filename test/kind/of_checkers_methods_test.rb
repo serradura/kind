@@ -253,6 +253,25 @@ class Kind::OfCheckersMethodsTest < Minitest::Test
     assert_raises_kind_error('"default" expected to be a kind of Set') { Kind.of.Set(nil, or: 'default') }
   end
 
+  # -- Class: OpenStruct
+
+  def test_if_the_object_is_a_kind_of_open_struct
+    assert_raises_kind_error('[] expected to be a kind of OpenStruct') { Kind.of.OpenStruct([]) }
+    assert_raises_kind_error('nil expected to be a kind of OpenStruct') { Kind.of.OpenStruct(nil) }
+
+    # ---
+
+    object = OpenStruct.new
+
+    assert_same(object, Kind.of.OpenStruct(object))
+
+    assert_equal(object, Kind.of.OpenStruct(nil, or: object))
+
+    # ---
+
+    assert_raises_kind_error('"default" expected to be a kind of OpenStruct') { Kind.of.OpenStruct(nil, or: 'default') }
+  end
+
   # -- Class: Method
 
   def test_if_the_object_is_a_kind_of_method

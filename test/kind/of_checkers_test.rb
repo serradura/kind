@@ -218,6 +218,23 @@ class Kind::OfCheckersTest < Minitest::Test
     )
   end
 
+  # --- OpenStruct
+
+  def test_if_a_value_is_a_kind_of_open_struct
+    ostruct = OpenStruct.new
+
+    assert_kind_checker(:OpenStruct,
+      instance: {
+        valid: [ostruct],
+        invalid: [[], {}]
+      },
+      class: {
+        valid: [OpenStruct],
+        invalid: [Hash, Array]
+      }
+    )
+  end
+
   # --- Method
 
   def test_if_a_value_is_a_kind_of_method

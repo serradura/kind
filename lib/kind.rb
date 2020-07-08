@@ -2,6 +2,8 @@
 
 require 'kind/version'
 
+require 'ostruct'
+
 require 'kind/empty'
 require 'kind/undefined'
 require 'kind/checker'
@@ -294,7 +296,7 @@ module Kind
     # -- Classes
     [
       String, Symbol, Numeric, Integer, Float, Regexp, Time,
-      Array, Range, Hash, Struct, Enumerator, Set,
+      Array, Range, Hash, Struct, Enumerator, Set, OpenStruct,
       Method, Proc,
       IO, File
     ].each { |klass| Types.add(klass) }
