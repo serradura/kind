@@ -1,12 +1,28 @@
-![Ruby](https://img.shields.io/badge/ruby-2.2+-ruby.svg?colorA=99004d&colorB=cc0066)
-[![Gem](https://img.shields.io/gem/v/kind.svg?style=flat-square)](https://rubygems.org/gems/kind)
-[![Build Status](https://travis-ci.com/serradura/kind.svg?branch=master)](https://travis-ci.com/serradura/kind)
-[![Maintainability](https://api.codeclimate.com/v1/badges/711329decb2806ccac95/maintainability)](https://codeclimate.com/github/serradura/kind/maintainability)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/711329decb2806ccac95/test_coverage)](https://codeclimate.com/github/serradura/kind/test_coverage)
+<p align="center">
+  <h1 align="center">🤷 kind</h1>
+  <p align="center"><i>A simple type system (at runtime) for Ruby - free of dependencies.</i></p>
+  <br>
+</p>
 
-# Kind <!-- omit in toc -->
+<p align="center">
+  <img src="https://img.shields.io/badge/ruby->%3D%202.2.0-ruby.svg?colorA=99004d&colorB=cc0066" alt="Ruby">
 
-A simple type system (at runtime) for Ruby - free of dependencies.
+  <a href="https://rubygems.org/gems/kind">
+    <img alt="Gem" src="https://img.shields.io/gem/v/kind.svg?style=flat-square">
+  </a>
+
+  <a href="https://travis-ci.com/serradura/kind">
+    <img alt="Build Status" src="https://travis-ci.com/serradura/kind.svg?branch=main">
+  </a>
+
+  <a href="https://codeclimate.com/github/serradura/kind/maintainability">
+    <img alt="Maintainability" src="https://api.codeclimate.com/v1/badges/711329decb2806ccac95/maintainability">
+  </a>
+
+  <a href="https://codeclimate.com/github/serradura/kind/test_coverage">
+    <img alt="Test Coverage" src="https://api.codeclimate.com/v1/badges/711329decb2806ccac95/test_coverage">
+  </a>
+</p>
 
 **Motivation:**
 
