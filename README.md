@@ -12,7 +12,7 @@
   </a>
 
   <a href="https://travis-ci.com/serradura/kind">
-    <img alt="Build Status" src="https://travis-ci.com/serradura/kind.svg?branch=main">
+    <img alt="Build Status" src="https://travis-ci.com/serradura/kind.svg?branch=master">
   </a>
 
   <a href="https://codeclimate.com/github/serradura/kind/maintainability">
