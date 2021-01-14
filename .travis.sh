@@ -17,4 +17,5 @@ fi
 
 if [[ $ruby_v =~ '2.5.' ]] || [[ $ruby_v =~ '2.6.' ]] || [[ $ruby_v =~ '2.7.' ]]; then
   ACTIVEMODEL_VERSION='6.0' bundle update && bundle exec rake test
+  ACTIVEMODEL_VERSION='6.0' bundle update && bundle exec rake test
 fi

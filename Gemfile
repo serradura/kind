@@ -13,6 +13,7 @@ activemodel = case activemodel_version
               when '5.1' then '5.1.7'
               when '5.2' then '5.2.4'
               when '6.0' then '6.0.0'
+              when '6.1' then '6.1.1'
               end
 
 group :test do

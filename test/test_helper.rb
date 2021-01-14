@@ -9,7 +9,7 @@ $LOAD_PATH.unshift File.expand_path('../lib', __dir__)
 
 require 'kind'
 
-ENV.fetch('ACTIVEMODEL_VERSION', '6.1.0').tap do |active_model_version|
+ENV.fetch('ACTIVEMODEL_VERSION', '6.2.0').tap do |active_model_version|
   if active_model_version < '6.1.0'
     require 'kind/active_model/validation'
 
