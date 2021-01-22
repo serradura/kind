@@ -36,7 +36,7 @@ module Kind
 
     def add(kind, name: nil)
       kind_name = Kind::Module[kind].name
-      checker = name ? Kind::Of.(::String, name) : kind_name
+      checker = name ? Kind::String[name] : kind_name
 
       if checker.include?(COLONS)
         add_kind_with_namespace(checker, method_name: name)

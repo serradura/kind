@@ -3,11 +3,11 @@
 module Kind
   module Is
     def self.call(expected, object)
-      __call__(Kind::Of.Module(expected), object)
+      __call__(Kind::Module[expected], object)
     end
 
     def self.__call__(expected_kind, object)
-      kind = Kind::Of.Module(object)
+      kind = Kind::Module[object]
 
       if kind.is_a?(::Class)
         kind <= expected_kind || false

@@ -94,7 +94,7 @@ module Kind
     end)
 
     def self.Class?(*args)
-      Kind::Of::Class.instance?(*args)
+      Kind::Class?(*args)
     end
 
     # -- Module
@@ -144,7 +144,7 @@ module Kind
     end)
 
     def self.Module?(*args)
-      Kind::Of::Module.instance?(*args)
+      Kind::Module?(*args)
     end
 
     # -- Boolean
