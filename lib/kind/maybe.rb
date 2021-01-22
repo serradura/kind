@@ -71,7 +71,7 @@ module Kind
       alias_method :then, :map
 
       def try!(method_name = Undefined, *args, &block)
-        Kind::Symbol.(method_name) if Undefined != method_name
+        Kind::Symbol[method_name] if Undefined != method_name
 
         NONE_WITH_NIL_VALUE
       end
@@ -128,7 +128,7 @@ module Kind
       private
 
         def __try_method__(method_name, args)
-          __try_block__(Kind::Symbol.(method_name).to_proc, args)
+          __try_block__(Kind::Symbol[method_name].to_proc, args)
         end
 
         def __try_block__(block, args)

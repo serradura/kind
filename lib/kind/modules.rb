@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-module Kind
-  module Symbol
-    def self.call(value); Of.(::Symbol, value) ;end
-  end
-end
+require 'kind/modules/01_checker_utils'
+require 'kind/modules/02_checker_methods'
+require 'kind/modules/symbol'
