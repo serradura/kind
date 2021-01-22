@@ -42,17 +42,27 @@ module Kind
     Kind.of(kind).instance?(*args)
   end
 
+  def self.of_class?(value)
+    value.kind_of?(::Class)
+  end
+
+  def self.of_module?(value)
+    ::Module == value || (value.is_a?(::Module) && !of_class?(value))
+  end
+
   # --------------------- #
   # Special type checkers #
   # --------------------- #
 
   module Is
     def self.Class(value)
-      value.kind_of?(::Class)
+      warn "[DEPRECATION] `Kind::Is.Class` is deprecated.  Please use `Kind.of_class?` instead."
+      Kind.of_class?(value)
     end
 
     def self.Module(value)
-      ::Module == value || (value.is_a?(::Module) && !self.Class(value))
+      warn "[DEPRECATION] `Kind::Is.Module` is deprecated.  Please use `Kind.of_module?` instead."
+      Kind.of_module?(value)
     end
 
     def self.Boolean(value)
@@ -78,7 +88,7 @@ module Kind
 
       def self.__kind; ::Class; end
 
-      def self.class?(value); Kind::Is.Class(value); end
+      def self.class?(value); Kind.of_class?(value); end
 
       def self.__is_instance__(value); class?(value); end
     end)
@@ -109,14 +119,14 @@ module Kind
       end
 
       def self.__kind_of(value)
-        return value if Kind::Is.Module(value)
+        return value if Kind.of_module?(value)
 
         __kind_error(value)
       end
 
       def self.__kind; ::Module; end
 
-      def self.class?(value); Kind::Is.Module(value); end
+      def self.class?(value); Kind.of_module?(value); end
 
       def self.instance(value, options = Empty::HASH)
         default = options[:or]
