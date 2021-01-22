@@ -23,14 +23,14 @@ class Kind::MaybeTest < Minitest::Test
     assert_raises(NotImplementedError) { maybe_result.value_or { 3 } }
   end
 
-  def test_maybe_when_some
+  def test_maybe_some
     assert_predicate(Kind::Maybe.new(2), :some?)
 
     refute_predicate(Kind::Maybe.new(nil), :some?)
     refute_predicate(Kind::Maybe.new(Kind::Undefined), :some?)
   end
 
-  def test_maybe_when_none
+  def test_maybe_none
     assert_predicate(Kind::Maybe.new(nil), :none?)
     assert_predicate(Kind::Maybe.new(Kind::Undefined), :none?)
 
@@ -93,7 +93,7 @@ class Kind::MaybeTest < Minitest::Test
     ) { optional3.value_or }
   end
 
-  def test_maybe_map_when_none
+  def test_map_when_maybe_is_none
     optional1 = Kind::Maybe.new(2)
     optional2 = optional1.map(&:to_s)
     optional3 = optional2.map { |value| value * 2 }
@@ -110,7 +110,7 @@ class Kind::MaybeTest < Minitest::Test
     refute_same(optional2, optional3)
   end
 
-  def test_maybe_when_map_returns_nil
+  def test_map_returning_a_nil_value
     optional1 = Kind::Maybe.new(2)
     optional2 = optional1.map { nil }
     optional3 = optional2.map { |value| value * 2 }
@@ -126,7 +126,7 @@ class Kind::MaybeTest < Minitest::Test
     assert_predicate(optional3, :none?)
   end
 
-  def test_maybe_when_map_returns_undefined
+  def test_map_returning_an_undefined_value
     optional1 = Kind::Maybe.new(3)
     optional2 = optional1.map { Kind::Undefined }
     optional3 = optional2.map { |value| value * 3 }
@@ -142,7 +142,7 @@ class Kind::MaybeTest < Minitest::Test
     assert_predicate(optional3, :none?)
   end
 
-  def test_maybe_constructor_alias
+  def test_the_constructor_alias
     assert_instance_of(Kind::Maybe::Some, Kind::Maybe[1])
 
     assert_instance_of(Kind::Maybe::None, Kind::Maybe[nil])
@@ -156,7 +156,7 @@ class Kind::MaybeTest < Minitest::Test
     assert_instance_of(Kind::Maybe::None, Kind::Maybe.wrap(Kind::Undefined))
   end
 
-  def test_then_as_an_alias_of_map
+  def test_then_as_a_map_alias
     result1 =
       Kind::Maybe[5]
         .then { |value| value * 5 }
@@ -367,7 +367,7 @@ class Kind::MaybeTest < Minitest::Test
     assert_instance_of(Kind::Maybe::None, Kind::Maybe[Kind::Undefined].try! { |value| value.upcase })
   end
 
-  def test_that_optional_is_an_maybe_alias
+  def test_that_optional_is_a_maybe_alias
     assert_equal(Kind::Maybe, Kind::Optional)
 
     # ---
@@ -473,7 +473,7 @@ class Kind::MaybeTest < Minitest::Test
     end
   end
 
-  def test_the_maybe_type_checker
+  def test_the_typed_maybe
     assert_predicate(Kind::Maybe(Hash)[''], :none?)
     assert_predicate(Kind::Maybe(Hash).new([]), :none?)
     assert_predicate(Kind::Maybe(Hash).wrap(''), :none?)
