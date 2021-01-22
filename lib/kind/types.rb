@@ -99,7 +99,7 @@ module Kind
           params[:kind_name_to_check] ||= kind_name
 
           kind_checker = ::Module.new { extend Checker::Protocol }
-          kind_checker.module_eval("def self.__kind; #{params[:kind_name_to_check]}; end")
+          kind_checker.module_eval("def self.__kind; ::#{params[:kind_name_to_check]}; end")
 
           kind_of_mod.instance_eval(KIND_OF % params)
           kind_of_mod.const_set(method_name, kind_checker)

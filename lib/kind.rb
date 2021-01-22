@@ -5,13 +5,16 @@ require 'kind/version'
 require 'ostruct'
 
 require 'kind/empty'
-require 'kind/undefined'
-require 'kind/checker'
-require 'kind/maybe'
-
 require 'kind/error'
+require 'kind/undefined'
+
 require 'kind/of'
 require 'kind/is'
+require 'kind/modules'
+
+require 'kind/maybe'
+require 'kind/checker'
+
 require 'kind/types'
 
 module Kind
@@ -295,7 +298,7 @@ module Kind
 
     # -- Classes
     [
-      String, Symbol, Numeric, Integer, Float, Regexp, Time,
+      String, ::Symbol, Numeric, Integer, Float, Regexp, Time,
       Array, Range, Hash, Struct, Enumerator, Set, OpenStruct,
       Method, Proc,
       IO, File
