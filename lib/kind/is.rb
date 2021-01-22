@@ -9,7 +9,7 @@ module Kind
     def self.__call__(expected_kind, object)
       kind = Kind::Of.Module(object)
 
-      if kind.is_a?(Class)
+      if kind.is_a?(::Class)
         kind <= expected_kind || false
       else
         kind == expected_kind || kind.is_a?(expected_kind)

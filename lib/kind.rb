@@ -66,7 +66,7 @@ module Kind
     end
 
     def self.Boolean(value)
-      Kind.of.Class(value) <= TrueClass || value <= FalseClass
+      Kind::Class[value] <= TrueClass || value <= FalseClass
     end
 
     def self.Callable(value)
