@@ -308,17 +308,17 @@ module Kind
 
     # -- Classes
     [
-      String, ::Symbol, Numeric, Integer, Float, Regexp, Time,
-      Array, Range, Hash, Struct, Enumerator, Set, OpenStruct,
-      Method, Proc,
-      IO, File
+      ::String, ::Symbol, ::Numeric, ::Integer, ::Float, ::Regexp, ::Time,
+      ::Array, ::Range, ::Hash, ::Struct, ::Enumerator, ::Set, ::OpenStruct,
+      ::Method, ::Proc,
+      ::IO, ::File
     ].each { |klass| Types.add(klass) }
 
-    Types.add(Queue, name: 'Queue'.freeze)
+    Types.add(::Queue, name: 'Queue'.freeze)
 
     # -- Modules
     [
-      Enumerable, Comparable
+      ::Enumerable, ::Comparable
     ].each { |klass| Types.add(klass) }
 
     # -- Kind::Of::Maybe

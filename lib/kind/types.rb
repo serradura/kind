@@ -38,7 +38,7 @@ module Kind
 
     def add(kind, name: nil)
       kind_name = Kind.of.Module(kind).name
-      checker = name ? Kind::Of.(String, name) : kind_name
+      checker = name ? Kind::Of.(::String, name) : kind_name
 
       if checker.include?(COLONS)
         add_kind_with_namespace(checker, method_name: name)
@@ -108,7 +108,7 @@ module Kind
 
         unless kind_is_mod.respond_to?(method_name)
           kind_is_mod.instance_eval(KIND_IS % params)
-          kind_is_mod.const_set(method_name, Module.new) if create_kind_is_mod
+          kind_is_mod.const_set(method_name, ::Module.new) if create_kind_is_mod
         end
       end
   end

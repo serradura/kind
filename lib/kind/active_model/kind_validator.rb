@@ -43,7 +43,7 @@ class KindValidator < ActiveModel::EachValidator
     CLASS_OR_MODULE = 'Class/Module'.freeze
 
     def kind_is(expected, value)
-      return kind_is_not(expected, value) unless expected.kind_of?(Array)
+      return kind_is_not(expected, value) unless expected.kind_of?(::Array)
 
       result = expected.map { |kind| kind_is_not(kind, value) }.compact
 
@@ -52,11 +52,11 @@ class KindValidator < ActiveModel::EachValidator
 
     def kind_is_not(expected, value)
       case expected
-      when Class
+      when ::Class
         return if expected == Kind.of.Class(value) || value < expected
 
         "must be the class or a subclass of `#{expected.name}`"
-      when Module
+      when ::Module
         return if value.kind_of?(Class) && value <= expected
         return if expected == Kind.of.Module(value) || value.kind_of?(expected)
 
@@ -81,7 +81,7 @@ class KindValidator < ActiveModel::EachValidator
     end
 
     def array_with(expected, value)
-      return if value.kind_of?(Array) && !value.empty? && (value - Kind.of.Array(expected)).empty?
+      return if value.kind_of?(::Array) && !value.empty? && (value - Kind::Array[expected]).empty?
 
       "must be an array with: #{expected.join(', ')}"
     end
@@ -89,7 +89,7 @@ class KindValidator < ActiveModel::EachValidator
     def array_of(expected, value)
       types = Array(expected)
 
-      return if value.kind_of?(Array) && !value.empty? && value.all? { |value| types.any? { |type| value.kind_of?(type) } }
+      return if value.kind_of?(::Array) && !value.empty? && value.all? { |value| types.any? { |type| value.kind_of?(type) } }
 
       "must be an array of: #{types.map { |klass| klass.name }.join(', ')}"
     end
