@@ -71,7 +71,7 @@ module Kind
       alias_method :then, :map
 
       def try!(method_name = Undefined, *args, &block)
-        Kind.of.Symbol(method_name) if Undefined != method_name
+        Kind::Symbol.(method_name) if Undefined != method_name
 
         NONE_WITH_NIL_VALUE
       end
@@ -106,18 +106,19 @@ module Kind
       alias_method :then, :map
 
       def try!(method_name = Undefined, *args, &block)
-        Kind::Of::Symbol(method_name) if Undefined != method_name
+        return __try_block__(block, args) if block
 
-        __try__(method_name, args, block)
+        return __try_method__(method_name, args) if Undefined != method_name
+
+        NONE_WITH_NIL_VALUE
       end
 
       def try(method_name = Undefined, *args, &block)
-        if (Undefined != method_name && value.respond_to?(Kind::Of::Symbol(method_name))) ||
-           (Undefined == method_name && block)
-          __try__(method_name, args, block)
-        else
-          NONE_WITH_NIL_VALUE
-        end
+        return __try_block__(block, args) if block
+
+        return __try_method__(method_name, args) if value.respond_to?(method_name)
+
+        NONE_WITH_NIL_VALUE
       end
 
       def dig(*keys)
@@ -126,10 +127,12 @@ module Kind
 
       private
 
-        def __try__(method_name = Undefined, args, block)
-          fn = Undefined == method_name ? block : method_name.to_proc
+        def __try_method__(method_name, args)
+          __try_block__(Kind::Symbol.(method_name).to_proc, args)
+        end
 
-          result = args.empty? ? fn.call(value) : fn.call(*args.unshift(value))
+        def __try_block__(block, args)
+          result = args.empty? ? block.call(value) : block.call(*args.unshift(value))
 
           resolve(result)
         end
