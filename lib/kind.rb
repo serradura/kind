@@ -19,26 +19,6 @@ require 'kind/checker'
 require 'kind/types'
 
 module Kind
-  WRONG_NUMBER_OF_ARGUMENTS = 'wrong number of arguments (given 1, expected 2)'.freeze
-
-  private_constant :WRONG_NUMBER_OF_ARGUMENTS
-
-  def self.is(expected = Undefined, object = Undefined)
-    return Is if Undefined == expected && Undefined == object
-
-    return Kind::Is.(expected, object) if Undefined != object
-
-    raise ArgumentError, WRONG_NUMBER_OF_ARGUMENTS
-  end
-
-  def self.of(kind = Undefined, object = Undefined)
-    return Of if Undefined == kind && Undefined == object
-
-    return Kind::Of.(kind, object) if Undefined != object
-
-    Kind::Checker::Factory.create(kind)
-  end
-
   def self.of?(kind, *args)
     CheckerUtils.kind_of?(kind, args)
   end
@@ -49,6 +29,26 @@ module Kind
 
   def self.of_module?(value)
     ::Module == value || (value.is_a?(::Module) && !of_class?(value))
+  end
+
+  def self.of_module_or_class(value)
+    Kind::Of.(::Module, value, 'Module/Class')
+  end
+
+  def self.is(expected = Undefined, object = Undefined)
+    return Is if Undefined == expected && Undefined == object
+
+    return Kind::Is.(expected, object) if Undefined != object
+
+    raise ArgumentError, 'wrong number of arguments (given 1, expected 2)'
+  end
+
+  def self.of(kind = Undefined, object = Undefined)
+    return Of if Undefined == kind && Undefined == object
+
+    return Kind::Of.(kind, object) if Undefined != object
+
+    Kind::Checker::Factory.create(kind)
   end
 
   # --------------------- #
