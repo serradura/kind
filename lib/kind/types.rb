@@ -35,7 +35,7 @@ module Kind
     private_constant :KIND_OF, :KIND_IS, :COLONS
 
     def add(kind, name: nil)
-      kind_name = Kind.of.Module(kind).name
+      kind_name = Kind::Module[kind].name
       checker = name ? Kind::Of.(::String, name) : kind_name
 
       if checker.include?(COLONS)

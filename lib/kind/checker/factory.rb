@@ -26,7 +26,7 @@ module Kind
           if Kind::Of.const_defined?(kind_name, false)
             Kind::Of.const_get(kind_name)
           else
-            Kind::Checker.new(Kind::Of.(Module, kind, MODULE_OR_CLASS))
+            Kind::Checker.new(Kind::Of.(::Module, kind, MODULE_OR_CLASS))
           end
         end
       end
