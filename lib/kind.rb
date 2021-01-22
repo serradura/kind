@@ -2,6 +2,7 @@
 
 require 'kind/version'
 
+require 'set'
 require 'ostruct'
 
 require 'kind/empty'
