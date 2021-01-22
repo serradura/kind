@@ -12,8 +12,8 @@ module Kind
   end
 
   def self.Module?(*values)
-    kind_of_by(
-      fn: -> value { Kind.of_module?(kind) },
+    CheckerUtils.kind_of_by(
+      fn: -> value { Kind.of_module?(value) },
       values: values
     )
   end

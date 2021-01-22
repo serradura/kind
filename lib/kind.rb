@@ -39,7 +39,7 @@ module Kind
   end
 
   def self.of?(kind, *args)
-    Kind.of(kind).instance?(*args)
+    CheckerUtils.kind_of?(kind, args)
   end
 
   def self.of_class?(value)
