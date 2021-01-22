@@ -27,9 +27,7 @@ module Kind
     RUBY
 
     KIND_IS = <<-RUBY
-      def self.%{method_name}(value = Undefined)
-        return Kind::Is::%{kind_name} if Undefined == value
-
+      def self.%{method_name}(value)
         Kind::Is.__call__(::%{kind_name_to_check}, value)
       end
     RUBY
