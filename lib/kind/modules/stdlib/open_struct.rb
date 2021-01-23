@@ -2,12 +2,12 @@
 
 module Kind
   module OpenStruct
-    extend self, CheckerMethods
+    extend self, Core::Checker
 
     def __kind__; ::OpenStruct; end
   end
 
   def self.OpenStruct?(*values)
-    CheckerUtils.kind_of?(::OpenStruct, values)
+    Core::Utils.kind_of?(::OpenStruct, values)
   end
 end

@@ -2,12 +2,12 @@
 
 module Kind
   module Class
-    extend self, CheckerMethods
+    extend self, Core::Checker
 
     def __kind__; ::Class; end
   end
 
   def self.Class?(*values)
-    CheckerUtils.kind_of?(::Class, values)
+    Core::Utils.kind_of?(::Class, values)
   end
 end

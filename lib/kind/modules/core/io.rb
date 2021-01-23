@@ -2,12 +2,12 @@
 
 module Kind
   module IO
-    extend self, CheckerMethods
+    extend self, Core::Checker
 
     def __kind__; ::IO; end
   end
 
   def self.IO?(*values)
-    CheckerUtils.kind_of?(::IO, values)
+    Core::Utils.kind_of?(::IO, values)
   end
 end

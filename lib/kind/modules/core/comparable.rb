@@ -2,12 +2,12 @@
 
 module Kind
   module Comparable
-    extend self, CheckerMethods
+    extend self, Core::Checker
 
     def __kind__; ::Comparable; end
   end
 
   def self.Comparable?(*values)
-    CheckerUtils.kind_of?(::Comparable, values)
+    Core::Utils.kind_of?(::Comparable, values)
   end
 end

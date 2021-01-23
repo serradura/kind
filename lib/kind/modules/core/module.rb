@@ -2,7 +2,7 @@
 
 module Kind
   module Module
-    extend self, CheckerMethods
+    extend self, Core::Checker
 
     def __kind__; ::Module; end
 
@@ -12,9 +12,8 @@ module Kind
   end
 
   def self.Module?(*values)
-    CheckerUtils.kind_of_by(
-      fn: -> value { Kind.of_module?(value) },
-      values: values
-    )
+    Core::Utils.kind(of: values, by: -> value {
+      Kind.of_module?(value)
+    })
   end
 end

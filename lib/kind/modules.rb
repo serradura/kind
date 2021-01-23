@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require 'kind/modules/checker_utils'
-require 'kind/modules/checker_methods'
-
 require 'kind/modules/core/array'
 require 'kind/modules/core/class'
 require 'kind/modules/core/comparable'

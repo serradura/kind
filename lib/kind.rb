@@ -5,6 +5,7 @@ require 'kind/version'
 require 'set'
 require 'ostruct'
 
+require 'kind/core'
 require 'kind/empty'
 require 'kind/error'
 require 'kind/undefined'
@@ -20,7 +21,7 @@ require 'kind/types'
 
 module Kind
   def self.of?(kind, *args)
-    CheckerUtils.kind_of?(kind, args)
+    Core::Utils.kind_of?(kind, args)
   end
 
   def self.of_class?(value)

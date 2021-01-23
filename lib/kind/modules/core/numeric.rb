@@ -2,12 +2,12 @@
 
 module Kind
   module Numeric
-    extend self, CheckerMethods
+    extend self, Core::Checker
 
     def __kind__; ::Numeric; end
   end
 
   def self.Numeric?(*values)
-    CheckerUtils.kind_of?(::Numeric, values)
+    Core::Utils.kind_of?(::Numeric, values)
   end
 end

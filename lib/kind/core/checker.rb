@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Kind
-  module CheckerMethods
+  module Core::Checker
     def __kind_name__
       __kind__.name
     end

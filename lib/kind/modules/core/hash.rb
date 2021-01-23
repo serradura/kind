@@ -2,12 +2,12 @@
 
 module Kind
   module Hash
-    extend self, CheckerMethods
+    extend self, Core::Checker
 
     def __kind__; ::Hash; end
   end
 
   def self.Hash?(*values)
-    CheckerUtils.kind_of?(::Hash, values)
+    Core::Utils.kind_of?(::Hash, values)
   end
 end

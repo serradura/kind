@@ -2,12 +2,12 @@
 
 module Kind
   module Array
-    extend self, CheckerMethods
+    extend self, Core::Checker
 
     def __kind__; ::Array; end
   end
 
   def self.Array?(*values)
-    CheckerUtils.kind_of?(::Array, values)
+    Core::Utils.kind_of?(::Array, values)
   end
 end

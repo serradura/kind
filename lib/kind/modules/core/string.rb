@@ -2,12 +2,12 @@
 
 module Kind
   module String
-    extend self, CheckerMethods
+    extend self, Core::Checker
 
     def __kind__; ::String; end
   end
 
   def self.String?(*values)
-    CheckerUtils.kind_of?(::String, values)
+    Core::Utils.kind_of?(::String, values)
   end
 end
