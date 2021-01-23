@@ -3,17 +3,8 @@
 module Kind
   module Is
     def self.call(expected, object)
-      __call__(Kind::Module[expected], object)
-    end
-
-    def self.__call__(expected_kind, object)
-      kind = Kind::Module[object]
-
-      if kind.is_a?(::Class)
-        kind <= expected_kind || false
-      else
-        kind == expected_kind || kind.is_a?(expected_kind)
-      end
+      warn "[DEPRECATION] `Kind::Is.call` is deprecated.  Please use `Kind::Core::Utils.is?` instead."
+      Core::Utils.is?(expected, object)
     end
   end
 end

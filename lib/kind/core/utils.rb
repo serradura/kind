@@ -11,5 +11,19 @@ module Kind
         value.kind_of?(kind)
       })
     end
+
+    def self.is?(expected, value)
+      is_kind(Kind::Module[expected], value)
+    end
+
+    def self.is_kind(expected_kind, value)
+      kind = Kind::Module[value]
+
+      if kind.kind_of?(::Class)
+        kind <= expected_kind || false
+      else
+        kind == expected_kind || kind.kind_of?(expected_kind)
+      end
+    end
   end
 end

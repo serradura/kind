@@ -39,7 +39,7 @@ module Kind
   def self.is(expected = Undefined, object = Undefined)
     return Is if Undefined == expected && Undefined == object
 
-    return Kind::Is.(expected, object) if Undefined != object
+    return Core::Utils.is?(expected, object) if Undefined != object
 
     raise ArgumentError, 'wrong number of arguments (given 1, expected 2)'
   end
