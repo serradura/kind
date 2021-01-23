@@ -10,14 +10,13 @@ require 'kind/empty'
 require 'kind/error'
 require 'kind/undefined'
 
-require 'kind/of'
-require 'kind/is'
 require 'kind/modules'
-
 require 'kind/maybe'
-require 'kind/checker'
 
-require 'kind/types'
+require 'kind/deprecation/of'
+require 'kind/deprecation/is'
+require 'kind/deprecation/checker'
+require 'kind/deprecation/types'
 
 module Kind
   def self.of?(kind, *args)
