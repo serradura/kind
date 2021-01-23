@@ -24,3 +24,7 @@ require 'kind/modules/core/time'
 
 require 'kind/modules/stdlib/open_struct'
 require 'kind/modules/stdlib/set'
+
+require 'kind/modules/custom/boolean'
+require 'kind/modules/custom/callable'
+require 'kind/modules/custom/lambda'
