@@ -33,7 +33,7 @@ module Kind
   end
 
   def self.of_module_or_class(value)
-    Kind::Of.(::Module, value, 'Module/Class')
+    Core::Utils.kind_of!(::Module, value, 'Module/Class')
   end
 
   def self.is(expected = Undefined, object = Undefined)
@@ -47,7 +47,7 @@ module Kind
   def self.of(kind = Undefined, object = Undefined)
     return Of if Undefined == kind && Undefined == object
 
-    return Kind::Of.(kind, object) if Undefined != object
+    return Core::Utils.kind_of!(kind, object) if Undefined != object
 
     Kind::Checker::Factory.create(kind)
   end

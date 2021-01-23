@@ -12,6 +12,12 @@ module Kind
       })
     end
 
+    def self.kind_of!(kind, object, kind_name = nil)
+      return object if kind === object
+
+      raise Kind::Error.new(kind_name || kind.name, object)
+    end
+
     def self.is?(expected, value)
       is_kind(Kind::Module[expected], value)
     end

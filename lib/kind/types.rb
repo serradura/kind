@@ -16,7 +16,7 @@ module Kind
 
         return object if is_instance
 
-        Kind::Of.(::%{kind_name_to_check}, object && default ? default : object || default)
+        Core::Utils.kind_of!(::%{kind_name_to_check}, object && default ? default : object || default)
       end
     RUBY
 
