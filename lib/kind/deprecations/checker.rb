@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'kind/deprecation/checker/factory'
-require 'kind/deprecation/checker/protocol'
+require 'kind/deprecations/checker/factory'
+require 'kind/deprecations/checker/protocol'
 
 module Kind
   class Checker

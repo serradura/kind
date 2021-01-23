@@ -13,11 +13,11 @@ require 'kind/undefined'
 require 'kind/modules'
 require 'kind/maybe'
 
-require 'kind/deprecation/checker'
-require 'kind/deprecation/of'
-require 'kind/deprecation/is'
-require 'kind/deprecation/types'
-require 'kind/deprecation/built_in_type_checkers'
+require 'kind/deprecations/checker'
+require 'kind/deprecations/of'
+require 'kind/deprecations/is'
+require 'kind/deprecations/types'
+require 'kind/deprecations/built_in_type_checkers'
 
 module Kind
   def self.of?(kind, *args)
