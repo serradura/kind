@@ -7,7 +7,7 @@ module Kind
     end
 
     def instance?(value)
-      value.kind_of?(__kind__)
+      __kind__ === value
     end
 
     def or_nil(value)
@@ -19,7 +19,9 @@ module Kind
     end
 
     def [](value)
-      Core::Utils.kind_of!(__kind__, value, __kind_name__)
+      return value if instance?(value)
+
+      Core::Utils.kind_error!(__kind_name__, value)
     end
   end
 end

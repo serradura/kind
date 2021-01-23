@@ -58,7 +58,7 @@ class KindValidator < ActiveModel::EachValidator
         "must be the class or a subclass of `#{expected.name}`"
       when ::Module
         return if value.kind_of?(Class) && value <= expected
-        return if expected == Kind::Module[value] || value.kind_of?(expected)
+        return if expected == Kind.of_module_or_class!(value) || value.kind_of?(expected)
 
         "must include the `#{expected.name}` module"
       else

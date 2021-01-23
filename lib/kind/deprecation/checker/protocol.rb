@@ -4,7 +4,7 @@ module Kind
   class Checker
     module Protocol
       def class?(value)
-        Core::Utils.is?(__kind, value)
+        Core::Utils.kind_is?(__kind, value)
       end
 
       def instance(value, options = Empty::HASH)

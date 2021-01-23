@@ -24,21 +24,21 @@ module Kind
   end
 
   def self.of_class?(value)
-    value.kind_of?(::Class)
+    Core::Utils.kind_of_class?(value)
   end
 
   def self.of_module?(value)
-    ::Module == value || (value.is_a?(::Module) && !of_class?(value))
+    Core::Utils.kind_of_module?(value)
   end
 
-  def self.of_module_or_class(value)
-    Core::Utils.kind_of!(::Module, value, 'Module/Class')
+  def self.of_module_or_class!(value)
+    Core::Utils.kind_of_module_or_class!(value)
   end
 
   def self.is(expected = Undefined, object = Undefined)
     return Is if Undefined == expected && Undefined == object
 
-    return Core::Utils.is?(expected, object) if Undefined != object
+    return Core::Utils.kind_is?(expected, object) if Undefined != object
 
     raise ArgumentError, 'wrong number of arguments (given 1, expected 2)'
   end
@@ -57,12 +57,12 @@ module Kind
 
   module Is
     def self.Class(value)
-      warn "[DEPRECATION] `Kind::Is.Class` is deprecated.  Please use `Kind.of_class?` instead."
+      warn "[DEPRECATION] `Kind::Is.Class` is deprecated. Please use `Kind.of_class?` instead."
       Kind.of_class?(value)
     end
 
     def self.Module(value)
-      warn "[DEPRECATION] `Kind::Is.Module` is deprecated.  Please use `Kind.of_module?` instead."
+      warn "[DEPRECATION] `Kind::Is.Module` is deprecated. Please use `Kind.of_module?` instead."
       Kind.of_module?(value)
     end
 
