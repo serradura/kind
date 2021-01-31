@@ -20,6 +20,10 @@ require 'kind/deprecations/types'
 require 'kind/deprecations/built_in_type_checkers'
 
 module Kind
+  def self.is?(kind, arg)
+    Core::Utils.kind_is?(kind, arg)
+  end
+
   def self.of?(kind, *args)
     Core::Utils.kind_of?(kind, args)
   end
@@ -32,14 +36,14 @@ module Kind
     Core::Utils.kind_of_module?(value)
   end
 
-  def self.of_module_or_class!(value)
+  def self.of_module_or_class(value)
     Core::Utils.kind_of_module_or_class!(value)
   end
 
   def self.is(expected = Undefined, object = Undefined)
     return Is if Undefined == expected && Undefined == object
 
-    return Core::Utils.kind_is?(expected, object) if Undefined != object
+    return is?(expected, object) if Undefined != object
 
     raise ArgumentError, 'wrong number of arguments (given 1, expected 2)'
   end

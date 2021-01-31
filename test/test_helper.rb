@@ -32,7 +32,7 @@ class Minitest::Test
   def assert_raises_with_message(exception, msg, &block)
     block.call
   rescue exception => e
-    assert_match(msg, e.message)
+    String === msg ? assert_equal(msg, e.message) : assert_match(msg, e.message)
   else
     raise "Expected to raise #{exception} w/ message #{msg}, none raised"
   end

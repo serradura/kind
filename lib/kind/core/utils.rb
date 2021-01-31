@@ -41,9 +41,11 @@ module Kind
     def self.is_kind(expected_kind, value) # :nodoc:
       kind = kind_of_module_or_class!(value)
 
-      return kind <= expected_kind || false if kind_of_class?(kind)
-
-      kind == expected_kind || kind.kind_of?(expected_kind)
+      if kind_of_class?(kind)
+        kind <= expected_kind || expected_kind == ::Class
+      else
+        kind == expected_kind || kind.kind_of?(expected_kind)
+      end
     end
   end
 end
