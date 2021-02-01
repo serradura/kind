@@ -10,14 +10,14 @@ module Kind
       of.empty? ? by : of.all?(&by)
     end
 
-    def self.kind_of?(kind, values)
+    def self.kind_of?(kind, values) # :nodoc:
       kind?(of: values, by: -> value {
-        value.kind_of?(kind)
+        kind === value
       })
     end
 
     def self.kind_error!(kind_name, value) # :nodoc:
-      raise Kind::Error.new(kind_name, value)
+      raise ::Kind::Error.new(kind_name, value)
     end
 
     def self.kind_of!(kind, value, kind_name = nil) # :nodoc:
