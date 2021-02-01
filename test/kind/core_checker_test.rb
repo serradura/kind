@@ -9,7 +9,9 @@ class Kind::CoreCheckerTest < Minitest::Test
     assert_equal('String', string_checker.name)
 
     # FACT: Can check if a given value is an instance of its kind
-    assert(string_checker.instance?('foo'))
+    assert string_checker.instance?('foo')
+    refute ['a', :b].all?(&string_checker.instance?)
+    assert ['a', 'b'].all?(&string_checker.instance?)
 
     # FACT: Can return nil if the given value isn't an instance of its kind
     assert_equal('foo', string_checker.or_nil('foo'))
@@ -71,10 +73,13 @@ class Kind::CoreCheckerTest < Minitest::Test
     assert_equal('PositiveInteger', positive_integer_checker.name)
 
     # FACT: Can check if a given value is an instance of its kind
-    assert(positive_integer_checker.instance?(1))
-    refute(positive_integer_checker.instance?(0))
-    refute(positive_integer_checker.instance?(-1))
-    refute(positive_integer_checker.instance?('1'))
+    assert positive_integer_checker.instance?(1)
+    refute positive_integer_checker.instance?(0)
+    refute positive_integer_checker.instance?(-1)
+    refute positive_integer_checker.instance?('1')
+
+    refute [1, 0].all?(&positive_integer_checker.instance?)
+    assert [1, 2].all?(&positive_integer_checker.instance?)
 
     # FACT: Can return nil if the given value isn't an instance of its kind
     assert_equal(2, positive_integer_checker.or_nil(2))

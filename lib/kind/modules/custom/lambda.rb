@@ -8,14 +8,14 @@ module Kind
 
     def name; 'Lambda'; end
 
-    def instance?(value)
+    def ===(value)
       value.kind_of?(::Proc) && value.lambda?
     end
   end
 
   def self.Lambda?(*values)
     Core::Utils.kind?(of: values, by: -> value {
-      Lambda.instance?(value)
+      ::Kind::Lambda === value
     })
   end
 end

@@ -6,14 +6,14 @@ module Kind
 
     def kind; ::Module; end
 
-    def instance?(value)
+    def ===(value)
       Kind.of_module?(value)
     end
   end
 
   def self.Module?(*values)
     Core::Utils.kind?(of: values, by: -> value {
-      Kind.of_module?(value)
+      ::Kind::Module === value
     })
   end
 end

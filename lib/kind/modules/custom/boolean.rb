@@ -8,14 +8,14 @@ module Kind
 
     def name; 'Boolean'; end
 
-    def instance?(value)
+    def ===(value)
       ::TrueClass === value || ::FalseClass === value
     end
   end
 
   def self.Boolean?(*values)
     Core::Utils.kind?(of: values, by: -> value {
-      Boolean.instance?(value)
+      ::Kind::Boolean === value
     })
   end
 end

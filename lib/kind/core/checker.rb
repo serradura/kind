@@ -6,8 +6,14 @@ module Kind
       kind.name
     end
 
-    def instance?(value)
+    def ===(value)
       kind === value
+    end
+
+    def instance?(value = Undefined)
+      return self === value if Undefined != value
+
+      @__instance_func ||= ->(ck) { ->(value) { ck === value } }.(self)
     end
 
     def or_nil(value)
@@ -19,7 +25,7 @@ module Kind
     end
 
     def or(fallback, value = Undefined)
-      return __or_func(fallback) if Undefined === value
+      return __or_func.(fallback) if Undefined === value
 
       instance?(value) ? value : fallback
     end
@@ -36,9 +42,9 @@ module Kind
 
     private
 
-      def __or_func(fallback)
-        ->(ck) {
-          ->(value) { ck.instance?(value) ? value : ck.null_or_instance(fallback) }
+      def __or_func
+        @__or_func ||= ->(ck) {
+          ->(fb) {->(value) { ck.instance?(value) ? value : ck.null_or_instance(fb) } }
         }.(self)
       end
   end

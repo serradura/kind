@@ -8,14 +8,14 @@ module Kind
 
     def name; 'Callable'; end
 
-    def instance?(value)
+    def ===(value)
       value.respond_to?(:call)
     end
   end
 
   def self.Callable?(*values)
     Core::Utils.kind?(of: values, by: -> value {
-      Callable.instance?(value)
+      ::Kind::Callable === value
     })
   end
 end
