@@ -2,7 +2,7 @@
 
 module Kind
   module Core::Utils
-    def self.nil_or_undefined?(value) # :nodoc:
+    def self.null?(value) # :nodoc:
       value.nil? || Undefined == value
     end
 
