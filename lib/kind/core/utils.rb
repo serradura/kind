@@ -2,6 +2,10 @@
 
 module Kind
   module Core::Utils
+    def self.nil_or_undefined?(value) # :nodoc:
+      value.nil? || Undefined == value
+    end
+
     def self.kind?(of:, by:) # :nodoc:
       of.empty? ? by : of.all?(&by)
     end
@@ -32,6 +36,12 @@ module Kind
 
     def self.kind_of_module_or_class!(value) # :nodoc:
       kind_of!(::Module, value, 'Module/Class')
+    end
+
+    def self.kind_respond_to!(method_name, value) # :nodoc:
+      return value if value.respond_to?(method_name)
+
+      raise ::Kind::Error.new("Expected #{value} to respond to #{method_name}")
     end
 
     def self.kind_is?(expected, value) # :nodoc:

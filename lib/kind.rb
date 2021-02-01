@@ -1,15 +1,16 @@
 # frozen_string_literal: true
 
-require 'kind/version'
-
 require 'set'
 require 'ostruct'
 
-require 'kind/core'
-require 'kind/empty'
+require 'kind/version'
 require 'kind/error'
+require 'kind/empty'
 require 'kind/undefined'
+require 'kind/dig'
+require 'kind/try'
 
+require 'kind/core'
 require 'kind/modules'
 require 'kind/maybe'
 
