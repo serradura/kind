@@ -44,6 +44,12 @@ module Kind
       raise ::Kind::Error.new("Expected #{value} to respond to #{method_name}")
     end
 
+    def self.kind_respond_to!(method_name, value) # :nodoc:
+      return value if value.respond_to?(method_name)
+
+      raise ::Kind::Error.new("Expected #{value} to respond to #{method_name}")
+    end
+
     def self.kind_is?(expected, value) # :nodoc:
       is_kind(kind_of_module_or_class!(expected), value)
     end
