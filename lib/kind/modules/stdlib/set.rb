@@ -4,7 +4,7 @@ module Kind
   module Set
     extend self, Core::Checker
 
-    def __kind__; ::Set; end
+    def kind; ::Set; end
   end
 
   def self.Set?(*values)

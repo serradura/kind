@@ -4,9 +4,9 @@ module Kind
   module Lambda
     extend self, Core::Checker
 
-    def __kind__; ::Proc; end
+    def kind; ::Proc; end
 
-    def __kind_name__; 'Lambda'; end
+    def name; 'Lambda'; end
 
     def instance?(value)
       value.kind_of?(::Proc) && value.lambda?

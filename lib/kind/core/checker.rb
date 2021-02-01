@@ -2,12 +2,12 @@
 
 module Kind
   module Core::Checker
-    def __kind_name__
-      __kind__.name
+    def name
+      kind.name
     end
 
     def instance?(value)
-      __kind__ === value
+      kind === value
     end
 
     def or_nil(value)
@@ -21,7 +21,7 @@ module Kind
     def [](value)
       return value if instance?(value)
 
-      Core::Utils.kind_error!(__kind_name__, value)
+      Core::Utils.kind_error!(name, value)
     end
   end
 end

@@ -4,7 +4,7 @@ module Kind
   module IO
     extend self, Core::Checker
 
-    def __kind__; ::IO; end
+    def kind; ::IO; end
   end
 
   def self.IO?(*values)

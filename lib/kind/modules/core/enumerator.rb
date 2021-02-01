@@ -4,7 +4,7 @@ module Kind
   module Enumerator
     extend self, Core::Checker
 
-    def __kind__; ::Enumerator; end
+    def kind; ::Enumerator; end
   end
 
   def self.Enumerator?(*values)

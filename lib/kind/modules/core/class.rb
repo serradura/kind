@@ -4,7 +4,7 @@ module Kind
   module Class
     extend self, Core::Checker
 
-    def __kind__; ::Class; end
+    def kind; ::Class; end
   end
 
   def self.Class?(*values)

@@ -4,7 +4,7 @@ module Kind
   module Proc
     extend self, Core::Checker
 
-    def __kind__; ::Proc; end
+    def kind; ::Proc; end
   end
 
   def self.Proc?(*values)

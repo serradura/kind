@@ -4,7 +4,7 @@ module Kind
   module Regexp
     extend self, Core::Checker
 
-    def __kind__; ::Regexp; end
+    def kind; ::Regexp; end
   end
 
   def self.Regexp?(*values)

@@ -4,7 +4,7 @@ module Kind
   module OpenStruct
     extend self, Core::Checker
 
-    def __kind__; ::OpenStruct; end
+    def kind; ::OpenStruct; end
   end
 
   def self.OpenStruct?(*values)

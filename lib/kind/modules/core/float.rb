@@ -4,7 +4,7 @@ module Kind
   module Float
     extend self, Core::Checker
 
-    def __kind__; ::Float; end
+    def kind; ::Float; end
   end
 
   def self.Float?(*values)

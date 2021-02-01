@@ -4,7 +4,7 @@ module Kind
   module File
     extend self, Core::Checker
 
-    def __kind__; ::File; end
+    def kind; ::File; end
   end
 
   def self.File?(*values)

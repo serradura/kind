@@ -4,7 +4,7 @@ module Kind
   module Range
     extend self, Core::Checker
 
-    def __kind__; ::Range; end
+    def kind; ::Range; end
   end
 
   def self.Range?(*values)

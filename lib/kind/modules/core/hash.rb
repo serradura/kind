@@ -4,7 +4,7 @@ module Kind
   module Hash
     extend self, Core::Checker
 
-    def __kind__; ::Hash; end
+    def kind; ::Hash; end
   end
 
   def self.Hash?(*values)

@@ -4,9 +4,9 @@ module Kind
   module Boolean
     extend self, Core::Checker
 
-    def __kind__; [TrueClass, FalseClass].freeze; end
+    def kind; [TrueClass, FalseClass].freeze; end
 
-    def __kind_name__; 'Boolean'; end
+    def name; 'Boolean'; end
 
     def instance?(value)
       ::TrueClass === value || ::FalseClass === value

@@ -4,7 +4,7 @@ module Kind
   module Array
     extend self, Core::Checker
 
-    def __kind__; ::Array; end
+    def kind; ::Array; end
   end
 
   def self.Array?(*values)

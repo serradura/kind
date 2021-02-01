@@ -4,9 +4,9 @@ module Kind
   module Callable
     extend self, Core::Checker
 
-    def __kind__; raise NotImplementedError; end
+    def kind; raise NotImplementedError; end
 
-    def __kind_name__; 'Callable'; end
+    def name; 'Callable'; end
 
     def instance?(value)
       value.respond_to?(:call)

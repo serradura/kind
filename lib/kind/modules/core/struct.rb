@@ -4,7 +4,7 @@ module Kind
   module Struct
     extend self, Core::Checker
 
-    def __kind__; ::Struct; end
+    def kind; ::Struct; end
   end
 
   def self.Struct?(*values)

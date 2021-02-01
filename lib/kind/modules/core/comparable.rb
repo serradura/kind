@@ -4,7 +4,7 @@ module Kind
   module Comparable
     extend self, Core::Checker
 
-    def __kind__; ::Comparable; end
+    def kind; ::Comparable; end
   end
 
   def self.Comparable?(*values)

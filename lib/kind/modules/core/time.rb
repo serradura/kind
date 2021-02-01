@@ -4,7 +4,7 @@ module Kind
   module Time
     extend self, Core::Checker
 
-    def __kind__; ::Time; end
+    def kind; ::Time; end
   end
 
   def self.Time?(*values)
