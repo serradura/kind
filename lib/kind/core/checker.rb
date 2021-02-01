@@ -18,11 +18,29 @@ module Kind
       or_nil(value) || Undefined
     end
 
+    def or(fallback, value = Undefined)
+      return __or_func(fallback) if Undefined === value
+
+      instance?(value) ? value : fallback
+    end
+
     def [](value)
       return value if instance?(value)
 
       Core::Utils.kind_error!(name, value)
     end
+
+    def null_or_instance(value) # :nodoc:
+      Core::Utils.null?(value) ? value : self[value]
+    end
+
+    private
+
+      def __or_func(fallback)
+        ->(ck) {
+          ->(value) { ck.instance?(value) ? value : ck.null_or_instance(fallback) }
+        }.(self)
+      end
   end
 
   class Core::Checker::Object # :nodoc: all
