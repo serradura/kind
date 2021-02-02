@@ -52,32 +52,20 @@ module Kind
   class Core::Checker::Object # :nodoc: all
     include Core::Checker
 
-    MapArgsFromHash = ->(arg) do
-      kind = arg.fetch(:kind)
-
-      [kind, arg.fetch(:name, Kind::Try.(kind, :name))]
-    end
-
-    MapKindAndName = ->(kind, arg) do
-      name = Kind::Try.(arg || ::Kind::Empty::HASH, :[], :name)
-
-      [kind, name || Kind::Try.(kind, :name)]
-    end
-
-    ResolveArgs = ->(arg1, arg2) do
-      return MapArgsFromHash[arg1] if arg1.kind_of?(::Hash)
-      return MapKindAndName[arg1, arg2] if arg1.respond_to?(:===)
+    ResolveKindName = ->(kind, opt) do
+      name = Kind::Try.(opt, :[], :name)
+      name || Kind::Try.(kind, :name)
     end
 
     attr_reader :kind, :name
 
-    def initialize(args)
-      arg1, arg2 = ResolveArgs[args[0], args[1]]
+    def initialize(kind, opt = ::Kind::Empty::HASH)
+      name = ResolveKindName.(kind, opt)
 
-      @kind = Core::Utils.kind_respond_to!(:===, arg1)
-      @name = Core::Utils::kind_of!(::String, arg2)
+      @kind = Core::Utils.kind_respond_to!(:===, kind)
+      @name = Core::Utils::kind_of!(::String, name)
     end
 
-    private_constant :MapArgsFromHash, :MapKindAndName, :ResolveArgs
+    private_constant :ResolveKindName
   end
 end

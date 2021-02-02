@@ -2,7 +2,7 @@ require 'test_helper'
 
 class Kind::CoreCheckerTest < Minitest::Test
   def test_the_core_checker_object_receiving_a_kind
-    string_checker = Kind::Core::Checker::Object.new([::String])
+    string_checker = Kind::Core::Checker::Object.new(::String)
 
     # FACT: Can return its kind and its name
     assert_equal(::String, string_checker.kind)
@@ -47,26 +47,10 @@ class Kind::CoreCheckerTest < Minitest::Test
     ) { string_checker[:bar] }
   end
 
-  def test_the_core_checker_object_receiving_a_kind_name
-    string_checker = Kind::Core::Checker::Object.new([::String, name: 'MyString'])
-
-    # FACT: Can return its kind and its name
-    assert_equal(::String, string_checker.kind)
-    assert_equal('MyString', string_checker.name)
-  end
-
-  def test_the_core_checker_object_receiving_a_hash_with_the_expected_kind
-    string_checker = Kind::Core::Checker::Object.new([kind: String])
-
-    # FACT: Can return its kind and its name
-    assert_equal(::String, string_checker.kind)
-    assert_equal('String', string_checker.name)
-  end
-
   PositiveInteger = -> value { value.kind_of?(Integer) && value > 0 }
 
-  def test_the_core_checker_object_receiving_a_hash_with_the_expected_kind_and_its_name
-    positive_integer_checker = Kind::Core::Checker::Object.new([{ kind: PositiveInteger, name: 'PositiveInteger' }])
+  def test_the_core_checker_object_receiving_a_kind_name
+    positive_integer_checker = Kind::Core::Checker::Object.new(PositiveInteger, name: 'PositiveInteger')
 
     # FACT: Can return its kind and its name
     assert_equal(PositiveInteger, positive_integer_checker.kind)
@@ -115,14 +99,7 @@ class Kind::CoreCheckerTest < Minitest::Test
     ) { positive_integer_checker[0] }
   end
 
-  def test_the_core_checker_object_receiving_a_hash_with_the_expected_kind_and_the_kind_havent_a_name
-    assert_raises_with_message(
-      Kind::Error,
-      'nil expected to be a kind of String'
-    ) { Kind::Core::Checker::Object.new([{ kind: PositiveInteger }]) }
-  end
-
-  def test_the_core_checker_object_receiving_an_empty_array
+  def test_the_core_checker_object_receiving_an_object_that_doesnt_have_a_name
     assert_raises_with_message(
       Kind::Error,
       'nil expected to be a kind of String'
