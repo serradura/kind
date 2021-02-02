@@ -252,7 +252,7 @@ module Kind
     def self.Callable?(*args)
       ::Kind::Deprecation.warn_method_replacement('Kind::Of::Callable?', 'Kind::Callable?')
 
-      Kind::Of::Callable.instance?(*args)
+      Kind::Callable?(*args)
     end
   end
 end
