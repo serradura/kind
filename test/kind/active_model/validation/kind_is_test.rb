@@ -84,7 +84,7 @@ if ENV['ACTIVEMODEL_VERSION']
       assert_predicate(build_instance(KindIsTest::StrictClass2, human_kind: KindIsTest::Human2), :valid?)
 
       assert_raises_kind_error(
-        'must include the `KindIsTest::Human2` module'
+        /must include the `KindIsTest::Human2` module/
       ) { build_instance(KindIsTest::StrictClass2, human_kind: Array).valid? }
 
       # --
@@ -95,7 +95,7 @@ if ENV['ACTIVEMODEL_VERSION']
       assert_predicate(build_instance(KindIsTest::StrictClass3, human_kind: KindIsTest::Human3), :valid?)
 
       assert_raises_kind_error(
-        'must include the `KindIsTest::Human3` module'
+        /must include the `KindIsTest::Human3` module/
       ) { build_instance(KindIsTest::StrictClass3, human_kind: Array).valid? }
     end
 

@@ -4,15 +4,15 @@ module Kind
   class Checker
     module Protocol
       def class?(value)
-        Kind::Is.__call__(__kind, value)
+        Core::Utils.kind_is?(__kind, value)
       end
 
       def instance(value, options = Empty::HASH)
         default = options[:or]
 
-        return Kind::Of.(__kind, value) if ::Kind::Maybe::Value.none?(default)
+        return Core::Utils.kind_of!(__kind, value) if ::Kind::Maybe::Value.none?(default)
 
-        Kind::Undefined != value && instance?(value) ? value : Kind::Of.(__kind, default)
+        Kind::Undefined != value && instance?(value) ? value : Core::Utils.kind_of!(__kind, default)
       end
 
       def [](value, options = options = Empty::HASH)

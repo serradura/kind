@@ -30,8 +30,17 @@ As a creator of Ruby gems, I have a common need that I have to handle in many of
 
 One of the goals of this project is to do simple type checking like `"some string".is_a?(String)`, but, exposing useful abstractions to do it. e.g: [Kind.of.\<Type\> methods](#verifying-the-kind-of-some-object), [active model validations](#kindvalidator-activemodelvalidations), [maybe monad](#kindmaybe).
 
+## Documentation <!-- omit in toc -->
+
+Version   | Documentation
+--------- | -------------
+unreleased| https://github.com/serradura/u-case/blob/main/README.md
+3.1.0     | https://github.com/serradura/u-case/blob/v3.x/README.md
+2.3.0     | https://github.com/serradura/u-case/blob/v2.x/README.md
+1.9.0     | https://github.com/serradura/u-case/blob/v1.x/README.md
+
 ## Table of Contents <!-- omit in toc -->
-- [Required Ruby version](#required-ruby-version)
+- [Compatibility](#compatibility)
 - [Installation](#installation)
 - [Usage](#usage)
   - [Kind.of.\<Type\>() - Verifying the kind of some object](#kindoftype---verifying-the-kind-of-some-object)
@@ -73,8 +82,16 @@ One of the goals of this project is to do simple type checking like `"some strin
 - [License](#license)
 - [Code of Conduct](#code-of-conduct)
 
-## Required Ruby version
-> \>= 2.2.0
+## Compatibility
+
+| u-case         | branch  | ruby     |  activemodel   |
+| -------------- | ------- | -------- | -------------- |
+| unreleased     | main    | >= 2.2.0 | >= 3.2, <= 6.1 |
+| 3.1.0          | v3.x    | >= 2.2.0 | >= 3.2, <= 6.1 |
+| 2.3.0          | v2.x    | >= 2.2.0 | >= 3.2, <= 6.0 |
+| 1.9.0          | v1.x    | >= 2.2.0 | >= 3.2, <= 6.0 |
+
+> Note: The activemodel is an optional dependency, it is related with the [Kind::Validator](#kindvalidator-activemodelvalidations).
 
 ## Installation
 

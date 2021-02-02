@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'set'
-
 module Kind
   module Empty
     SET = ::Set.new.freeze

@@ -21,7 +21,8 @@ class Kind::UndefinedTest < Minitest::Test
     value = Kind::Undefined
     rand_number = rand
 
-    assert_equal(value, Kind::Undefined.default(value, value))
+    assert_equal(1, Kind::Undefined.default(value, 1))
+    assert_equal(2, Kind::Undefined.default(2, 1))
 
     assert_equal(rand_number, Kind::Undefined.default(value, rand_number))
 

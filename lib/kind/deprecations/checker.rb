@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
-require 'kind/checker/factory'
-require 'kind/checker/protocol'
+require 'kind/deprecations/checker/factory'
+require 'kind/deprecations/checker/protocol'
+
 module Kind
   class Checker
     include Protocol

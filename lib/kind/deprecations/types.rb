@@ -8,6 +8,8 @@ module Kind
 
     KIND_OF = <<-RUBY
       def self.%{method_name}(object = Undefined, options = Empty::HASH)
+        ::Kind::Deprecation.warn_method_replacement('Kind::Of::%{method_name}', 'Kind::%{method_name}')
+
         default = options[:or]
 
         return Kind::Of::%{kind_name} if Undefined == object && default.nil?
@@ -16,29 +18,33 @@ module Kind
 
         return object if is_instance
 
-        Kind::Of.(::%{kind_name_to_check}, object && default ? default : object || default)
+        Core::Utils.kind_of!(::%{kind_name_to_check}, object && default ? default : object || default)
       end
     RUBY
 
     KIND_OF_IS = <<-RUBY
       def self.%{method_name}?(*args)
+        ::Kind::Deprecation.warn_method_replacement('Kind::Of::%{method_name}?', 'Kind::%{method_name}?')
+
         Kind::Of::%{kind_name}.instance?(*args)
       end
     RUBY
 
     KIND_IS = <<-RUBY
-      def self.%{method_name}(value = Undefined)
-        return Kind::Is::%{kind_name} if Undefined == value
+      def self.%{method_name}(value)
+        ::Kind::Deprecation.warn_removal('Kind::Is::%{method_name}')
 
-        Kind::Is.__call__(::%{kind_name_to_check}, value)
+        Core::Utils.is_kind(::%{kind_name_to_check}, value)
       end
     RUBY
 
     private_constant :KIND_OF, :KIND_IS, :COLONS
 
     def add(kind, name: nil)
-      kind_name = Kind.of.Module(kind).name
-      checker = name ? Kind::Of.(String, name) : kind_name
+      ::Kind::Deprecation.warn_removal('Kind::Types')
+
+      kind_name = Core::Utils.kind_of_module_or_class!(kind).name
+      checker = name ? Kind::String[name] : kind_name
 
       if checker.include?(COLONS)
         add_kind_with_namespace(checker, method_name: name)
@@ -99,7 +105,7 @@ module Kind
           params[:kind_name_to_check] ||= kind_name
 
           kind_checker = ::Module.new { extend Checker::Protocol }
-          kind_checker.module_eval("def self.__kind; #{params[:kind_name_to_check]}; end")
+          kind_checker.module_eval("def self.__kind; ::#{params[:kind_name_to_check]}; end")
 
           kind_of_mod.instance_eval(KIND_OF % params)
           kind_of_mod.const_set(method_name, kind_checker)
@@ -108,7 +114,7 @@ module Kind
 
         unless kind_is_mod.respond_to?(method_name)
           kind_is_mod.instance_eval(KIND_IS % params)
-          kind_is_mod.const_set(method_name, Module.new) if create_kind_is_mod
+          kind_is_mod.const_set(method_name, ::Module.new) if create_kind_is_mod
         end
       end
   end

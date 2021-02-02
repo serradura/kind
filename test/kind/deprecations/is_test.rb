@@ -5,7 +5,7 @@ class Kind::IsTest < Minitest::Test
     assert Kind::Is.call(String, String)
     assert Kind::Is.call(String, Class.new(String))
 
-    assert_raises_kind_error(given: '""', expected: 'Module') { Kind::Is.('', String) }
+    assert_raises_kind_error(given: '""', expected: 'Module/Class') { Kind::Is.('', String) }
 
     # ---
 
@@ -32,7 +32,7 @@ class Kind::IsTest < Minitest::Test
     assert Kind.is(String, String)
     assert Kind.is(String, Class.new(String))
 
-    assert_raises_kind_error(given: '""', expected: 'Module') { Kind.is.('', String) }
+    assert_raises_kind_error(given: '""', expected: 'Module/Class') { Kind.is.('', String) }
 
     # ---
 
