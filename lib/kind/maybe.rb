@@ -110,7 +110,7 @@ module Kind
 
         return __try_method__(method_name, args) if Undefined != method_name
 
-        NONE_WITH_NIL_VALUE
+        raise ArgumentError, 'method name or a block must be present'
       end
 
       def try(method_name = Undefined, *args, &block)

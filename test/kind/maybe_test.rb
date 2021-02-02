@@ -365,6 +365,13 @@ class Kind::MaybeTest < Minitest::Test
 
     assert_instance_of(Kind::Maybe::None, Kind::Maybe[Kind::Undefined].try!(:upcase))
     assert_instance_of(Kind::Maybe::None, Kind::Maybe[Kind::Undefined].try! { |value| value.upcase })
+
+    # -
+
+    assert_raises_with_message(
+      ArgumentError,
+      'method name or a block must be present',
+    ) { Kind::Maybe[''].try! }
   end
 
   def test_that_optional_is_a_maybe_alias
