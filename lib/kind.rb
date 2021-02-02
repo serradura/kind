@@ -4,6 +4,7 @@ require 'set'
 require 'ostruct'
 
 require 'kind/version'
+require 'kind/deprecation'
 require 'kind/error'
 require 'kind/empty'
 require 'kind/undefined'
@@ -42,7 +43,11 @@ module Kind
   end
 
   def self.is(expected = Undefined, object = Undefined)
-    return Is if Undefined == expected && Undefined == object
+    if Undefined == expected && Undefined == object
+      ::Kind::Deprecation.warn('`Kind.is` without args is deprecated. This behavior will be removed in %{version}')
+
+      return Is
+    end
 
     return is?(expected, object) if Undefined != object
 
@@ -50,10 +55,20 @@ module Kind
   end
 
   def self.of(kind = Undefined, object = Undefined)
-    return Of if Undefined == kind && Undefined == object
+    if Undefined == kind && Undefined == object
+      ::Kind::Deprecation.warn('`Kind.of` without args is deprecated. This behavior will be removed in %{version}')
 
-    return Core::Utils.kind_of!(kind, object) if Undefined != object
+      Of
+    elsif Undefined != object
+      Core::Utils.kind_of!(kind, object)
+    else
+      ::Kind::Deprecation.warn_method_replacement('Kind.of(<Kind>)', 'Kind::Of(<Kind>)')
 
-    Kind::Checker::Factory.create(kind)
+      Kind::Checker::Factory.create(kind)
+    end
+  end
+
+  def self.Of(*args)
+    Core::Checker::Object.new(args)
   end
 end

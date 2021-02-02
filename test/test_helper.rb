@@ -29,6 +29,10 @@ require 'minitest/pride'
 require 'minitest/autorun'
 
 class Minitest::Test
+  def assert_stderr(expectation, &block)
+    assert_output(nil, expectation, &block)
+  end
+
   def assert_raises_with_message(exception, msg, &block)
     block.call
   rescue exception => e

@@ -3,13 +3,16 @@
 module Kind
   module Of
     def self.call(kind, object, kind_name = nil)
-      warn "[DEPRECATION] `Kind::Of.call` is deprecated. Please use `Kind::Core::Utils.kind_of!` instead."
+      ::Kind::Deprecation.warn_method_replacement('Kind::Of.call', 'Kind::Core::Utils.kind_of!')
+
       Core::Utils.kind_of!(kind, object, kind_name)
     end
 
     # -- Class
 
     def self.Class(object = Undefined)
+      ::Kind::Deprecation.warn_method_replacement('Kind::Of::Class', 'Kind::Class')
+
       return Class if Undefined == object
 
       self.call(::Class, object)
@@ -26,12 +29,16 @@ module Kind
     end)
 
     def self.Class?(*args)
+      ::Kind::Deprecation.warn_method_replacement('Kind::Of::Class?', 'Kind::Class?')
+
       Kind::Class?(*args)
     end
 
     # -- Module
 
     def self.Module(object = Undefined)
+      ::Kind::Deprecation.warn_method_replacement('Kind::Of::Module', 'Kind::Module')
+
       return Module if Undefined == object
 
       self.call(::Module, object)
@@ -76,12 +83,16 @@ module Kind
     end)
 
     def self.Module?(*args)
+      ::Kind::Deprecation.warn_method_replacement('Kind::Of::Module?', 'Kind::Module?')
+
       Kind::Module?(*args)
     end
 
     # -- Boolean
 
     def self.Boolean(object = Undefined, options = Empty::HASH)
+      ::Kind::Deprecation.warn_method_replacement('Kind::Of::Boolean', 'Kind::Boolean')
+
       default = options[:or]
 
       return Kind::Of::Boolean if Undefined == object && default.nil?
@@ -131,12 +142,16 @@ module Kind
     end)
 
     def self.Boolean?(*args)
-      Kind::Of::Boolean.instance?(*args)
+      ::Kind::Deprecation.warn_method_replacement('Kind::Of::Boolean?', 'Kind::Boolean?')
+
+      Kind::Boolean?(*args)
     end
 
     # -- Lambda
 
     def self.Lambda(object = Undefined, options = Empty::HASH)
+      ::Kind::Deprecation.warn_method_replacement('Kind::Of::Lambda', 'Kind::Lambda')
+
       default = options[:or]
 
       return Kind::Of::Lambda if Undefined == object && default.nil?
@@ -179,12 +194,16 @@ module Kind
     end)
 
     def self.Lambda?(*args)
-      Kind::Of::Lambda.instance?(*args)
+      ::Kind::Deprecation.warn_method_replacement('Kind::Of::Lambda?', 'Kind::Lambda?')
+
+      Kind::Lambda?(*args)
     end
 
     # -- Callable
 
     def self.Callable(object = Undefined, options = Empty::HASH)
+      ::Kind::Deprecation.warn_method_replacement('Kind::Of::Callable', 'Kind::Callable')
+
       default = options[:or]
 
       return Kind::Of::Callable if Undefined == object && default.nil?
@@ -231,6 +250,8 @@ module Kind
     end)
 
     def self.Callable?(*args)
+      ::Kind::Deprecation.warn_method_replacement('Kind::Of::Callable?', 'Kind::Callable?')
+
       Kind::Of::Callable.instance?(*args)
     end
   end
