@@ -68,7 +68,7 @@ module Kind
     end
   end
 
-  def self.Of(*args)
-    Core::Checker::Object.new(args)
+  def self.Of(kind, opt = Empty::HASH)
+    Core::Checker::Object.new(kind, opt)
   end
 end

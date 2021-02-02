@@ -59,7 +59,7 @@ module Kind
 
     attr_reader :kind, :name
 
-    def initialize(kind, opt = ::Kind::Empty::HASH)
+    def initialize(kind, opt)
       name = ResolveKindName.(kind, opt)
 
       @kind = Core::Utils.kind_respond_to!(:===, kind)

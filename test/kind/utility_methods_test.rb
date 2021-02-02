@@ -81,4 +81,22 @@ class Kind::UtilityMethodsTest < Minitest::Test
       '"1" expected to be a kind of Module/Class'
     ) { Kind.of_module_or_class('1') }
   end
+
+  def test_Kind_Of
+    kind_symbol1 = Kind::Of(Symbol)
+
+    assert_instance_of(Kind::Core::Checker::Object, kind_symbol1)
+    assert_equal('Symbol', kind_symbol1.name)
+
+    # -
+
+    kind_symbol2 = Kind::Of(Symbol, name: 'MySymbol')
+
+    assert_instance_of(Kind::Core::Checker::Object, kind_symbol2)
+    assert_equal('MySymbol', kind_symbol2.name)
+
+    # -
+
+    refute_same(kind_symbol1, kind_symbol2)
+  end
 end
