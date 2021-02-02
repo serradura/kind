@@ -68,6 +68,23 @@ class Kind::UtilityMethodsTest < Minitest::Test
     refute Kind.of_module?(1)
   end
 
+  def test_Kind_respond_to
+    assert_equal('', Kind.respond_to('', :upcase))
+    assert_equal('', Kind.respond_to('', :upcase, :strip))
+
+    # -
+
+    assert_raises_with_message(
+      Kind::Error,
+      'expected 1 to respond to :upcase'
+    ) { Kind.respond_to(1, :upcase) }
+
+    assert_raises_with_message(
+      Kind::Error,
+      'expected 2 to respond to :upcase'
+    ) { Kind.respond_to(2, :to_s, :upcase) }
+  end
+
   def test_Kind_of_module_or_class
     # FACT: Returns the given value if it is a class or module
     assert_equal(Class, Kind.of_module_or_class(Class))

@@ -38,6 +38,12 @@ module Kind
     Core::Utils.kind_of_module?(value)
   end
 
+  def self.respond_to(value, *method_names)
+    method_names.each { |method_name| Core::Utils.kind_respond_to!(method_name, value) }
+
+    value
+  end
+
   def self.of_module_or_class(value)
     Core::Utils.kind_of_module_or_class!(value)
   end
