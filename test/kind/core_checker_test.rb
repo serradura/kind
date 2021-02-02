@@ -30,6 +30,7 @@ class Kind::CoreCheckerTest < Minitest::Test
     assert_nil(string_checker.or(nil, :foo))
 
     # FACT: Can return a callable that knows return an instance of its kind or a fallback
+    assert_nil(string_checker.or(nil).call(1))
     assert_equal('foo', string_checker.or(nil).call('foo'))
     assert_equal('bar', string_checker.or('bar').(:foo))
 
