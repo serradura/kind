@@ -3,6 +3,8 @@ require 'simplecov'
 SimpleCov.start do
   add_filter '/test/'
   add_filter '/lib/kind/active_model/validation.rb'
+
+  enable_coverage :branch if RUBY_VERSION >= '2.5.0'
 end
 
 $LOAD_PATH.unshift File.expand_path('../lib', __dir__)
