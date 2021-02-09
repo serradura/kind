@@ -77,10 +77,10 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
 
 ### Added
 
-* #33 - Add new type checker.
+* [#33](https://github.com/serradura/kind/pull/33) - Add new type checker.
   - `Kind::Of::OpenStruct`, `Kind::Is::OpenStruct`
 
-* #33 - Add `Kind::Maybe::Result#dig`. It extracts the nested value in a sequence of objects, if any step returns `nil` the operation will stop and `None` will be returned, otherwise a `Some` will be returned with the final value.
+* [#33](https://github.com/serradura/kind/pull/33) - Add `Kind::Maybe::Result#dig`. It extracts the nested value in a sequence of objects, if any step returns `nil` the operation will stop and `None` will be returned, otherwise a `Some` will be returned with the final value.
   ```ruby
   class User
     def self.find_by(id:)
@@ -104,7 +104,7 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
 
 ### Breaking Changes
 
-* #31 - Change the `Kind::Maybe::Result#try()` behavior.
+* [#31](https://github.com/serradura/kind/pull/31) - Change the `Kind::Maybe::Result#try()` behavior.
   - If you don't want to use the methods `#map`/`#then` to access some value inside of the monad, you could use the `#try` method to do this. So, if the value wasn't `nil` or `Kind::Undefined`, a `Some` will be returned.
   ```ruby
   # Examples using Kind::Maybe
@@ -126,7 +126,7 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
 
 ### Added
 
-* #31 - Add `Kind::Maybe::Result#try!()` that have almost of the same behavior of `Kind::Maybe::Result#try()`, the difference is because it will raise an error when the monad value doesn't respond to the expected method.
+* [#31](https://github.com/serradura/kind/pull/31) - Add `Kind::Maybe::Result#try!()` that have almost of the same behavior of `Kind::Maybe::Result#try()`, the difference is because it will raise an error when the monad value doesn't respond to the expected method.
   ```ruby
   Kind::Maybe[{}].try(:upcase)  # => #<Kind::Maybe::None:0x0000... @value=nil>
 
@@ -140,9 +140,9 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
 
 ### Added
 
-* #30 - Add `Kind::Maybe.wrap()` as an alias for `Kind::Maybe.new()`.
+* [#30](https://github.com/serradura/kind/pull/30) - Add `Kind::Maybe.wrap()` as an alias for `Kind::Maybe.new()`.
 
-* #30 - Add `Kind::Maybe::Typed` and the methods `Kind::Maybe()`, `Kind::Optional()` to create typed monads. It will return `Some` if the given value has the expected kind or `None` if it hasn't.
+* [#30](https://github.com/serradura/kind/pull/30) - Add `Kind::Maybe::Typed` and the methods `Kind::Maybe()`, `Kind::Optional()` to create typed monads. It will return `Some` if the given value has the expected kind or `None` if it hasn't.
   ```ruby
   Double = ->(arg) do
     Kind::Optional(Numeric)
@@ -158,7 +158,7 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
 
 ### Added
 
-* #29 - Improve the comparison of values with `Kind::Undefined`.
+* [#29](https://github.com/serradura/kind/pull/29) - Improve the comparison of values with `Kind::Undefined`.
   - I've been using `Kind.of(ActiveRecord::Relation, some_ar_relation)` in one of my apps and I found an unexpected behavior, the relations were always been executed. The reason is `ActiveRecord::AssociationRelation#==` behavior, which always performs a query (`to_a`). So, to avoid this and other unexpected behaviors, I decided to invert the comparison with `Kind::Undefined` to ensure a regular equality checking.
 
 [⬆️ &nbsp;Back to Top](#changelog-)
@@ -168,11 +168,11 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
 
 ### Added
 
-* #28 - Allow passing multiple arguments to `Kind.of.<Type>.instance?(*args)`
+* [#28](https://github.com/serradura/kind/pull/28) - Allow passing multiple arguments to `Kind.of.<Type>.instance?(*args)`
 
-* #28 - Allow passing multiple arguments to `Kind.of.<Type>?(*args)`
+* [#28](https://github.com/serradura/kind/pull/28) - Allow passing multiple arguments to `Kind.of.<Type>?(*args)`
 
-* #28 - Add `Kind::Some()` and `Kind::None()`. e.g:
+* [#28](https://github.com/serradura/kind/pull/28) - Add `Kind::Some()` and `Kind::None()`. e.g:
   ```ruby
   Double = ->(arg) do
     number = Kind::Of::Numeric.or_nil(arg)
@@ -197,20 +197,20 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
   Add.(a: 2, b: 2).then(&Double).value # 8
   ```
 
-* #28 - Add `Kind.of?(<Type>, *args)` to check if one or many values are the expected kind.
+* [#28](https://github.com/serradura/kind/pull/28) - Add `Kind.of?(<Type>, *args)` to check if one or many values are the expected kind.
   ```ruby
   Kind.of?(Numeric, 1, 2.0, 3) # true
   Kind.of?(Numeric, 1, '2', 3) # false
   ```
 
-* #28 - Make the `Kind.of?(<Type>)` returns a lambda when it was called without arguments.
+* [#28](https://github.com/serradura/kind/pull/28) - Make the `Kind.of?(<Type>)` returns a lambda when it was called without arguments.
   ```ruby
   [1, '2', 3].select(&Kind.of?(Numeric)) # [1, 3]
   ```
 
 ### Breaking Changes
 
-* #28 - Make `Kind.of.<Type>.to_proc` have the same behavior of `Kind.of.<Type>.instance(value)` (returns the value if it has the expected kind or raise `Kind::Error` if it haven't). This change is because now we have a method to verify if the given value is an instance of the expected kind (`Kind.of.<Type>?`), and this new method has a `to_proc` behavior when is called without arguments.
+* [#28](https://github.com/serradura/kind/pull/28) - Make `Kind.of.<Type>.to_proc` have the same behavior of `Kind.of.<Type>.instance(value)` (returns the value if it has the expected kind or raise `Kind::Error` if it haven't). This change is because now we have a method to verify if the given value is an instance of the expected kind (`Kind.of.<Type>?`), and this new method has a `to_proc` behavior when is called without arguments.
   ```ruby
   [1, 2, 3].map(&Kind::Of::Numeric)   # [1, 2, 3]
 
@@ -226,16 +226,16 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
 
 ### Added
 
-* #24 - Improve the `kind: { is: }` validation to check the inheritance of *classes*/*modules*.
+* [#24](https://github.com/serradura/kind/pull/24) - Improve the `kind: { is: }` validation to check the inheritance of *classes*/*modules*.
 
 ### Breaking Changes
 
-* #24 - Change the `Kind.{of,is}.Callable` verification. Now, it only verifies if the given object `respond_to?(:call)`.
+* [#24](https://github.com/serradura/kind/pull/24) - Change the `Kind.{of,is}.Callable` verification. Now, it only verifies if the given object `respond_to?(:call)`.
 
 ### Removed
 
-* #24 - Remove `kind: { is_a: }` from `Kind::Validator`.
-* #24 - Remove `kind: { klass: }` from `Kind::Validator`.
+* [#24](https://github.com/serradura/kind/pull/24) - Remove `kind: { is_a: }` from `Kind::Validator`.
+* [#24](https://github.com/serradura/kind/pull/24) - Remove `kind: { klass: }` from `Kind::Validator`.
 
 [⬆️ &nbsp;Back to Top](#changelog-)
 
@@ -244,7 +244,7 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
 
 ### Added
 
-* #23 - Add `Kind.of.<Type>.to_proc` as an alias for `Kind.of.<Type>.instance?`.
+* [#23](https://github.com/serradura/kind/pull/23) - Add `Kind.of.<Type>.to_proc` as an alias for `Kind.of.<Type>.instance?`.
   ```ruby
   collection = [
     {number: 1},
@@ -258,7 +258,7 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
     .reduce(0) { |total, item| total + item[:number] }
   ```
 
-* #23 - Add `Kind::Validator` (`ActiveModel` validator) as an alternative (substitute) of [`type_validator`](https://github.com/serradura/type_validator).
+* [#23](https://github.com/serradura/kind/pull/23) - Add `Kind::Validator` (`ActiveModel` validator) as an alternative (substitute) of [`type_validator`](https://github.com/serradura/type_validator).
   ```ruby
   require 'kind/active_model/validation'
 
@@ -289,7 +289,7 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
 
 ### Added
 
-* #22 - `Kind.of.<Type>.instance?`returns a lambda when called without an argument.
+* [#22](https://github.com/serradura/kind/pull/22) - `Kind.of.<Type>.instance?`returns a lambda when called without an argument.
   ```ruby
   collection = [
     {number: 1},
@@ -303,7 +303,7 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
     .reduce(0) { |total, item| total + item[:number] }
   ```
 
-* #22 - Add new methods `.as_optional`, `.as_maybe` in the type checkers.
+* [#22](https://github.com/serradura/kind/pull/22) - Add new methods `.as_optional`, `.as_maybe` in the type checkers.
   ```ruby
   def person_name(params)
     Kind::Of::Hash
@@ -341,7 +341,7 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
 
 ### Fixed
 
-* #20 - Fix the verification of modules using `Kind.is()`.
+* [#20](https://github.com/serradura/kind/pull/20) - Fix the verification of modules using `Kind.is()`.
 
 [⬆️ &nbsp;Back to Top](#changelog-)
 
@@ -350,7 +350,7 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
 
 ### Added
 
-* #19 - Add aliases to perform the strict type verification (in registered type checkers).
+* [#19](https://github.com/serradura/kind/pull/19) - Add aliases to perform the strict type verification (in registered type checkers).
   ```ruby
   # Kind.of.<Type>[]
 
@@ -367,13 +367,13 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
   Kind.of.Array.instance('', or: []) # []
   ```
 
-* #19 - Add `.or_undefined` method for any type checker.
+* [#19](https://github.com/serradura/kind/pull/19) - Add `.or_undefined` method for any type checker.
   ```ruby
   Kind.of.String.or_undefined(nil)         # Kind::Undefined
   Kind.of.String.or_undefined("something") # "something"
   ```
 
-* #19 - Allow a dynamical verification of types.
+* [#19](https://github.com/serradura/kind/pull/19) - Allow a dynamical verification of types.
   ```ruby
   class User
   end
@@ -385,7 +385,7 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
   Kind.of(User, {})       # Kind::Error ({} expected to be a kind of User)
   ```
 
-* #19 - Allow the creation of type checkers dynamically (without register one).
+* [#19](https://github.com/serradura/kind/pull/19) - Allow the creation of type checkers dynamically (without register one).
   ```ruby
   class User
   end
@@ -408,11 +408,11 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
   kind_of_user.or_undefined(User.new) # #<User:0x0000...>
   ```
 
-* #19 - Add a new type checkers.
+* [#19](https://github.com/serradura/kind/pull/19) - Add a new type checkers.
   - `Kind::Of::Set`
   - `Kind::Of::Maybe`, `Kind::Of::Optional`
 
-* #19 - Add `Kind::Empty` with several constants having empty frozen objects.
+* [#19](https://github.com/serradura/kind/pull/19) - Add `Kind::Empty` with several constants having empty frozen objects.
   ```ruby
   Kind::Empty::SET
   Kind::Empty::HASH
@@ -429,7 +429,7 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
 
 ### Changes
 
-* #19 - Change the output of `Kind::Undefined.to_s`, `Kind::Undefined.inspect`, the previous output was `"Undefined"` and the new is `"Kind::Undefined"`
+* [#19](https://github.com/serradura/kind/pull/19) - Change the output of `Kind::Undefined.to_s`, `Kind::Undefined.inspect`, the previous output was `"Undefined"` and the new is `"Kind::Undefined"`
   ```ruby
   Kind::Undefined.to_s    # "Kind::Undefined"
   Kind::Undefined.inspect # "Kind::Undefined"
@@ -442,9 +442,9 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
 
 ### Added
 
-* #18 - Refactor `Kind::Maybe`.
+* [#18](https://github.com/serradura/kind/pull/18) - Refactor `Kind::Maybe`.
 
-* #18 - Add `Kind::Maybe::Value` module, that has the `.some?` and `.none?` methods. Available to check if the given value is `Some` or `None`.
+* [#18](https://github.com/serradura/kind/pull/18) - Add `Kind::Maybe::Value` module, that has the `.some?` and `.none?` methods. Available to check if the given value is `Some` or `None`.
   ```ruby
   Kind::Maybe::Value.some?(1)               # true
   Kind::Maybe::Value.some?(nil)             # false
@@ -462,7 +462,7 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
 
 ### Added
 
-* #17 - Transform `Kind::Optional` into `Kind::Maybe`. `Kind::Optional` still is available but as an alias for `Kind::Maybe`.
+* [#17](https://github.com/serradura/kind/pull/17) - Transform `Kind::Optional` into `Kind::Maybe`. `Kind::Optional` still is available but as an alias for `Kind::Maybe`.
 
 [⬆️ &nbsp;Back to Top](#changelog-)
 
@@ -471,7 +471,7 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
 
 ### Added
 
-* #16 - Add a new special type checkers.
+* [#16](https://github.com/serradura/kind/pull/16) - Add a new special type checkers.
   - `Kind::Of::Callable` for check if the given object respond to `call`.
   - `Kind::Is::Callable` if the given value is a `class`, it will verifies if its `public_instance_methods.include?(:call)`.
 
@@ -482,7 +482,7 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
 
 ### Added
 
-* #15 - Add `Kind::Optional` the maybe monad, it encapsulates an optional value. A `Kind::Optional` either contains a value (represented as `Some`), or it is empty (represented as `None`). This data structure is helpful to transform a value through several operations, but if any of them returns `nil` or `Kind::Undefined` as its result, the next operations will be avoided.
+* [#15](https://github.com/serradura/kind/pull/15) - Add `Kind::Optional` the maybe monad, it encapsulates an optional value. A `Kind::Optional` either contains a value (represented as `Some`), or it is empty (represented as `None`). This data structure is helpful to transform a value through several operations, but if any of them returns `nil` or `Kind::Undefined` as its result, the next operations will be avoided.
   ```ruby
   # Some value
 
@@ -522,7 +522,7 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
   Kind::Optional[1].then { |n| n if n.even? }.value_or(0) # 0
   ```
 
-* #15 - Add new methods to `Kind::Undefined`.
+* [#15](https://github.com/serradura/kind/pull/15) - Add new methods to `Kind::Undefined`.
   ```ruby
   Kind::Undefined.to_s    # 'Undefined'
   Kind::Undefined.inspect # 'Undefined'
@@ -548,11 +548,11 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
 
 ### Added
 
-* #14 - Add `Kind::Undefined` representing an undefined value to contrast with `nil`.
+* [#14](https://github.com/serradura/kind/pull/14) - Add `Kind::Undefined` representing an undefined value to contrast with `nil`.
 
 ### Fixed
 
-* #14 - Raise a `Kind::Error` if `nil` is the argument of any strict type checker.
+* [#14](https://github.com/serradura/kind/pull/14) - Raise a `Kind::Error` if `nil` is the argument of any strict type checker.
   ```ruby
   Kind.of.Hash(nil)    # raise Kind::Error, "nil expected to be a kind of Hash"
   ```
@@ -564,7 +564,7 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
 
 ### Added
 
-* #12 - Register type checkers respecting their namespaces.
+* [#12](https://github.com/serradura/kind/pull/12) - Register type checkers respecting their namespaces.
   ```ruby
   module Account
     class User
@@ -616,7 +616,7 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
 
 ### Added
 
-* #11 - Register the `Queue` (`Thread::Queue`) type checker. This registering creates:
+* [#11](https://github.com/serradura/kind/pull/11) - Register the `Queue` (`Thread::Queue`) type checker. This registering creates:
   - `Kind::Of::Queue`, `Kind::Is::Queue`
 
 [⬆️ &nbsp;Back to Top](#changelog-)
@@ -626,7 +626,7 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
 
 ### Added
 
-* #4 - Allow defining a default value when the verified object is `nil`.
+* [#4](https://github.com/serradura/kind/pull/4) - Allow defining a default value when the verified object is `nil`.
   ```ruby
   Kind.of.Hash(nil, or: {}) # {}
   ```
@@ -638,7 +638,7 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
 
 ### Added
 
-* #3 - Require `2.2.0` as the minimum Ruby version.
+* [#3](https://github.com/serradura/kind/pull/3) - Require `2.2.0` as the minimum Ruby version.
 
 [⬆️ &nbsp;Back to Top](#changelog-)
 
@@ -647,7 +647,7 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
 
 ### Added
 
-* #2 - Add `Kind::Checker` to create an object which knows how to do a type checking. (PR: #2)
+* [#2](https://github.com/serradura/kind/pull/2) - Add `Kind::Checker` to create an object which knows how to do a type checking. (PR: #2)
   ```ruby
   class User
   end
@@ -668,7 +668,7 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
 
 ### Breaking Changes
 
-* #2 - Replace `instance_eval` in modules by singleton objects to define the type checkers (via `Kind::Types.add()`). The behavior still the same, but the constants become a `Kind::Checker` object instead of a module.
+* [#2](https://github.com/serradura/kind/pull/2) - Replace `instance_eval` in modules by singleton objects to define the type checkers (via `Kind::Types.add()`). The behavior still the same, but the constants become a `Kind::Checker` object instead of a module.
 
 [⬆️ &nbsp;Back to Top](#changelog-)
 
@@ -677,7 +677,7 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
 
 ### Added
 
-* #1 - Register type checkers for several Ruby classes/modules. (PR: #1)
+* [#1](https://github.com/serradura/kind/pull/1) - Register type checkers for several Ruby classes/modules. (PR: #1)
   - **Classes:**
     - `Kind::Of::Symbol`    , `Kind::Is::Symbol`
     - `Kind::Of::Numeric`   , `Kind::Is::Numeric`
@@ -698,7 +698,7 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
     - `Kind::Of::Enumerable`, `Kind::Is::Enumerable`
     - `Kind::Of::Comparable`, `Kind::Is::Comparable`
 
-* #1 - Create special type checkers.
+* [#1](https://github.com/serradura/kind/pull/1) - Create special type checkers.
   - `Kind::Of::Boolean` for check if the given object is `true` or `false`.
   - `Kind::Of::Lambda` for check if the given object is a `lambda`.
   - `Kind::Of::Module` for check if the given object is a *module*.
