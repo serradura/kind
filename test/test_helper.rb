@@ -1,18 +1,20 @@
-require 'simplecov'
+if RUBY_VERSION >= '2.4.0'
+  require 'simplecov'
 
-SimpleCov.start do
-  add_filter '/test/'
-  add_filter '/lib/kind/active_model/validation.rb'
+  SimpleCov.start do
+    add_filter '/test/'
+    add_filter '/lib/kind/active_model/validation.rb'
 
-  enable_coverage :branch if RUBY_VERSION >= '2.5.0'
-end
+    enable_coverage :branch if RUBY_VERSION >= '2.5.0'
+  end
+  end
 
 $LOAD_PATH.unshift File.expand_path('../lib', __dir__)
 
 require 'kind'
 
-ENV.fetch('ACTIVEMODEL_VERSION', '6.1.0').tap do |active_model_version|
-  if active_model_version < '6.1.0'
+ENV.fetch('ACTIVEMODEL_VERSION', '7.0.0').tap do |active_model_version|
+  if active_model_version < '7.0.0'
     require 'kind/active_model/validation'
 
     if active_model_version < '4.1'

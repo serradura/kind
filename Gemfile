@@ -12,8 +12,16 @@ activemodel = case activemodel_version
               when '5.0' then '5.0.7'
               when '5.1' then '5.1.7'
               when '5.2' then '5.2.4'
-              when '6.0' then '6.0.0'
+              when '6.0' then '6.0.3.4'
+              when '6.1' then '6.1.2'
               end
+
+simplecov_version =
+  case RUBY_VERSION
+  when /\A2.[23]/ then '0.17.1'
+  when /\A2.4/ then '~> 0.18.5'
+  else '~> 0.19'
+  end
 
 group :test do
   if activemodel_version
@@ -24,7 +32,7 @@ group :test do
     gem 'minitest', '~> 5.0'
   end
 
-  gem 'simplecov', require: false
+  gem 'simplecov', simplecov_version, require: false
 end
 
 gem 'rake', '~> 13.0'
