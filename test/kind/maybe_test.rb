@@ -18,9 +18,13 @@ class Kind::MaybeTest < Minitest::Test
     assert_raises(NotImplementedError) { maybe_result.some? }
     assert_raises(NotImplementedError) { maybe_result.map { 0 } }
     assert_raises(NotImplementedError) { maybe_result.try(:anything) }
+    assert_raises(NotImplementedError) { maybe_result.try!(:anything) }
     assert_raises(NotImplementedError) { maybe_result.try { |value| value.anything } }
+    assert_raises(NotImplementedError) { maybe_result.try! { |value| value.anything } }
     assert_raises(NotImplementedError) { maybe_result.value_or(2) }
     assert_raises(NotImplementedError) { maybe_result.value_or { 3 } }
+    assert_raises(NotImplementedError) { maybe_result.dig(:any, :thing) }
+    assert_raises(NotImplementedError) { maybe_result.presence }
   end
 
   def test_maybe_some
@@ -147,13 +151,6 @@ class Kind::MaybeTest < Minitest::Test
 
     assert_instance_of(Kind::Maybe::None, Kind::Maybe[nil])
     assert_instance_of(Kind::Maybe::None, Kind::Maybe[Kind::Undefined])
-
-    # ---
-
-    assert_instance_of(Kind::Maybe::Some, Kind::Maybe.wrap(1))
-
-    assert_instance_of(Kind::Maybe::None, Kind::Maybe.wrap(nil))
-    assert_instance_of(Kind::Maybe::None, Kind::Maybe.wrap(Kind::Undefined))
   end
 
   def test_then_as_a_map_alias
@@ -227,8 +224,8 @@ class Kind::MaybeTest < Minitest::Test
 
     # -
 
-    assert_nil(Kind::Maybe[Kind::Undefined].try(:upcase).value)
-    assert_nil(Kind::Maybe[Kind::Undefined].try { |value| value.upcase }.value)
+    assert_kind_undefined(Kind::Maybe[Kind::Undefined].try(:upcase).value)
+    assert_kind_undefined(Kind::Maybe[Kind::Undefined].try { |value| value.upcase }.value)
 
     assert_instance_of(Kind::Maybe::None, Kind::Maybe[Kind::Undefined].try(:upcase))
     assert_instance_of(Kind::Maybe::None, Kind::Maybe[Kind::Undefined].try { |value| value.upcase })
@@ -360,8 +357,8 @@ class Kind::MaybeTest < Minitest::Test
 
     # -
 
-    assert_nil(Kind::Maybe[Kind::Undefined].try!(:upcase).value)
-    assert_nil(Kind::Maybe[Kind::Undefined].try! { |value| value.upcase }.value)
+    assert_kind_undefined(Kind::Maybe[Kind::Undefined].try!(:upcase).value)
+    assert_kind_undefined(Kind::Maybe[Kind::Undefined].try! { |value| value.upcase }.value)
 
     assert_instance_of(Kind::Maybe::None, Kind::Maybe[Kind::Undefined].try!(:upcase))
     assert_instance_of(Kind::Maybe::None, Kind::Maybe[Kind::Undefined].try! { |value| value.upcase })
@@ -483,20 +480,88 @@ class Kind::MaybeTest < Minitest::Test
   def test_the_typed_maybe
     assert_predicate(Kind::Maybe(Hash)[''], :none?)
     assert_predicate(Kind::Maybe(Hash).new([]), :none?)
-    assert_predicate(Kind::Maybe(Hash).wrap(''), :none?)
 
     assert_predicate(Kind::Maybe(Hash)[{}], :some?)
     assert_predicate(Kind::Maybe(Hash).new({}), :some?)
-    assert_predicate(Kind::Maybe(Hash).wrap({}), :some?)
 
     # ---
 
     assert_predicate(Kind::Optional(Hash)[''], :none?)
     assert_predicate(Kind::Optional(Hash).new([]), :none?)
-    assert_predicate(Kind::Optional(Hash).wrap(''), :none?)
 
     assert_predicate(Kind::Optional(Hash)[{}], :some?)
     assert_predicate(Kind::Optional(Hash).new({}), :some?)
+  end
+
+  def test_the_wrap_method
+    assert_instance_of(Kind::Maybe::Some, Kind::Maybe.wrap(1))
+    assert_instance_of(Kind::Maybe::None, Kind::Maybe.wrap(nil))
+    assert_instance_of(Kind::Maybe::None, Kind::Maybe.wrap(Kind::Undefined))
+
+    division1 = Kind::Maybe.wrap { 4 / 2 }
+    assert_predicate(division1, :some?)
+    assert_equal(2, division1.value)
+
+    division2 = Kind::Maybe.wrap(10) { |n| n / 2 }
+    assert_predicate(division2, :some?)
+    assert_equal(5, division2.value)
+
+    exception1 = Kind::Maybe.wrap { 2 / 0 }
+    assert_predicate(exception1, :none?)
+    assert_instance_of(ZeroDivisionError, exception1.value)
+
+    assert_raises_with_message(
+      ArgumentError,
+      'wrong number of arguments (given 0, expected 1)'
+    ) { Kind::Maybe.wrap }
+
+    # --
+
+    assert_predicate(Kind::Maybe(Hash).wrap(''), :none?)
+    assert_predicate(Kind::Maybe(Hash).wrap({}), :some?)
+
+    assert_predicate(Kind::Optional(Hash).wrap(''), :none?)
     assert_predicate(Kind::Optional(Hash).wrap({}), :some?)
+
+    exception2 = Kind::Maybe(Numeric).wrap { 3 / 0 }
+    assert_predicate(exception2, :none?)
+    assert_instance_of(ZeroDivisionError, exception2.value)
+
+    division3 = Kind::Maybe(Numeric).wrap { 6 / 2 }
+    assert_predicate(division3, :some?)
+    assert_equal(3, division3.value)
+
+    division4 = Kind::Maybe(Numeric).wrap(8) { |n| n / 2 }
+    assert_predicate(division4, :some?)
+    assert_equal(4, division4.value)
+
+    assert_raises_with_message(
+      ArgumentError,
+      'wrong number of arguments (given 0, expected 1)'
+    ) { Kind::Maybe(Numeric).wrap }
+  end
+
+  def test_the_presence_method
+    str = Kind::Maybe['  ']
+    str_presence = str.presence
+
+    assert str.some?
+    assert str_presence.none?
+    assert_nil(str_presence.value)
+
+    # --
+
+    assert Kind::Maybe[' 2 '].presence.some?
+
+    # --
+
+    nil_presence = Kind::Maybe[nil].presence
+    undefined_presence = Kind::Maybe[Kind::Undefined].presence
+
+    assert_predicate(nil_presence, :none?)
+    assert_nil(nil_presence.value)
+
+    assert_predicate(undefined_presence, :none?)
+    assert_kind_undefined(undefined_presence.value)
   end
 end
