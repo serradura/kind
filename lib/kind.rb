@@ -4,10 +4,10 @@ require 'set'
 require 'ostruct'
 
 require 'kind/version'
+require 'kind/undefined'
 require 'kind/deprecation'
 require 'kind/error'
 require 'kind/empty'
-require 'kind/undefined'
 require 'kind/dig'
 require 'kind/try'
 
