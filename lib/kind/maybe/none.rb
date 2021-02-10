@@ -43,8 +43,12 @@ module Kind
     NONE_WITH_NIL_VALUE = None.new(nil)
     NONE_WITH_UNDEFINED_VALUE = None.new(Undefined)
 
-    def none(value = nil)
-      value.nil? ? NONE_WITH_NIL_VALUE : None.new(value)
+    def none
+      NONE_WITH_NIL_VALUE
+    end
+
+    def __none__(value) # :nodoc:
+      None.new(value)
     end
 
     private_constant :NONE_WITH_NIL_VALUE, :NONE_WITH_UNDEFINED_VALUE

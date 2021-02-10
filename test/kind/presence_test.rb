@@ -1,10 +1,19 @@
 require 'test_helper'
 
 class Kind::PresenceTest < Minitest::Test
+  class IsBlank
+    def initialize(state)
+      @state = state
+    end
+
+    def blank?
+      @state
+    end
+  end
   def test_the_presence_of_several_objects
     # object#blank?
-    assert_nil Kind::Presence.(OpenStruct.new(:blank? => true))
-    refute_nil Kind::Presence.(OpenStruct.new(:blank? => false))
+    assert_nil Kind::Presence.(IsBlank.new(true))
+    refute_nil Kind::Presence.(IsBlank.new(false))
 
     # object == true
     assert Kind::Presence.(true)

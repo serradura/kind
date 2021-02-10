@@ -10,7 +10,7 @@ module Kind
           begin
             new(NULL == arg ? yield : yield(arg))
           rescue StandardError => exception
-            Maybe.none(exception)
+            Maybe.__none__(exception)
           end
         else
           return new(arg) if NULL != arg
