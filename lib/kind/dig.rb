@@ -10,7 +10,7 @@ module Kind
       keys.reduce(data) do |memo, key|
         value = get(memo, key)
 
-        break if value.nil?
+        break if Core::Utils.null?(value)
 
         value
       end
@@ -27,9 +27,9 @@ module Kind
         when ::OpenStruct
           data[key] if key.respond_to?(:to_sym)
         when ::Struct
-          if key.respond_to?(:to_int) || key.respond_to?(:to_sym)
-            data[key] rescue nil
-          end
+          data[key] rescue nil if key.respond_to?(:to_int) || key.respond_to?(:to_sym)
+        else
+          data.public_send(key) if key.respond_to?(:to_sym) && data.respond_to?(key)
         end
       end
   end
