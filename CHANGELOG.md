@@ -68,7 +68,7 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
 
 ### Added
 
-- To-do...
+* [#40](https://github.com/serradura/kind/pull/40) - To-do...
 
 [⬆️ &nbsp;Back to Top](#changelog-)
 
@@ -97,6 +97,29 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
   user_id.then { |id| User.find_by(id: id) }.value # :user_id
   ```
 
+* [#33](https://github.com/serradura/kind/pull/33) - Add the utility module `Kind::Dig`. It has the same behavior of Ruby dig methods ([Hash](https://ruby-doc.org/core-2.3.0/Hash.html#method-i-dig), [Array](https://ruby-doc.org/core-2.3.0/Array.html#method-i-dig), [Struct](https://ruby-doc.org/core-2.3.0/Struct.html#method-i-dig), [OpenStruct](https://ruby-doc.org/stdlib-2.3.0/libdoc/ostruct/rdoc/OpenStruct.html#method-i-dig)), but it will not raise an error if some step can't be digged.
+  ```ruby
+  s = Struct.new(:a, :b).new(101, 102)
+  o = OpenStruct.new(c: 103, d: 104)
+  d = { struct: s, ostruct: o, data: [s, o]}
+
+  Kind::Dig.(s, [:a])            # 101
+  Kind::Dig.(o, [:c])            # 103
+
+  Kind::Dig.(d, [:struct, :b])   # 102
+  Kind::Dig.(d, [:data, 0, :b])  # 102
+  Kind::Dig.(d, [:data, 0, 'b']) # 102
+
+  Kind::Dig.(d, [:ostruct, :d])  # 104
+  Kind::Dig.(d, [:data, 1, :d])  # 104
+  Kind::Dig.(d, [:data, 1, 'd']) # 104
+
+  Kind::Dig.(d, [:struct, :f])   # nil
+  Kind::Dig.(d, [:ostruct, :f])  # nil
+  Kind::Dig.(d, [:data, 0, :f])  # nil
+  Kind::Dig.(d, [:data, 1, :f])  # nil
+  ```
+
 [⬆️ &nbsp;Back to Top](#changelog-)
 
 3.0.0 (2020-06-25)
@@ -105,7 +128,7 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
 ### Breaking Changes
 
 * [#31](https://github.com/serradura/kind/pull/31) - Change the `Kind::Maybe::Result#try()` behavior.
-  - If you don't want to use the methods `#map`/`#then` to access some value inside of the monad, you could use the `#try` method to do this. So, if the value wasn't `nil` or `Kind::Undefined`, a `Some` will be returned.
+  - If you don't want to use the methods `#map`/`#then` to access some value inside of the monad, you could use the `#try` method to do this. It invokes a public method with or without arguments like public_send does, except that if the receiver does not respond to it the call returns `nil` rather than raising an exception. So, if the value wasn't `nil` or `Kind::Undefined` a `Some` will be returned.
   ```ruby
   # Examples using Kind::Maybe
 
