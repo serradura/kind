@@ -10,7 +10,7 @@ module Kind
       def instance(value, options = Empty::HASH)
         default = options[:or]
 
-        return Core::Utils.kind_of!(__kind, value) if ::Kind::Maybe::Value.none?(default)
+        return Core::Utils.kind_of!(__kind, value) if ::Kind::Core::Utils.null?(default)
 
         Kind::Undefined != value && instance?(value) ? value : Core::Utils.kind_of!(__kind, default)
       end

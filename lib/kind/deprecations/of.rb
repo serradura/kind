@@ -70,7 +70,7 @@ module Kind
       def self.instance(value, options = Empty::HASH)
         default = options[:or]
 
-        if ::Kind::Maybe::Value.none?(default)
+        if ::Kind::Core::Utils.null?(default)
           __kind_undefined(value) { __kind_of(value) }
         else
           return value if Kind::Undefined != value && instance?(value)
@@ -114,7 +114,7 @@ module Kind
       def self.instance(value, options= Empty::HASH)
         default = options[:or]
 
-        if ::Kind::Maybe::Value.none?(default)
+        if ::Kind::Core::Utils.null?(default)
           __kind_undefined(value) { Kind::Of::Boolean(value) }
         else
           return value if Kind::Undefined != value && instance?(value)
@@ -171,7 +171,7 @@ module Kind
       def self.instance(value, options = Empty::HASH)
         default = options[:or]
 
-        if ::Kind::Maybe::Value.none?(default)
+        if ::Kind::Core::Utils.null?(default)
           __kind_undefined(value) { Kind::Of::Lambda(value) }
         else
           return value if Kind::Undefined != value && instance?(value)
@@ -227,7 +227,7 @@ module Kind
       def self.instance(value, options = Empty::HASH)
         default = options[:or]
 
-        if ::Kind::Maybe::Value.none?(default)
+        if ::Kind::Core::Utils.null?(default)
           __kind_undefined(value) { Kind::Of::Callable(value) }
         else
           return value if Kind::Undefined != value && instance?(value)
