@@ -10,12 +10,20 @@ module Kind
       def none?; false; end
 
       def map(&fn)
+        map!(&fn)
+      rescue StandardError => exception
+        None.new(exception)
+      end
+
+      alias_method :then, :map
+
+      def map!(&fn)
         result = fn.call(@value)
 
         resolve(result)
       end
 
-      alias_method :then, :map
+      alias_method :then!, :map!
 
       def try!(method_name = Undefined, *args, &block)
         return __try_block__(block, args) if block
@@ -55,6 +63,7 @@ module Kind
 
         def resolve(result)
           return result if Maybe::None === result
+          return None.new(result) if Exception === result
           return NONE_WITH_NIL_VALUE if result.nil?
           return NONE_WITH_UNDEFINED_VALUE if Undefined == result
 

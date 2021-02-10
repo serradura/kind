@@ -564,4 +564,57 @@ class Kind::MaybeTest < Minitest::Test
     assert_predicate(undefined_presence, :none?)
     assert_kind_undefined(undefined_presence.value)
   end
+
+  def test_that_exception_values_are_resolved_as_none
+    maybe1 = Kind::Maybe.new(0).map do |value|
+      begin
+        2 / value
+      rescue => exception
+        exception
+      end
+    end
+
+    maybe2 = Kind::Maybe.new(0).map! do |value|
+      begin
+        2 / value
+      rescue => exception
+        exception
+      end
+    end
+
+    maybe3 = Kind::Maybe.new(0).then do |value|
+      begin
+        2 / value
+      rescue => exception
+        exception
+      end
+    end
+
+    maybe4 = Kind::Maybe.new(0).then! do |value|
+      begin
+        2 / value
+      rescue => exception
+        exception
+      end
+    end
+
+    maybe5 = Kind::Maybe.new(0).map { |value| 3 / value }
+
+    maybe6 = Kind::Maybe.new(0).then { |value| 3 / value }
+
+    [maybe1, maybe2, maybe3, maybe4, maybe5, maybe6].each do |maybe|
+      assert_predicate(maybe, :none?)
+      assert_instance_of(ZeroDivisionError, maybe.value)
+    end
+  end
+
+  def test_that_exceptions_will_leak_on_the_bang_map_or_then_methods
+    assert_raises(ZeroDivisionError) do
+      Kind::Maybe.new(0).map! { |value| 2 / value }
+    end
+
+    assert_raises(ZeroDivisionError) do
+      Kind::Maybe.new(0).then! { |value| 2 / value }
+    end
+  end
 end
