@@ -10,6 +10,7 @@ require 'kind/error'
 require 'kind/empty'
 require 'kind/dig'
 require 'kind/try'
+require 'kind/presence'
 
 require 'kind/core'
 require 'kind/modules'
