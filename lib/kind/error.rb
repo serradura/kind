@@ -2,12 +2,8 @@
 
 module Kind
   class Error < TypeError
-    UNDEFINED_OBJECT = Object.new
-
-    private_constant :UNDEFINED_OBJECT
-
-    def initialize(arg, object = UNDEFINED_OBJECT)
-      if UNDEFINED_OBJECT == object
+    def initialize(arg, object = NULL)
+      if NULL == object
         # Will be used when the exception was raised with a message. e.g:
         # raise Kind::Error, "some message"
         super(arg)
