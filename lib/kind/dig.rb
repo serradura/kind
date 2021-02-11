@@ -10,7 +10,7 @@ module Kind
       keys.reduce(data) do |memo, key|
         value = get(memo, key)
 
-        break if Core::Utils.null?(value)
+        break if KIND.null?(value)
 
         value
       end

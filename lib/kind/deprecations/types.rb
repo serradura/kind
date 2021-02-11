@@ -8,7 +8,7 @@ module Kind
 
     KIND_OF = <<-RUBY
       def self.%{method_name}(object = Undefined, options = Empty::HASH)
-        ::Kind::Deprecation.warn_method_replacement('Kind::Of::%{method_name}', 'Kind::%{method_name}')
+        DEPRECATION.warn_method_replacement('Kind::Of::%{method_name}', 'Kind::%{method_name}')
 
         default = options[:or]
 
@@ -18,13 +18,13 @@ module Kind
 
         return object if is_instance
 
-        Core::Utils.kind_of!(::%{kind_name_to_check}, object && default ? default : object || default)
+        KIND.of!(::%{kind_name_to_check}, object && default ? default : object || default)
       end
     RUBY
 
     KIND_OF_IS = <<-RUBY
       def self.%{method_name}?(*args)
-        ::Kind::Deprecation.warn_method_replacement('Kind::Of::%{method_name}?', 'Kind::%{method_name}?')
+        DEPRECATION.warn_method_replacement('Kind::Of::%{method_name}?', 'Kind::%{method_name}?')
 
         Kind::Of::%{kind_name}.instance?(*args)
       end
@@ -32,18 +32,18 @@ module Kind
 
     KIND_IS = <<-RUBY
       def self.%{method_name}(value)
-        ::Kind::Deprecation.warn_removal('Kind::Is::%{method_name}')
+        DEPRECATION.warn_removal('Kind::Is::%{method_name}')
 
-        Core::Utils.is_kind(::%{kind_name_to_check}, value)
+        KIND.is!(::%{kind_name_to_check}, value)
       end
     RUBY
 
     private_constant :KIND_OF, :KIND_IS, :COLONS
 
     def add(kind, name: nil)
-      ::Kind::Deprecation.warn_removal('Kind::Types')
+      DEPRECATION.warn_removal('Kind::Types')
 
-      kind_name = Core::Utils.kind_of_module_or_class!(kind).name
+      kind_name = KIND.of_module_or_class!(kind).name
       checker = name ? Kind::String[name] : kind_name
 
       if checker.include?(COLONS)

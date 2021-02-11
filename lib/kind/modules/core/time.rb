@@ -2,12 +2,12 @@
 
 module Kind
   module Time
-    extend self, Core::Checker
+    extend self, TypeChecker
 
     def kind; ::Time; end
   end
 
   def self.Time?(*values)
-    Core::Utils.kind_of?(::Time, values)
+    KIND.of?(::Time, values)
   end
 end

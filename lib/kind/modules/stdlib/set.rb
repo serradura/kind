@@ -2,12 +2,12 @@
 
 module Kind
   module Set
-    extend self, Core::Checker
+    extend self, TypeChecker
 
     def kind; ::Set; end
   end
 
   def self.Set?(*values)
-    Core::Utils.kind_of?(::Set, values)
+    KIND.of?(::Set, values)
   end
 end

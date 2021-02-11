@@ -2,12 +2,12 @@
 
 module Kind
   module Float
-    extend self, Core::Checker
+    extend self, TypeChecker
 
     def kind; ::Float; end
   end
 
   def self.Float?(*values)
-    Core::Utils.kind_of?(::Float, values)
+    KIND.of?(::Float, values)
   end
 end

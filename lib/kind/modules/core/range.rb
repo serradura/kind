@@ -2,12 +2,12 @@
 
 module Kind
   module Range
-    extend self, Core::Checker
+    extend self, TypeChecker
 
     def kind; ::Range; end
   end
 
   def self.Range?(*values)
-    Core::Utils.kind_of?(::Range, values)
+    KIND.of?(::Range, values)
   end
 end

@@ -2,8 +2,8 @@
 
 module Kind
   class Error < TypeError
-    def initialize(arg, object = NULL)
-      if NULL == object
+    def initialize(arg, object = UNDEFINED)
+      if UNDEFINED == object
         # Will be used when the exception was raised with a message. e.g:
         # raise Kind::Error, "some message"
         super(arg)

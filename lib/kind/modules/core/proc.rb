@@ -2,12 +2,12 @@
 
 module Kind
   module Proc
-    extend self, Core::Checker
+    extend self, TypeChecker
 
     def kind; ::Proc; end
   end
 
   def self.Proc?(*values)
-    Core::Utils.kind_of?(::Proc, values)
+    KIND.of?(::Proc, values)
   end
 end

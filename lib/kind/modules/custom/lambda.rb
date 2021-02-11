@@ -2,7 +2,7 @@
 
 module Kind
   module Lambda
-    extend self, Core::Checker
+    extend self, TypeChecker
 
     def kind; ::Proc; end
 
@@ -14,7 +14,7 @@ module Kind
   end
 
   def self.Lambda?(*values)
-    Core::Utils.kind?(of: values, by: -> value {
+    KIND.check(values, by: -> value {
       ::Kind::Lambda === value
     })
   end

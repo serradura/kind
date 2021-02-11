@@ -2,12 +2,12 @@
 
 module Kind
   module Symbol
-    extend self, Core::Checker
+    extend self, TypeChecker
 
     def kind; ::Symbol; end
   end
 
   def self.Symbol?(*values)
-    Core::Utils.kind_of?(::Symbol, values)
+    KIND.of?(::Symbol, values)
   end
 end

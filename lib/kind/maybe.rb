@@ -13,7 +13,7 @@ module Kind
     require 'kind/maybe/typed'
 
     def new(value)
-      (Core::Utils.null?(value) ? None : Some)
+      (KIND.null?(value) ? None : Some)
         .new(value)
     end
 

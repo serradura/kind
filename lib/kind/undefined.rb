@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 module Kind
-  NULL = Object.new.freeze
-
   Undefined = Object.new.tap do |undefined|
     def undefined.inspect
       @inspect ||= 'Kind::Undefined'.freeze
@@ -28,6 +26,4 @@ module Kind
     undefined.inspect
     undefined.freeze
   end
-
-  private_constant :NULL
 end

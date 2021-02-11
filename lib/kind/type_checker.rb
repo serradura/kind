@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Kind
-  module Core::Checker
+  module TypeChecker
     def name
       kind.name
     end
@@ -33,11 +33,11 @@ module Kind
     def [](value)
       return value if instance?(value)
 
-      Core::Utils.kind_error!(name, value)
+      KIND.error!(name, value)
     end
 
     def null_or_instance(value) # :nodoc:
-      Core::Utils.null?(value) ? value : self[value]
+      KIND.null?(value) ? value : self[value]
     end
 
     private
@@ -49,8 +49,8 @@ module Kind
       end
   end
 
-  class Core::Checker::Object # :nodoc: all
-    include Core::Checker
+  class TypeChecker::Object # :nodoc: all
+    include TypeChecker
 
     ResolveKindName = ->(kind, opt) do
       name = Kind::Try.(opt, :[], :name)
@@ -62,8 +62,8 @@ module Kind
     def initialize(kind, opt)
       name = ResolveKindName.(kind, opt)
 
-      @kind = Core::Utils.kind_respond_to!(:===, kind)
-      @name = Core::Utils::kind_of!(::String, name)
+      @name = KIND.of!(::String, name)
+      @kind = KIND.respond_to!(:===, kind)
     end
 
     private_constant :ResolveKindName

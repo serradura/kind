@@ -2,12 +2,12 @@
 
 module Kind
   module Struct
-    extend self, Core::Checker
+    extend self, TypeChecker
 
     def kind; ::Struct; end
   end
 
   def self.Struct?(*values)
-    Core::Utils.kind_of?(::Struct, values)
+    KIND.of?(::Struct, values)
   end
 end

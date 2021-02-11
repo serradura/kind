@@ -2,12 +2,12 @@
 
 module Kind
   module Integer
-    extend self, Core::Checker
+    extend self, TypeChecker
 
     def kind; ::Integer; end
   end
 
   def self.Integer?(*values)
-    Core::Utils.kind_of?(::Integer, values)
+    KIND.of?(::Integer, values)
   end
 end

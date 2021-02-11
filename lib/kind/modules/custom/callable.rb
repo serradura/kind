@@ -2,7 +2,7 @@
 
 module Kind
   module Callable
-    extend self, Core::Checker
+    extend self, TypeChecker
 
     def kind; raise NotImplementedError; end
 
@@ -14,7 +14,7 @@ module Kind
   end
 
   def self.Callable?(*values)
-    Core::Utils.kind?(of: values, by: -> value {
+    KIND.check(values, by: -> value {
       ::Kind::Callable === value
     })
   end

@@ -3,15 +3,15 @@
 module Kind
   module Of
     def self.call(kind, object, kind_name = nil)
-      ::Kind::Deprecation.warn_method_replacement('Kind::Of.call', 'Kind::Core::Utils.kind_of!')
+      DEPRECATION.warn_method_replacement('Kind::Of.call', 'Kind::KIND.of!')
 
-      Core::Utils.kind_of!(kind, object, kind_name)
+      KIND.of!(kind, object, kind_name)
     end
 
     # -- Class
 
     def self.Class(object = Undefined)
-      ::Kind::Deprecation.warn_method_replacement('Kind::Of::Class', 'Kind::Class')
+      DEPRECATION.warn_method_replacement('Kind::Of::Class', 'Kind::Class')
 
       return Class if Undefined == object
 
@@ -29,7 +29,7 @@ module Kind
     end)
 
     def self.Class?(*args)
-      ::Kind::Deprecation.warn_method_replacement('Kind::Of::Class?', 'Kind::Class?')
+      DEPRECATION.warn_method_replacement('Kind::Of::Class?', 'Kind::Class?')
 
       Kind::Class?(*args)
     end
@@ -37,7 +37,7 @@ module Kind
     # -- Module
 
     def self.Module(object = Undefined)
-      ::Kind::Deprecation.warn_method_replacement('Kind::Of::Module', 'Kind::Module')
+      DEPRECATION.warn_method_replacement('Kind::Of::Module', 'Kind::Module')
 
       return Module if Undefined == object
 
@@ -70,7 +70,7 @@ module Kind
       def self.instance(value, options = Empty::HASH)
         default = options[:or]
 
-        if ::Kind::Core::Utils.null?(default)
+        if ::Kind::KIND.null?(default)
           __kind_undefined(value) { __kind_of(value) }
         else
           return value if Kind::Undefined != value && instance?(value)
@@ -83,7 +83,7 @@ module Kind
     end)
 
     def self.Module?(*args)
-      ::Kind::Deprecation.warn_method_replacement('Kind::Of::Module?', 'Kind::Module?')
+      DEPRECATION.warn_method_replacement('Kind::Of::Module?', 'Kind::Module?')
 
       Kind::Module?(*args)
     end
@@ -91,7 +91,7 @@ module Kind
     # -- Boolean
 
     def self.Boolean(object = Undefined, options = Empty::HASH)
-      ::Kind::Deprecation.warn_method_replacement('Kind::Of::Boolean', 'Kind::Boolean')
+      DEPRECATION.warn_method_replacement('Kind::Of::Boolean', 'Kind::Boolean')
 
       default = options[:or]
 
@@ -114,7 +114,7 @@ module Kind
       def self.instance(value, options= Empty::HASH)
         default = options[:or]
 
-        if ::Kind::Core::Utils.null?(default)
+        if ::Kind::KIND.null?(default)
           __kind_undefined(value) { Kind::Of::Boolean(value) }
         else
           return value if Kind::Undefined != value && instance?(value)
@@ -142,7 +142,7 @@ module Kind
     end)
 
     def self.Boolean?(*args)
-      ::Kind::Deprecation.warn_method_replacement('Kind::Of::Boolean?', 'Kind::Boolean?')
+      DEPRECATION.warn_method_replacement('Kind::Of::Boolean?', 'Kind::Boolean?')
 
       Kind::Boolean?(*args)
     end
@@ -150,7 +150,7 @@ module Kind
     # -- Lambda
 
     def self.Lambda(object = Undefined, options = Empty::HASH)
-      ::Kind::Deprecation.warn_method_replacement('Kind::Of::Lambda', 'Kind::Lambda')
+      DEPRECATION.warn_method_replacement('Kind::Of::Lambda', 'Kind::Lambda')
 
       default = options[:or]
 
@@ -171,7 +171,7 @@ module Kind
       def self.instance(value, options = Empty::HASH)
         default = options[:or]
 
-        if ::Kind::Core::Utils.null?(default)
+        if ::Kind::KIND.null?(default)
           __kind_undefined(value) { Kind::Of::Lambda(value) }
         else
           return value if Kind::Undefined != value && instance?(value)
@@ -194,7 +194,7 @@ module Kind
     end)
 
     def self.Lambda?(*args)
-      ::Kind::Deprecation.warn_method_replacement('Kind::Of::Lambda?', 'Kind::Lambda?')
+      DEPRECATION.warn_method_replacement('Kind::Of::Lambda?', 'Kind::Lambda?')
 
       Kind::Lambda?(*args)
     end
@@ -202,7 +202,7 @@ module Kind
     # -- Callable
 
     def self.Callable(object = Undefined, options = Empty::HASH)
-      ::Kind::Deprecation.warn_method_replacement('Kind::Of::Callable', 'Kind::Callable')
+      DEPRECATION.warn_method_replacement('Kind::Of::Callable', 'Kind::Callable')
 
       default = options[:or]
 
@@ -227,7 +227,7 @@ module Kind
       def self.instance(value, options = Empty::HASH)
         default = options[:or]
 
-        if ::Kind::Core::Utils.null?(default)
+        if ::Kind::KIND.null?(default)
           __kind_undefined(value) { Kind::Of::Callable(value) }
         else
           return value if Kind::Undefined != value && instance?(value)
@@ -250,7 +250,7 @@ module Kind
     end)
 
     def self.Callable?(*args)
-      ::Kind::Deprecation.warn_method_replacement('Kind::Of::Callable?', 'Kind::Callable?')
+      DEPRECATION.warn_method_replacement('Kind::Of::Callable?', 'Kind::Callable?')
 
       Kind::Callable?(*args)
     end

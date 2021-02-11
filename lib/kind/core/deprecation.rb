@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
 module Kind
-  module Deprecation # :nodoc: all
+  module DEPRECATION # :nodoc: all
     WARN_IS_DISABLED = String(ENV['DISABLE_KIND_DEPRECATION']).strip == 't'
 
-    module Null
+    module DevNull
       def self.warn(_)
       end
     end
 
-    OUTPUT = WARN_IS_DISABLED ? Null : ::Kernel
+    OUTPUT = WARN_IS_DISABLED ? DevNull : ::Kernel
 
     def self.warn(message)
       OUTPUT.warn("[DEPRECATION] #{message}" % { version: 'version 5.0' })
@@ -24,6 +24,6 @@ module Kind
       self.warn "`#{name}` is deprecated, it will be removed in %{version}."
     end
 
-    private_constant :Null, :OUTPUT
+    private_constant :DevNull, :OUTPUT
   end
 end

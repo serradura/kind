@@ -2,12 +2,12 @@
 
 module Kind
   module Regexp
-    extend self, Core::Checker
+    extend self, TypeChecker
 
     def kind; ::Regexp; end
   end
 
   def self.Regexp?(*values)
-    Core::Utils.kind_of?(::Regexp, values)
+    KIND.of?(::Regexp, values)
   end
 end

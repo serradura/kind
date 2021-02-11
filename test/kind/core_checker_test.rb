@@ -2,7 +2,7 @@ require 'test_helper'
 
 class Kind::CoreCheckerTest < Minitest::Test
   def test_the_core_checker_object_receiving_a_kind
-    string_checker = Kind::Core::Checker::Object.new(::String, {})
+    string_checker = Kind::TypeChecker::Object.new(::String, {})
 
     # FACT: Can return its kind and its name
     assert_equal(::String, string_checker.kind)
@@ -51,7 +51,7 @@ class Kind::CoreCheckerTest < Minitest::Test
   PositiveInteger = -> value { value.kind_of?(Integer) && value > 0 }
 
   def test_the_core_checker_object_receiving_a_kind_name
-    positive_integer_checker = Kind::Core::Checker::Object.new(PositiveInteger, name: 'PositiveInteger')
+    positive_integer_checker = Kind::TypeChecker::Object.new(PositiveInteger, name: 'PositiveInteger')
 
     # FACT: Can return its kind and its name
     assert_equal(PositiveInteger, positive_integer_checker.kind)
@@ -104,6 +104,6 @@ class Kind::CoreCheckerTest < Minitest::Test
     assert_raises_with_message(
       Kind::Error,
       'nil expected to be a kind of String'
-    ) { Kind::Core::Checker::Object.new([], {}) }
+    ) { Kind::TypeChecker::Object.new([], {}) }
   end
 end

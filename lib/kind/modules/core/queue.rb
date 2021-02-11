@@ -2,13 +2,13 @@
 
 module Kind
   module Queue
-    extend self, Core::Checker
+    extend self, TypeChecker
 
     def kind; ::Queue; end
     def name; 'Queue'; end
   end
 
   def self.Queue?(*values)
-    Core::Utils.kind_of?(::Queue, values)
+    KIND.of?(::Queue, values)
   end
 end

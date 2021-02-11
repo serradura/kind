@@ -2,12 +2,12 @@
 
 module Kind
   module Enumerator
-    extend self, Core::Checker
+    extend self, TypeChecker
 
     def kind; ::Enumerator; end
   end
 
   def self.Enumerator?(*values)
-    Core::Utils.kind_of?(::Enumerator, values)
+    KIND.of?(::Enumerator, values)
   end
 end

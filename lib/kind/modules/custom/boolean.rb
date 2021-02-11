@@ -2,7 +2,7 @@
 
 module Kind
   module Boolean
-    extend self, Core::Checker
+    extend self, TypeChecker
 
     def kind; [TrueClass, FalseClass].freeze; end
 
@@ -14,7 +14,7 @@ module Kind
   end
 
   def self.Boolean?(*values)
-    Core::Utils.kind?(of: values, by: -> value {
+    KIND.check(values, by: -> value {
       ::Kind::Boolean === value
     })
   end

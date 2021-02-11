@@ -7,7 +7,7 @@ module Kind
     def call(*args)
       object = args.shift
 
-      return if Core::Utils.null?(object)
+      return if KIND.null?(object)
 
       resolve(object, args.shift, args)
     end

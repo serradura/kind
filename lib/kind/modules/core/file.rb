@@ -2,12 +2,12 @@
 
 module Kind
   module File
-    extend self, Core::Checker
+    extend self, TypeChecker
 
     def kind; ::File; end
   end
 
   def self.File?(*values)
-    Core::Utils.kind_of?(::File, values)
+    KIND.of?(::File, values)
   end
 end
