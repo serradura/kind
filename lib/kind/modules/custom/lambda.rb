@@ -14,8 +14,6 @@ module Kind
   end
 
   def self.Lambda?(*values)
-    KIND.check(values, by: -> value {
-      ::Kind::Lambda === value
-    })
+    KIND.of?(Lambda, values)
   end
 end

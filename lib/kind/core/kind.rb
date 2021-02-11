@@ -6,12 +6,10 @@ module Kind
       value.nil? || Undefined == value
     end
 
-    def self.check(values, by:) # :nodoc:
-      values.empty? ? by : values.all?(&by)
-    end
-
     def self.of?(kind, values) # :nodoc:
-      check(values, by: -> value { kind === value })
+      of_kind = -> value { kind === value }
+
+      values.empty? ? of_kind : values.all?(&of_kind)
     end
 
     def self.of!(kind, value, kind_name = nil) # :nodoc:
@@ -21,7 +19,7 @@ module Kind
     end
 
     def self.error!(kind_name, value) # :nodoc:
-      raise ::Kind::Error.new(kind_name, value)
+      raise Error.new(kind_name, value)
     end
 
     def self.of_class?(value) # :nodoc:
@@ -39,7 +37,7 @@ module Kind
     def self.respond_to!(method_name, value) # :nodoc:
       return value if value.respond_to?(method_name)
 
-      raise ::Kind::Error.new("expected #{value} to respond to :#{method_name}")
+      raise Error.new("expected #{value} to respond to :#{method_name}")
     end
 
     def self.is?(expected, value) # :nodoc:

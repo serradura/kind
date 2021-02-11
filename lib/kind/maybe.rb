@@ -27,7 +27,7 @@ module Kind
   None = Maybe.none
 
   def self.None
-    Kind::None
+    None
   end
 
   def self.Some(value)

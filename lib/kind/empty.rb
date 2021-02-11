@@ -14,6 +14,4 @@ module Kind
   end
 end
 
-unless defined?(Empty)
-  Empty = Kind::Empty
-end
+Empty = Kind::Empty unless defined?(Empty)

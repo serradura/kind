@@ -12,8 +12,6 @@ module Kind
   end
 
   def self.Module?(*values)
-    KIND.check(values, by: -> value {
-      ::Kind::Module === value
-    })
+    KIND.of?(::Kind::Module, values)
   end
 end

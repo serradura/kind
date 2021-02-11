@@ -14,8 +14,6 @@ module Kind
   end
 
   def self.Callable?(*values)
-    KIND.check(values, by: -> value {
-      ::Kind::Callable === value
-    })
+    KIND.of?(Callable, values)
   end
 end

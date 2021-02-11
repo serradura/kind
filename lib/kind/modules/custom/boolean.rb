@@ -14,8 +14,6 @@ module Kind
   end
 
   def self.Boolean?(*values)
-    KIND.check(values, by: -> value {
-      ::Kind::Boolean === value
-    })
+    KIND.of?(Boolean, values)
   end
 end

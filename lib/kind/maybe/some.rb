@@ -42,11 +42,11 @@ module Kind
       end
 
       def dig(*keys)
-        resolve(Kind::Dig.(value, keys))
+        resolve(Dig.(value, keys))
       end
 
       def presence
-        resolve(Kind::Presence.(value))
+        resolve(Presence.(value))
       end
 
       private

@@ -72,7 +72,7 @@ module Kind
     else
       DEPRECATION.warn_method_replacement('Kind.of(<Kind>)', 'Kind::Of(<Kind>)')
 
-      Kind::Checker::Factory.create(kind)
+      Checker::Factory.create(kind)
     end
   end
 
