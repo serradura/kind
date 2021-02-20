@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class Kind::CoreCheckerTest < Minitest::Test
+class Kind::TypeCheckerObjectTest < Minitest::Test
   def test_the_core_checker_object_receiving_a_kind
     string_checker = Kind::TypeChecker::Object.new(::String, {})
 
@@ -46,6 +46,14 @@ class Kind::CoreCheckerTest < Minitest::Test
       Kind::Error,
       ':bar expected to be a kind of String'
     ) { string_checker[:bar] }
+
+    # FACT: Can return the value if it is an instance or a default if it was one too.
+    assert_equal('2', string_checker.value('2', default: ''))
+    assert_equal('', string_checker.value(2, default: ''))
+    assert_raises_with_message(
+      Kind::Error,
+      '1 expected to be a kind of String'
+    ) { string_checker.value(2, default: 1) }
   end
 
   PositiveInteger = -> value { value.kind_of?(Integer) && value > 0 }
@@ -98,6 +106,14 @@ class Kind::CoreCheckerTest < Minitest::Test
       Kind::Error,
       '0 expected to be a kind of PositiveInteger'
     ) { positive_integer_checker[0] }
+
+    # FACT: Can return the value if it is an instance or a default if it was one too.
+    assert_equal(2, positive_integer_checker.value(2, default: 1))
+    assert_equal(1, positive_integer_checker.value('2', default: 1))
+    assert_raises_with_message(
+      Kind::Error,
+      '0 expected to be a kind of PositiveInteger'
+    ) { positive_integer_checker.value(-1, default: 0) }
   end
 
   def test_the_core_checker_object_receiving_an_object_that_doesnt_have_a_name

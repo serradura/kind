@@ -16,8 +16,14 @@ module Kind
       @__instance_func ||= ->(ck) { ->(value) { ck === value } }.(self)
     end
 
+    def [](value)
+      return value if self === value
+
+      KIND.error!(name, value)
+    end
+
     def or_nil(value)
-      return value if instance?(value)
+      return value if self === value
     end
 
     def or_undefined(value)
@@ -30,22 +36,23 @@ module Kind
       instance?(value) ? value : fallback
     end
 
-    def [](value)
-      return value if instance?(value)
-
-      KIND.error!(name, value)
+    def value(arg, default:)
+      __value(arg, self[default])
     end
 
-    def null_or_instance(value) # :nodoc:
+    def or_null(value) # :nodoc:
       KIND.null?(value) ? value : self[value]
     end
 
     private
 
       def __or_func
-        @__or_func ||= ->(ck) {
-          ->(fb) {->(value) { ck.instance?(value) ? value : ck.null_or_instance(fb) } }
-        }.(self)
+        @__or_func ||=
+          ->(tc, fb, value) { tc.instance?(value) ? value : tc.or_null(fb) }.curry[self]
+      end
+
+      def __value(arg, default)
+        self === arg ? arg : default
       end
   end
 
