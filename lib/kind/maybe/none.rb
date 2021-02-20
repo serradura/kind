@@ -5,10 +5,10 @@ module Kind
     class None < Result
       INVALID_DEFAULT_ARG = 'the default value must be defined as an argument or block'.freeze
 
-      def value_or(default = Undefined, &block)
-        raise ArgumentError, INVALID_DEFAULT_ARG if Undefined == default && !block
+      def value_or(default = UNDEFINED, &block)
+        raise ArgumentError, INVALID_DEFAULT_ARG if UNDEFINED == default && !block
 
-        Undefined != default ? default : block.call
+        UNDEFINED != default ? default : block.call
       end
 
       def none?; true; end
@@ -21,8 +21,8 @@ module Kind
       alias_method :then, :map
       alias_method :then!, :map
 
-      def try!(method_name = Undefined, *args, &block)
-        Kind::Symbol[method_name] if Undefined != method_name
+      def try!(method_name = UNDEFINED, *args, &block)
+        Kind::Symbol[method_name] if UNDEFINED != method_name
 
         self
       end

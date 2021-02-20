@@ -50,24 +50,24 @@ module Kind
     KIND.of_module_or_class!(value)
   end
 
-  def self.is(expected = Undefined, object = Undefined)
-    if Undefined == expected && Undefined == object
+  def self.is(expected = UNDEFINED, object = UNDEFINED)
+    if UNDEFINED == expected && UNDEFINED == object
       DEPRECATION.warn('`Kind.is` without args is deprecated. This behavior will be removed in %{version}')
 
       return Is
     end
 
-    return is?(expected, object) if Undefined != object
+    return is?(expected, object) if UNDEFINED != object
 
     raise ArgumentError, 'wrong number of arguments (given 1, expected 2)'
   end
 
-  def self.of(kind = Undefined, object = Undefined)
-    if Undefined == kind && Undefined == object
+  def self.of(kind = UNDEFINED, object = UNDEFINED)
+    if UNDEFINED == kind && UNDEFINED == object
       DEPRECATION.warn('`Kind.of` without args is deprecated. This behavior will be removed in %{version}')
 
       Of
-    elsif Undefined != object
+    elsif UNDEFINED != object
       KIND.of!(kind, object)
     else
       DEPRECATION.warn_method_replacement('Kind.of(<Kind>)', 'Kind::Of(<Kind>)')

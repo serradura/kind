@@ -24,14 +24,14 @@ module Kind
       or_nil(value) || Undefined
     end
 
-    def or(fallback, value = Undefined)
-      return __or_func.(fallback) if Undefined === value
+    def or(fallback, value = UNDEFINED)
+      return __or_func.(fallback) if UNDEFINED === value
 
       self === value ? value : fallback
     end
 
-    def value?(value = Undefined)
-      return self === value if Undefined != value
+    def value?(value = UNDEFINED)
+      return self === value if UNDEFINED != value
 
       @__is_value ||= ->(ck) { ->(value) { ck === value } }.(self)
     end

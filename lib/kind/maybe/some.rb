@@ -3,7 +3,7 @@
 module Kind
   module Maybe
     class Some < Result
-      def value_or(default = Undefined, &block)
+      def value_or(default = UNDEFINED, &block)
         @value
       end
 
@@ -25,15 +25,15 @@ module Kind
 
       alias_method :then!, :map!
 
-      def try!(method_name = Undefined, *args, &block)
+      def try!(method_name = UNDEFINED, *args, &block)
         return __try_block__(block, args) if block
 
-        return __try_method__(method_name, args) if Undefined != method_name
+        return __try_method__(method_name, args) if UNDEFINED != method_name
 
         raise ArgumentError, 'method name or a block must be present'
       end
 
-      def try(method_name = Undefined, *args, &block)
+      def try(method_name = UNDEFINED, *args, &block)
         return __try_block__(block, args) if block
 
         return __try_method__(method_name, args) if value.respond_to?(method_name)

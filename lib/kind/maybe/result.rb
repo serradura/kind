@@ -9,7 +9,7 @@ module Kind
         @value = value.kind_of?(Result) ? value.value : value
       end
 
-      def value_or(method_name = Undefined, &block)
+      def value_or(method_name = UNDEFINED, &block)
         raise NotImplementedError
       end
 
@@ -23,7 +23,7 @@ module Kind
         raise NotImplementedError
       end
 
-      def try(method_name = Undefined, &block)
+      def try(method_name = UNDEFINED, &block)
         raise NotImplementedError
       end
 
