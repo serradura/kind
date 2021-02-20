@@ -14,7 +14,7 @@ require 'kind/presence'
 require 'kind/undefined'
 require 'kind/type_checker'
 
-require 'kind/modules'
+require 'kind/type_checkers'
 require 'kind/maybe'
 
 require 'kind/deprecations/checker'

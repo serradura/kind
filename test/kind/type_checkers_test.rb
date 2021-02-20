@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class Kind::ModulesTest < Minitest::Test
+class Kind::TypeCheckersTest < Minitest::Test
   def test_the_core_modules
     # == Kind::Array ==
 
