@@ -5,6 +5,10 @@ module Kind
     extend self, TypeChecker
 
     def kind; ::Set; end
+
+    def value_or_empty(arg)
+      __value(arg, Empty::SET)
+    end
   end
 
   def self.Set?(*values)

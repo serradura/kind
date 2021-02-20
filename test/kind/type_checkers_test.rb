@@ -12,6 +12,11 @@ class Kind::TypeCheckersTest < Minitest::Test
     assert Kind::Array?([], [])
     refute Kind::Array?([], 1)
 
+    assert_equal([1], Kind::Array.value_or_empty([1]))
+    assert_kind_of(::Array, Kind::Array.value_or_empty(1))
+    assert_predicate(Kind::Array.value_or_empty(1), :empty?)
+    assert_predicate(Kind::Array.value_or_empty(1), :frozen?)
+
     # == Kind::Class ==
 
     assert Kind.of_module?(Kind::Class)
@@ -82,6 +87,11 @@ class Kind::TypeCheckersTest < Minitest::Test
     assert Kind::Hash?({})
     assert Kind::Hash?({}, {})
     refute Kind::Hash?(1, {})
+
+    assert_equal({a: 1}, Kind::Hash.value_or_empty({a: 1}))
+    assert_kind_of(::Hash, Kind::Hash.value_or_empty(1))
+    assert_predicate(Kind::Hash.value_or_empty(1), :empty?)
+    assert_predicate(Kind::Hash.value_or_empty(1), :frozen?)
 
     # == Kind::Integer ==
 
@@ -183,6 +193,11 @@ class Kind::TypeCheckersTest < Minitest::Test
     assert Kind::String?('2', '1')
     refute Kind::String?('1', 0)
 
+    assert_equal('1', Kind::String.value_or_empty('1'))
+    assert_kind_of(::String, Kind::String.value_or_empty(1))
+    assert_predicate(Kind::String.value_or_empty(1), :empty?)
+    assert_predicate(Kind::String.value_or_empty(1), :frozen?)
+
     # == Kind::Struct ==
 
     struct = Struct.new(:a).new(1)
@@ -270,5 +285,12 @@ class Kind::TypeCheckersTest < Minitest::Test
     assert Kind::Set?(Set.new)
     assert Kind::Set?(Set.new, Set.new)
     refute Kind::Set?(Set.new, [])
+
+    set = Set.new([1])
+
+    assert_equal(set, Kind::Set.value_or_empty(set))
+    assert_kind_of(::Set, Kind::Set.value_or_empty([1]))
+    assert_predicate(Kind::Set.value_or_empty(1), :empty?)
+    assert_predicate(Kind::Set.value_or_empty(1), :frozen?)
   end
 end

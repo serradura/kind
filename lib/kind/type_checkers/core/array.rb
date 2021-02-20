@@ -5,6 +5,10 @@ module Kind
     extend self, TypeChecker
 
     def kind; ::Array; end
+
+    def value_or_empty(arg)
+      __value(arg, Empty::ARRAY)
+    end
   end
 
   def self.Array?(*values)
