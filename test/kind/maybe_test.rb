@@ -440,22 +440,22 @@ class Kind::MaybeTest < Minitest::Test
   end
 
   Add_A = -> params do
-    a, b = Kind.of.Hash(params, or: Empty::HASH).values_at(:a, :b)
+    a, b = Kind::Hash.value_or_empty(params).values_at(:a, :b)
 
-    a + b if Kind.of.Numeric?(a, b)
+    a + b if Kind::Numeric?(a, b)
   end
 
   Add_B = -> params do
-    a, b = Kind.of.Hash(params, or: Empty::HASH).values_at(:a, :b)
+    a, b = Kind::Hash.value_or_empty(params).values_at(:a, :b)
 
-    return Kind::None unless Kind.of.Numeric.instance?(a, b)
+    return Kind::None unless Kind::Numeric?(a, b)
 
     Kind::Some(a + b)
   end
 
-  Double_A = -> value {value * 2 if Kind.of.Numeric?(value) }
+  Double_A = -> value {value * 2 if Kind::Numeric?(value) }
 
-  Double_B = -> value {Kind.of.Numeric?(value) ? Kind::Some(value * 2) : Kind::None }
+  Double_B = -> value {Kind::Numeric?(value) ? Kind::Some(value * 2) : Kind::None }
 
   def test_the_maybe_objects_in_a_chain_of_mappings
     assert_equal(3, Kind::Maybe.new(a: 1, b: 2).then(&Add_A).value_or(0))
