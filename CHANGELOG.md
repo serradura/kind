@@ -4,6 +4,8 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
 
 - [Unreleased](#unreleased)
   - [Added](#added)
+  - [Deprecated](#deprecated)
+  - [Fixed](#fixed)
 - [3.1.0 (2020-07-08)](#310-2020-07-08)
   - [Added](#added-1)
 - [3.0.0 (2020-06-25)](#300-2020-06-25)
@@ -25,7 +27,7 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
 - [1.8.0 (2020-05-03)](#180-2020-05-03)
   - [Added](#added-8)
 - [1.7.0 (2020-05-03)](#170-2020-05-03)
-  - [Fixed](#fixed)
+  - [Fixed](#fixed-1)
 - [1.6.0 (2020-04-17)](#160-2020-04-17)
   - [Added](#added-9)
   - [Changes](#changes)
@@ -39,7 +41,7 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
   - [Added](#added-13)
 - [1.1.0 (2020-04-09)](#110-2020-04-09)
   - [Added](#added-14)
-  - [Fixed](#fixed-1)
+  - [Fixed](#fixed-2)
 - [1.0.0 (2020-03-16)](#100-2020-03-16)
   - [Added](#added-15)
 - [0.6.0 (2020-01-06)](#060-2020-01-06)
@@ -68,7 +70,355 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
 
 ### Added
 
-* [#40](https://github.com/serradura/kind/pull/40) - To-do...
+* [#40](https://github.com/serradura/kind/pull/40) - Add `Kind.of_class?` to verify if a given value is a `Class`.
+
+* [#40](https://github.com/serradura/kind/pull/40) - Add `Kind.of_module?` to verify if a given value is a `Module`.
+
+* [#40](https://github.com/serradura/kind/pull/40) - Add `Kind.of_module_or_class()` that returns the given value if it is a module or a class. If not, a `Kind::Error` will be raised.
+  ```ruby
+  Kind.of_module_or_class(String) # String
+  Kind.of_module_or_class(1)      # Kind::Error (1 expected to be a kind of Module/Class)
+  ```
+
+* [#40](https://github.com/serradura/kind/pull/40) - Add `Kind.respond_to(object, *method_names)`, this method returns the given object if it responds to all of the method names. But if the object does not respond to some of the expected methods, an error will be raised.
+  ```ruby
+  Kind.respond_to('', :upcase)         # ""
+  Kind.respond_to('', :upcase, :strip) # ""
+
+  Kind.respond_to(1, :upcase)        # expected 1 to respond to :upcase
+  Kind.respond_to(2, :to_s, :upcase) # expected 2 to respond to :upcase
+  ```
+
+* [#40](https://github.com/serradura/kind/pull/40) - Add `Kind::Try.call()`. This method invokes a public method with or without arguments like public_send does, except that if the receiver does not respond to it the call returns `nil` rather than raising an exception.
+  ```ruby
+  Kind::Try.(' foo ', :strip)        # "foo"
+  Kind::Try.({a: 1}, :[], :a)        # 1
+  Kind::Try.({a: 1}, :[], :b)        # nil
+  Kind::Try.({a: 1}, :fetch, :b, 2)  # 2
+
+  Kind::Try.(:symbol, :strip)        # nil
+  Kind::Try.(:symbol, :fetch, :b, 2) # nil
+
+  # It raises an exception if the method name isn't a string or a symbol
+  Kind::Try.({a: 1}, 1, :a) # TypeError (1 is not a symbol nor a string)
+  ```
+
+* [#40](https://github.com/serradura/kind/pull/40), [#41](https://github.com/serradura/kind/pull/40) - Add `Kind::DEPRECATION` module to be used to warn about all of the deprecations. You can use the `DISABLE_KIND_DEPRECATION` environment variable to disable the warning messages.
+
+* [#40](https://github.com/serradura/kind/pull/40), [#41](https://github.com/serradura/kind/pull/40) - Add type checkers modules that have several utility methods related to type checking/handling.
+  ```ruby
+  # All of the methods used with the Kind::String can be used with any other type checker module.
+
+  # Kind::<Type>.name
+  # Kind::<Type>.kind
+  # The type checker can return its kind and its name
+  Kind::String.name # "String"
+  Kind::String.kind # ::String
+
+  # Kind::<Type>.===
+  # Can check if a given value is an instance of its kind.
+  Kind::String === 'foo' # true
+  Kind::String === :foo  # false
+
+  # Kind::<Type>.value?(value)
+  # Can check if a given value is an instance of its kind.
+  Kind::String.value?('foo') # true
+  Kind::String.value?(:foo)  # false
+
+  # If it doesn't receive an argument, a lambda will be returned and it will know how to do the type verification.
+  [1, 2, 'foo', 3, 'Bar'].select?(&Kind::String.value?) # ["foo", "bar"]
+
+  # Kind::<Type>.or_nil(value)
+  # Can return nil if the given value isn't an instance of its kind
+  Kind::String.or_nil('foo') # "foo"
+  Kind::String.or_nil(:foo)  # nil
+
+  # Kind::<Type>.or_undefined(value)
+  # Can return Kind::Undefined if the given value isn't an instance of its kind
+  Kind::String.or_undefined('foo') # "foo"
+  Kind::String.or_undefined(:foo)  # Kind::Undefined
+
+  # Kind::<Type>.or(fallback, value)
+  # Can return a fallback if the given value isn't an instance of its kind
+  Kind::String.or(nil, 'foo') # "foo"
+  Kind::String.or(nil, :foo)  # nil
+
+  # If it doesn't receive a second argument (the value), it will return a callable that knows how to expose an instance of the expected type or a fallback if the given value was wrong.
+  [1, 2, 'foo', 3, 'Bar'].map(&Kind::String.or(''))  # ["", "", "foo", "", "Bar"]
+  [1, 2, 'foo', 3, 'Bar'].map(&Kind::String.or(nil)) # [nil, nil, "foo", nil, "Bar"]
+
+  # An error will be raised if the fallback didn't have the expected kind or if not nil / Kind::Undefined.
+  [1, 2, 'foo', 3, 'Bar'].map(&Kind::String.or(:foo)) # Kind::Error (:foo expected to be a kind of String)
+
+  # Kind::<Type>[value]
+  # Will raise Kind::Error if the given value isn't an instance of the expected kind
+  Kind::String['foo'] # "foo"
+  Kind::String[:foo ] # Kind::Error (:foo expected to be a kind of String)
+  ```
+  * List of all type checkers:
+    * **Core:**
+      * `Kind::Array`
+      * `Kind::Class`
+      * `Kind::Comparable`
+      * `Kind::Enumerable`
+      * `Kind::Enumerator`
+      * `Kind::File`
+      * `Kind::Float`
+      * `Kind::Hash`
+      * `Kind::Integer`
+      * `Kind::IO`
+      * `Kind::Method`
+      * `Kind::Module`
+      * `Kind::Numeric`
+      * `Kind::Proc`
+      * `Kind::Queue`
+      * `Kind::Range`
+      * `Kind::Regexp`
+      * `Kind::String`
+      * `Kind::Struct`
+      * `Kind::Symbol`
+      * `Kind::Time`
+    * **Custom:**
+      * `Kind::Boolean`
+      * `Kind::Callable`
+      * `Kind::Lambda`
+    * **Stdlib:**
+      * `Kind::OpenStruct`
+      * `Kind::Set`
+
+* [#40](https://github.com/serradura/kind/pull/40) - Add `Kind::Of()`. This method allows the creation of type checkers in runtime. To do this, the kind must respond to the method `.===`, and if doesn't have the `.name` method (which needs to return a string), a hash must be provided with a filled `:name` property.
+  ```ruby
+  # Example using a class (an object which responds to .=== and has the .name method):
+  # This object will have all of the default methods that a standard type checker (e.g: Kind::String) has.
+  kind_of_string = Kind::Of(String)
+
+  kind_of_string[''] # ""
+  kind_of_string[{}] # Kind::Error ({} expected to be a kind of String)
+
+  # Example using a lambda (an object which responds to .===) and a hash with the kind name.
+
+  PositiveInteger = Kind::Of(-> value { value.kind_of?(Integer) && value > 0 }, name: 'PositiveInteger')
+
+  # PositiveInteger.name
+  # PositiveInteger.kind
+  # The type checker can return its kind and its name
+  PositiveInteger.name # "PositiveInteger"
+  PositiveInteger.kind # #<Proc:0x0000.... >
+
+  # PositiveInteger.===
+  # Can check if a given value is an instance of its kind.
+  PositiveInteger === 1 # true
+  PositiveInteger === 0 # false
+
+  # PositiveInteger.value?(value)
+  # Can check if a given value is an instance of its kind.
+  PositiveInteger.value?(1)  # true
+  PositiveInteger.value?(-1) # false
+
+  # If it doesn't receive an argument, a lambda will be returned and it will know how to do the type verification.
+  [1, 2, 0, 3, -1].select?(&PositiveInteger.value?) # [1, 2, 3]
+
+  # PositiveInteger.or_nil(value)
+  # Can return nil if the given value isn't an instance of its kind
+  PositiveInteger.or_nil(1) # 1
+  PositiveInteger.or_nil(0) # nil
+
+  # PositiveInteger.or_undefined(value)
+  # Can return Kind::Undefined if the given value isn't an instance of its kind
+  PositiveInteger.or_undefined(2)  # 2
+  PositiveInteger.or_undefined(-1) # Kind::Undefined
+
+  # PositiveInteger.or(fallback, value)
+  # Can return a fallback if the given value isn't an instance of its kind
+  PositiveInteger.or(nil, 1) # 1
+  PositiveInteger.or(nil, 0) # nil
+
+  # If it doesn't receive a second argument (the value), it will return a callable that knows how to expose an instance of the expected type or a fallback if the given value was wrong.
+  [1, 2, 0, 3, -1].map(&PositiveInteger.or(1))   # [1, 2, 1, 3, 1]
+  [1, 2, 0, 3, -1].map(&PositiveInteger.or(nil)) # [1, 2, nil, 3, nil]
+
+  # An error will be raised if the fallback didn't have the expected kind or if not nil / Kind::Undefined.
+  [1, 2, 0, 3, -1].map(&PositiveInteger.or(:foo)) # Kind::Error (:foo expected to be a kind of PositiveInteger)
+
+  # PositiveInteger[value]
+  # Will raise Kind::Error if the given value isn't an instance of the expected kind
+  PositiveInteger[1]    # 1
+  PositiveInteger[:foo] # Kind::Error (:foo expected to be a kind of PositiveInteger)
+  ```
+* [#40](https://github.com/serradura/kind/pull/40), [#41](https://github.com/serradura/kind/pull/40) - Add type checkers methods.
+  ```ruby
+  # All of the methods used with the Kind::String? can be used with any other type checker method.
+
+  # Kind::<Type>?(*values)
+  # Can check if a given value (one or many) is an instance of its kind.
+  Kind::String?('foo')        # true
+  Kind::String?('foo', 'bar') # true
+  Kind::String?('foo', :bar)  # false
+
+  # If it doesn't receive an argument, a lambda will be returned and it will know how to do the type verification.
+  [1, 2, 'foo', 3, 'Bar'].select?(&Kind::String?) # ["foo", "bar"]
+  ```
+  * List of all type checkers:
+    * **Core:**
+      * `Kind::Array?`
+      * `Kind::Class?`
+      * `Kind::Comparable?`
+      * `Kind::Enumerable?`
+      * `Kind::Enumerator?`
+      * `Kind::File?`
+      * `Kind::Float?`
+      * `Kind::Hash?`
+      * `Kind::Integer?`
+      * `Kind::IO?`
+      * `Kind::Method?`
+      * `Kind::Module?`
+      * `Kind::Numeric?`
+      * `Kind::Proc?`
+      * `Kind::Queue?`
+      * `Kind::Range?`
+      * `Kind::Regexp?`
+      * `Kind::String?`
+      * `Kind::Struct?`
+      * `Kind::Symbol?`
+      * `Kind::Time?`
+    * **Custom:**
+      * `Kind::Boolean?`
+      * `Kind::Callable?`
+      * `Kind::Lambda?`
+    * **Stdlib:**
+      * `Kind::OpenStruct?`
+      * `Kind::Set?`
+
+* [#41](https://github.com/serradura/kind/pull/41) - Make `Kind::Dig.call` extract values from regular objects.
+  ```ruby
+  class Person
+    attr_reader :name
+
+    def initialize(name)
+      @name = name
+    end
+  end
+
+  person = Person.new('Rodrigo')
+
+  Kind::Dig.(person, [:name])                         # "Rodrigo"
+
+  Kind::Dig.({people: [person]}, [:people, 0, :name]) # "Rodrigo"
+  ```
+
+* [#41](https://github.com/serradura/kind/pull/41) - Add `Kind::Presence.call`. Returns the given valur if it's present otherwise returns `nil`.
+  ```ruby
+  Kind::Presence.(true)         # true
+  Kind::Presence.('foo')        # "foo"
+  Kind::Presence.([1, 2])       # [1, 2]
+  Kind::Presence.({a: 3})       # {a: 3}
+  Kind::Presence.(Set.new([4])) # #<Set: {4}>
+
+  Kind::Presence.('')       # nil
+  Kind::Presence.('   ')    # nil
+  Kind::Presence.("\t\n\r") # nil
+  Kind::Presence.("\u00a0") # nil
+
+  Kind::Presence.([])       # nil
+  Kind::Presence.({})       # nil
+  Kind::Presence.(Set.new)  # nil
+
+  Kind::Presence.(nil)      # nil
+  Kind::Presence.(false)    # nil
+
+  # nil will be returned if the given object responds to the method blank? and this method result is true.
+  MyObject = Struct.new(:is_blank) do
+    def blank?
+      is_blank
+    end
+  end
+
+  my_object = MyObject.new
+
+  my_object.is_blank = true
+
+  Kind::Presence.(my_object) # nil
+
+  my_object.is_blank = false
+
+  Kind::Presence.(my_object) # #<struct MyObject is_blank=false>
+  ```
+
+* [#41](https://github.com/serradura/kind/pull/41) - Add `Kind::Maybe#presence`, this method will return None if the wrapped value wasn't present.
+  ```ruby
+  result1 = Kind::Maybe(Hash).wrap(foo: '').dig(:foo).presence
+  result1.none? # true
+  result1.value # nil
+
+  result2 = Kind::Maybe(Hash).wrap(foo: 'bar').dig(:foo).presence
+  result2.none? # false
+  result2.value # "bar"
+  ```
+
+* [#41](https://github.com/serradura/kind/pull/41) - Make `Kind::Maybe#map` intercept StandardError exceptions.
+  * Now the `#map` and `#then` methods will intercept any StandardError and return None with the exception or their values.
+  * Add `#map!` and `#then!` that allows the exception leak, so, the user must handle the exception by himself or use this method when he wants to see the error be raised.
+  * If an exception (StandardError) is returned by the methods `#then`, `#map` it will be resolved as None.
+  ```ruby
+  # Handling StandardError exceptions
+  result1 = Kind::Maybe[2].map { |number| number / 0 }
+  result1.none? # true
+  result1.value # #<ZeroDivisionError: divided by 0>
+
+  result2 = Kind::Maybe[3].then { |number| number / 0 }
+  result2.none? # true
+  result2.value # #<ZeroDivisionError: divided by 0>
+
+  # Leaking StandardError exceptions
+  Kind::Maybe[2].map! { |number| number / 0 } # ZeroDivisionError (divided by 0)
+
+  Kind::Maybe[2].then! { |number| number / 0 } # ZeroDivisionError (divided by 0)
+  ```
+
+* [#41](https://github.com/serradura/kind/pull/41) - Add `Kind::TypeCheckers#value`. In the case of the given value be invalid, this method requires a default value with the expected kind to be returned.
+  ```ruby
+  # Using built-in type checkers
+  Kind::String.value(1, default: '')   # ""
+  Kind::String.value('1', default: '') # "1"
+
+  Kind::String.value('1', default: 1 # Kind::Error (1 expected to be a kind of String)
+
+  # Using custom type checkers
+  PositiveInteger = Kind::Of(-> value { value.kind_of?(Integer) && value > 0 }, name: 'PositiveInteger')
+
+  PositiveInteger.value(0, default: 1) # 1
+  PositiveInteger.value(2, default: 1) # 2
+
+  PositiveInteger.value(-1, default: 0) # Kind::Error (0 expected to be a kind of PositiveInteger)
+  ```
+
+* [#41](https://github.com/serradura/kind/pull/41) - Add the method `value_or_empty` for some type checkers, they are: `Kind::Array`, `Kind::Hash`, `Kind::String`, `Kind::Set`. Note: The empty value always is frozen.
+  ```ruby
+  Kind::Array.value_or_empty({})         # []
+  Kind::Array.value_or_empty({}).frozen? # true
+  ```
+
+### Deprecated
+
+* [#40](https://github.com/serradura/kind/pull/40) - Deprecate `Kind::Is.call`
+
+* [#40](https://github.com/serradura/kind/pull/40) - Deprecate `Kind::Of.call`
+
+* [#40](https://github.com/serradura/kind/pull/40) - Deprecate `Kind::Types.add`.
+
+* [#40](https://github.com/serradura/kind/pull/40) - Deprecate `Kind::Of::<Type>` and `Kind::Is::<Type>` modules.
+
+* [#40](https://github.com/serradura/kind/pull/40) - Deprecate `Kind::Checker`, `Kind::Checker::Protocol`, `Kind::Checker::Factory`.
+
+* [#40](https://github.com/serradura/kind/pull/40) - Deprecate the invocation of `Kind.is` without arguments.
+
+* [#40](https://github.com/serradura/kind/pull/40) - Deprecate the invocation of `Kind.of` without arguments.
+
+* [#40](https://github.com/serradura/kind/pull/40) - Deprecate the invocation of `Kind.of` with a single argument (the kind).
+
+### Fixed
+
+* [#40](https://github.com/serradura/kind/pull/40) - Make `Kind::Maybe.try!()` raises an error if it was called without a block or arguments.
 
 [⬆️ &nbsp;Back to Top](#changelog-)
 
