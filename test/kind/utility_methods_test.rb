@@ -102,14 +102,14 @@ class Kind::UtilityMethodsTest < Minitest::Test
   def test_Kind_Of
     kind_symbol1 = Kind::Of(Symbol)
 
-    assert_instance_of(Kind::Core::Checker::Object, kind_symbol1)
+    assert_instance_of(Kind::TypeChecker::Object, kind_symbol1)
     assert_equal('Symbol', kind_symbol1.name)
 
     # -
 
     kind_symbol2 = Kind::Of(Symbol, name: 'MySymbol')
 
-    assert_instance_of(Kind::Core::Checker::Object, kind_symbol2)
+    assert_instance_of(Kind::TypeChecker::Object, kind_symbol2)
     assert_equal('MySymbol', kind_symbol2.name)
 
     # -

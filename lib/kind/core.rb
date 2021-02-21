@@ -2,7 +2,8 @@
 
 module Kind
   module Core
-    require 'kind/core/utils'
-    require 'kind/core/checker'
+    require 'kind/core/deprecation'
+    require 'kind/core/kind'
+    require 'kind/core/undefined'
   end
 end

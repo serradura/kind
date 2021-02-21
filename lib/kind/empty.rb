@@ -3,17 +3,13 @@
 module Kind
   module Empty
     SET = ::Set.new.freeze
-
     HASH = {}.freeze
+    ARRAY = [].freeze
+    STRING = ''.freeze
 
-    ARY = [].freeze
-    ARRAY = ARY
-
-    STR = ''.freeze
-    STRING = STR
+    ARY = ARRAY
+    STR = STRING
   end
 end
 
-unless defined?(Empty)
-  Empty = Kind::Empty
-end
+Empty = Kind::Empty unless defined?(Empty)

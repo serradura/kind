@@ -1,6 +1,6 @@
 require 'test_helper'
 
-unless Kind::Deprecation::WARN_IS_DISABLED
+unless Kind::DEPRECATION::WARN_IS_DISABLED
 
   class Kind::DeprecationsTest < Minitest::Test
     # == Kind.is() ==
@@ -29,7 +29,7 @@ unless Kind::Deprecation::WARN_IS_DISABLED
 
     def test_the_method_call_of_the_kind_is_module
       assert_stderr(
-        /\[DEPRECATION\] `Kind::Is\.call` is deprecated, it will be removed in version 5\.0\. Please use `Kind::Core::Utils\.kind_is\?` instead./
+        /\[DEPRECATION\] `Kind::Is\.call` is deprecated, it will be removed in version 5\.0\. Please use `Kind::KIND\.is\?` instead./
       ) { Kind::Is.(Class, String) }
     end
 
@@ -61,13 +61,17 @@ unless Kind::Deprecation::WARN_IS_DISABLED
 
     def test_the_method_call_of_the_kind_of_module
       assert_stderr(
-        /\[DEPRECATION\] `Kind::Of\.call` is deprecated, it will be removed in version 5\.0\. Please use `Kind::Core::Utils\.kind_of!` instead./
+        /\[DEPRECATION\] `Kind::Of\.call` is deprecated, it will be removed in version 5\.0\. Please use `Kind::KIND\.of!` instead./
       ) { Kind::Of.call(String, '') }
     end
 
     # == Kind::Of::Class ==
 
     def test_the_method_Class_of_the_kind_of_module
+      assert_stderr(
+        /\[DEPRECATION\] `Kind::Of::Class` is deprecated, it will be removed in version 5\.0\. Please use `Kind::Class` instead./
+      ) { assert Kind::Of::Class == Kind::Of::Class() }
+
       assert_stderr(
         /\[DEPRECATION\] `Kind::Of::Class` is deprecated, it will be removed in version 5\.0\. Please use `Kind::Class` instead./
       ) { Kind::Of::Class(String) }
@@ -82,6 +86,10 @@ unless Kind::Deprecation::WARN_IS_DISABLED
     # == Kind::Of::Module ==
 
     def test_the_method_Module_of_the_kind_of_module
+      assert_stderr(
+        /\[DEPRECATION\] `Kind::Of::Module` is deprecated, it will be removed in version 5\.0\. Please use `Kind::Module` instead./
+      ) { assert Kind::Of::Module == Kind::Of::Module() }
+
       assert_stderr(
         /\[DEPRECATION\] `Kind::Of::Module` is deprecated, it will be removed in version 5\.0\. Please use `Kind::Module` instead./
       ) { Kind::Of::Module(String) }

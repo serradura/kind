@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 module Kind
-
   Undefined = Object.new.tap do |undefined|
     def undefined.inspect
       @inspect ||= 'Kind::Undefined'.freeze
@@ -23,5 +22,8 @@ module Kind
 
       default.respond_to?(:call) ? default.call : default
     end
+
+    undefined.inspect
+    undefined.freeze
   end
 end
