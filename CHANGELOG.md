@@ -3,6 +3,7 @@
 This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the recommendations of [keepachangelog.com](http://keepachangelog.com/).
 
 - [Unreleased](#unreleased)
+- [4.0.0 (2021-02-22)](#400-2021-02-22)
   - [Added](#added)
   - [Deprecated](#deprecated)
   - [Fixed](#fixed)
@@ -58,6 +59,8 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
 - [0.1.0 (2019-12-26)](#010-2019-12-26)
   - [Added](#added-21)
 
+## Unreleased
+
 <!--
 ### Added
 ### Breaking Changes
@@ -66,7 +69,8 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
 ### Fixed
 -->
 
-## Unreleased
+4.0.0 (2021-02-22)
+------------------
 
 ### Added
 
@@ -143,7 +147,7 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
   Kind::String.or(nil, 'foo') # "foo"
   Kind::String.or(nil, :foo)  # nil
 
-  # If it doesn't receive a second argument (the value), it will return a callable that knows how to expose an instance of the expected type or a fallback if the given value was wrong.
+  # If it doesn't receive a second argument (the value), it will return a callable that knows how to expose an instance of the expected type or a fallback if the given value is wrong.
   [1, 2, 'foo', 3, 'Bar'].map(&Kind::String.or(''))  # ["", "", "foo", "", "Bar"]
   [1, 2, 'foo', 3, 'Bar'].map(&Kind::String.or(nil)) # [nil, nil, "foo", nil, "Bar"]
 
@@ -233,7 +237,7 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
   PositiveInteger.or(nil, 1) # 1
   PositiveInteger.or(nil, 0) # nil
 
-  # If it doesn't receive a second argument (the value), it will return a callable that knows how to expose an instance of the expected type or a fallback if the given value was wrong.
+  # If it doesn't receive a second argument (the value), it will return a callable that knows how to expose an instance of the expected type or a fallback if the given value is wrong.
   [1, 2, 0, 3, -1].map(&PositiveInteger.or(1))   # [1, 2, 1, 3, 1]
   [1, 2, 0, 3, -1].map(&PositiveInteger.or(nil)) # [1, 2, nil, 3, nil]
 
@@ -306,7 +310,7 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
   Kind::Dig.({people: [person]}, [:people, 0, :name]) # "Rodrigo"
   ```
 
-* [#41](https://github.com/serradura/kind/pull/41) - Add `Kind::Presence.call`. Returns the given valur if it's present otherwise returns `nil`.
+* [#41](https://github.com/serradura/kind/pull/41) - Add `Kind::Presence.call`. Returns the given value if it's present otherwise it will return `nil`.
   ```ruby
   Kind::Presence.(true)         # true
   Kind::Presence.('foo')        # "foo"
@@ -355,6 +359,13 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
   result2.value # "bar"
   ```
 
+* [#41](https://github.com/serradura/kind/pull/41) - Make `Kind::Maybe#wrap` receive a block and intercept StandardError exceptions. And a None will be returned if some exception happening.
+```ruby
+Kind::Maybe.wrap { 2 / 0 } # #<Kind::Maybe::None:0x0000... @value=#<ZeroDivisionError: divided by 0>>
+
+Kind::Maybe(Numeric).wrap(2) { |number| number / 0 } # #<Kind::Maybe::None:0x0000... @value=#<ZeroDivisionError: divided by 0>>
+```
+
 * [#41](https://github.com/serradura/kind/pull/41) - Make `Kind::Maybe#map` intercept StandardError exceptions.
   * Now the `#map` and `#then` methods will intercept any StandardError and return None with the exception or their values.
   * Add `#map!` and `#then!` that allows the exception leak, so, the user must handle the exception by himself or use this method when he wants to see the error be raised.
@@ -375,13 +386,13 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
   Kind::Maybe[2].then! { |number| number / 0 } # ZeroDivisionError (divided by 0)
   ```
 
-* [#41](https://github.com/serradura/kind/pull/41) - Add `Kind::TypeCheckers#value`. In the case of the given value be invalid, this method requires a default value with the expected kind to be returned.
+* [#41](https://github.com/serradura/kind/pull/41) - Add `Kind::TypeCheckers#value`. This method ensures that you will have a value of the expected kind. But, in the case of the given value be invalid, this method will require a default value (with the expected kind) to be returned.
   ```ruby
   # Using built-in type checkers
   Kind::String.value(1, default: '')   # ""
   Kind::String.value('1', default: '') # "1"
 
-  Kind::String.value('1', default: 1 # Kind::Error (1 expected to be a kind of String)
+  Kind::String.value('1', default: 1) # Kind::Error (1 expected to be a kind of String)
 
   # Using custom type checkers
   PositiveInteger = Kind::Of(-> value { value.kind_of?(Integer) && value > 0 }, name: 'PositiveInteger')
@@ -392,10 +403,89 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
   PositiveInteger.value(-1, default: 0) # Kind::Error (0 expected to be a kind of PositiveInteger)
   ```
 
-* [#41](https://github.com/serradura/kind/pull/41) - Add the method `value_or_empty` for some type checkers, they are: `Kind::Array`, `Kind::Hash`, `Kind::String`, `Kind::Set`. Note: The empty value always is frozen.
+* [#41](https://github.com/serradura/kind/pull/41) - Add the method `value_or_empty` for some type checkers. This method is available for some type checkers (`Kind::Array`, `Kind::Hash`, `Kind::String`, `Kind::Set`), and it will return an empty frozen value if the given value hasn't the expected kind.
   ```ruby
   Kind::Array.value_or_empty({})         # []
   Kind::Array.value_or_empty({}).frozen? # true
+  ```
+
+* [#42](https://github.com/serradura/kind/pull/42) - Add the method `Kind.value`. This method ensures that you will have a value of the expected kind. But, in the case of the given value be invalid, this method will require a default value (with the expected kind) to be returned.
+  ```ruby
+  Kind.value(String, '1', default: '') # "1"
+
+  Kind.value(String, 1, default: '')   # ""
+
+  Kind.value(String, 1, default: 2)    # Kind::Error (2 expected to be a kind of String)
+  ```
+
+* [#42](https://github.com/serradura/kind/pull/42) - Add `Kind::Presence.to_proc`. This method allow you to make use of the `Kind::Presence` in methods that receive a block as an argument. e.g:
+  ```ruby
+  ['', [], {}, '1', [2]].map(&Kind::Presence) # [nil, nil, nil, "1", [2]]
+  ```
+
+* [#42](https://github.com/serradura/kind/pull/42) - `Kind::Maybe(<Type>).{new,[],wrap}` Now, these methods know how to get the value of another Maybe monad.
+  ```ruby
+  some_number = Kind::Some(2)
+
+  Kind::Maybe(Numeric)[some_number] # #<Kind::Maybe::Some:0x0000... @value=2>
+
+  Kind::Maybe(Numeric).new(some_number) # #<Kind::Maybe::Some:0x0000... @value=2>
+
+  Kind::Maybe(Numeric).wrap(some_number) # #<Kind::Maybe::Some:0x0000... @value=2>
+
+  Kind::Maybe(Numeric).wrap { some_number } # #<Kind::Maybe::Some:0x0000... @value=2>
+
+  Kind::Maybe(Numeric).wrap(some_number) { |number| number / 2 } # #<Kind::Maybe::Some:0x0000... @value=1>
+  ```
+
+* [#42](https://github.com/serradura/kind/pull/42) - `Kind::Maybe(<Type>).wrap(arg) { |arg_value| }` if the block receives an argument, the typed Maybe monad will verify if the argument is from the expected kind.
+  ```ruby
+    Kind::Maybe(Numeric).wrap('2') { |number| number / 0 } # #<Kind::Maybe::None:0x0000... @value=nil>
+
+    Kind::Maybe(Numeric).wrap(2) { |number| number / 0 } # #<Kind::Maybe::None:0x0000... @value=#<ZeroDivisionError: divided by 0>>
+  ```
+
+* [#42](https://github.com/serradura/kind/pull/42) - Add `Kind::Maybe#check`. This method returns the current Some after verifies if the block output was truthy.
+  ```ruby
+  person_name = ->(params) do
+    Kind::Maybe(Hash)
+      .wrap(params)
+      .then  { |hash| hash.values_at(:first_name, :last_name) }
+      .then  { |names| names.map(&Kind::Presence).tap(&:compact!) }
+      .check { |names| names.size == 2 }
+      .then  { |(first_name, last_name)| "#{first_name} #{last_name}" }
+      .value_or { 'John Doe' }
+  end
+
+  person_name.('')                     # "John Doe"
+  person_name.(nil)                    # "John Doe"
+  person_name.(last_name: 'Serradura') # "John Doe"
+  person_name.(first_name: 'Rodrigo')  # "John Doe"
+
+  person_name.(first_name: 'Rodrigo', last_name: 'Serradura') # "Rodrigo Serradura"
+  ```
+
+* [#42](https://github.com/serradura/kind/pull/42) - Add `Kind::Dig[]`. This method knows how to create a lambda that will know how to perform the dig strategy.
+  ```ruby
+  results = [
+    { person: {} },
+    { person: { name: 'Foo Bar'} },
+    { person: { name: 'Rodrigo Serradura'} },
+  ].map(&Kind::Dig[:person, :name])
+
+  p results # [nil, "Foo Bar", "Rodrigo Serradura"],
+  ```
+
+* [#42](https://github.com/serradura/kind/pull/42) - Add `Kind::Try[]`. This method knows how to create a lambda that will know how to perform the try strategy.
+  ```ruby
+  results =
+    [
+      {},
+      {name: 'Foo Bar'},
+      {name: 'Rodrigo Serradura'},
+    ].map(&Kind::Try[:fetch, :name, 'John Doe'])
+
+  p results # ["John Doe", "Foo Bar", "Rodrigo Serradura"]
   ```
 
 ### Deprecated
@@ -576,7 +666,7 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
   Kind.of?(Numeric, 1, '2', 3) # false
   ```
 
-* [#28](https://github.com/serradura/kind/pull/28) - Make the `Kind.of?(<Type>)` returns a lambda when it was called without arguments.
+* [#28](https://github.com/serradura/kind/pull/28) - Make the `Kind.of?(<Type>)` returns a lambda that knows how to do the type verification.
   ```ruby
   [1, '2', 3].select(&Kind.of?(Numeric)) # [1, 3]
   ```
