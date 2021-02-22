@@ -12,7 +12,7 @@ module Kind
       def new(arg)
         value = Result::Value.(arg)
 
-        value.kind_of?(@kind) ? Maybe.some(value) : Maybe.none
+        @kind === value ? Maybe.some(value) : Maybe.none
       end
 
       alias_method :[], :new
@@ -22,7 +22,7 @@ module Kind
         def __call_before_expose_the_arg_in_a_block(arg)
           value = Result::Value.(arg)
 
-          value.kind_of?(@kind) ? value : Maybe.none
+          @kind === value ? value : Maybe.none
         end
     end
   end
