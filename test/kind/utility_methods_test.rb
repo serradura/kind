@@ -116,4 +116,16 @@ class Kind::UtilityMethodsTest < Minitest::Test
 
     refute_same(kind_symbol1, kind_symbol2)
   end
+
+  def test_Kind_value
+    assert '1' == Kind.value(String, '1', default: '')
+
+    assert '' == Kind.value(String, 1, default: '')
+
+    # FACT: The default value must be of the expected kind.
+    assert_raises_with_message(
+      Kind::Error,
+      '2 expected to be a kind of String'
+    ) { Kind.value(String, 1, default: 2) }
+  end
 end

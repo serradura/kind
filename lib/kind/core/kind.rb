@@ -53,5 +53,9 @@ module Kind
         kind == expected_kind || kind.kind_of?(expected_kind)
       end
     end
+
+    def self.value(kind, arg, default) # :nodoc:
+      kind === arg ? arg : default
+    end
   end
 end

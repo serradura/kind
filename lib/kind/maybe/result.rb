@@ -5,8 +5,10 @@ module Kind
     class Result
       attr_reader :value
 
-      def initialize(value)
-        @value = value.kind_of?(Result) ? value.value : value
+      Value = ->(arg) { arg.kind_of?(::Kind::Maybe::Result) ? arg.value : arg } # :nodoc:
+
+      def initialize(arg)
+        @value = Value.(arg)
       end
 
       def value_or(method_name = UNDEFINED, &block)
@@ -20,6 +22,14 @@ module Kind
       def some?; !none?; end
 
       def map(&fn)
+        raise NotImplementedError
+      end
+
+      alias_method :map!, :map
+      alias_method :then, :map
+      alias_method :then!, :map
+
+      def check(&fn)
         raise NotImplementedError
       end
 

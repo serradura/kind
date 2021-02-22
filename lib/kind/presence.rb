@@ -16,6 +16,10 @@ module Kind
       return object if object
     end
 
+    def to_proc
+      -> object { call(object) }
+    end
+
     private
 
       BLANK_RE = /\A[[:space:]]*\z/

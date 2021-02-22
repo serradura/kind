@@ -17,6 +17,10 @@ class Kind::MaybeTest < Minitest::Test
     assert_raises(NotImplementedError) { maybe_result.none? }
     assert_raises(NotImplementedError) { maybe_result.some? }
     assert_raises(NotImplementedError) { maybe_result.map { 0 } }
+    assert_raises(NotImplementedError) { maybe_result.map! { 0 } }
+    assert_raises(NotImplementedError) { maybe_result.then { 0 } }
+    assert_raises(NotImplementedError) { maybe_result.then! { 0 } }
+    assert_raises(NotImplementedError) { maybe_result.check { true } }
     assert_raises(NotImplementedError) { maybe_result.try(:anything) }
     assert_raises(NotImplementedError) { maybe_result.try!(:anything) }
     assert_raises(NotImplementedError) { maybe_result.try { |value| value.anything } }
@@ -482,7 +486,9 @@ class Kind::MaybeTest < Minitest::Test
     assert_predicate(Kind::Maybe(Hash).new([]), :none?)
 
     assert_predicate(Kind::Maybe(Hash)[{}], :some?)
+    assert_predicate(Kind::Maybe(Hash)[Kind::Some({})], :some?)
     assert_predicate(Kind::Maybe(Hash).new({}), :some?)
+    assert_predicate(Kind::Maybe(Hash).new(Kind::Some({})), :some?)
 
     # ---
 
@@ -490,7 +496,9 @@ class Kind::MaybeTest < Minitest::Test
     assert_predicate(Kind::Optional(Hash).new([]), :none?)
 
     assert_predicate(Kind::Optional(Hash)[{}], :some?)
+    assert_predicate(Kind::Optional(Hash)[Kind::Some({})], :some?)
     assert_predicate(Kind::Optional(Hash).new({}), :some?)
+    assert_predicate(Kind::Optional(Hash).new(Kind::Some({})), :some?)
   end
 
   def test_the_wrap_method
@@ -522,6 +530,9 @@ class Kind::MaybeTest < Minitest::Test
 
     assert_predicate(Kind::Optional(Hash).wrap(''), :none?)
     assert_predicate(Kind::Optional(Hash).wrap({}), :some?)
+    assert_predicate(Kind::Optional(Hash).wrap(Kind::Some({})), :some?)
+
+    assert_predicate(Kind::Optional(Hash).wrap { Kind::Some({}) }, :some?)
 
     exception2 = Kind::Maybe(Numeric).wrap { 3 / 0 }
     assert_predicate(exception2, :none?)
@@ -616,5 +627,33 @@ class Kind::MaybeTest < Minitest::Test
     assert_raises(ZeroDivisionError) do
       Kind::Maybe.new(0).then! { |value| 2 / value }
     end
+  end
+
+  def test_the_check_method
+    person_name = ->(params) do
+      Kind::Maybe(Hash)
+        .wrap(params)
+        .then  { |hash| hash.values_at(:first_name, :last_name) }
+        .then  { |names| names.map(&Kind::Presence).tap(&:compact!) }
+        .check { |names| names.size == 2 }
+        .then  { |(first_name, last_name)| "#{first_name} #{last_name}" }
+        .value_or { 'John Doe' }
+    end
+
+    assert 'John Doe' == person_name.('')
+    assert 'John Doe' == person_name.(nil)
+    assert 'John Doe' == person_name.(last_name: 'Serradura')
+    assert 'John Doe' == person_name.(first_name: 'Rodrigo')
+
+    assert 'Rodrigo Serradura' == person_name.(first_name: 'Rodrigo', last_name: 'Serradura')
+  end
+
+  def test_that_the_wrap_method_of_a_typed_maybe_verifies_if_the_block_arg_has_the_right_kind
+    assert_nil(Kind::Maybe(Numeric).wrap('2') { |number| number / 0 }.value)
+
+    assert_instance_of(
+      ZeroDivisionError,
+      Kind::Maybe(Numeric).wrap(2) { |number| number / 0 }.value
+    )
   end
 end

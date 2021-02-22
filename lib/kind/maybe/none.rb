@@ -20,6 +20,7 @@ module Kind
       alias_method :map!, :map
       alias_method :then, :map
       alias_method :then!, :map
+      alias_method :check, :map
 
       def try!(method_name = UNDEFINED, *args, &block)
         Kind::Symbol[method_name] if UNDEFINED != method_name

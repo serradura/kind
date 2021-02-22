@@ -10,6 +10,7 @@ class Kind::PresenceTest < Minitest::Test
       @state
     end
   end
+
   def test_the_presence_of_several_objects
     # object#blank?
     assert_nil Kind::Presence.(IsBlank.new(true))
@@ -44,5 +45,12 @@ class Kind::PresenceTest < Minitest::Test
     assert_nil Kind::Presence.(false)
 
     assert OpenStruct === Kind::Presence.(OpenStruct.new)
+  end
+
+  def test_to_proc
+    assert_equal(
+      [nil, nil, nil, "1", [2]],
+      ['', [], {}, '1', [2]].map(&Kind::Presence)
+    )
   end
 end
