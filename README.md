@@ -53,7 +53,7 @@ unreleased | https://github.com/serradura/u-case/blob/main/README.md
   - [Kind::\<Type\>.value()](#kindtypevalue-1)
   - [Kind::\<Type\>?](#kindtype-2)
   - [Kind::{Array,Hash,String,Set}.value_or_empty()](#kindarrayhashstringsetvalue_or_empty)
-  - [List of all type checkers (Kind::<Type>)](#list-of-all-type-checkers-kindtype)
+  - [List of all type checkers](#list-of-all-type-checkers)
     - [Core](#core)
     - [Stdlib](#stdlib)
     - [Custom](#custom)
@@ -92,6 +92,7 @@ unreleased | https://github.com/serradura/u-case/blob/main/README.md
   - [Kind::Maybe#try!](#kindmaybetry-1)
   - [Kind::Maybe#dig](#kindmaybedig)
   - [Kind::Maybe#check](#kindmaybecheck)
+  - [Kind::Maybe#presence](#kindmaybepresence)
 - [Kind::Empty](#kindempty)
 - [Kind::Validator (ActiveModel::Validations)](#kindvalidator-activemodelvalidations)
   - [Usage](#usage-1)
@@ -289,7 +290,7 @@ Kind::Array.value_or_empty({}).frozen? # true
 
 [⬆️ &nbsp;Back to Top](#table-of-contents-)
 
-### List of all type checkers (Kind::<Type>)
+### List of all type checkers
 
 #### Core
 
@@ -1332,6 +1333,18 @@ Kind::Maybe(Array)
   .then  { |names| names.map(&Kind::Presence).tap(&:compact!) }
   .check { |names| names.size == 2 }
   .value # ["Rodrigo", "Serradura"]
+```
+
+[⬆️ &nbsp;Back to Top](#table-of-contents-)
+
+### Kind::Maybe#presence
+
+This method will return None if the wrapped value wasn't present.
+
+```ruby
+result = Kind::Maybe(Hash).wrap(foo: '').dig(:foo).presence
+result.none? # true
+result.value # nil
 ```
 
 [⬆️ &nbsp;Back to Top](#table-of-contents-)
