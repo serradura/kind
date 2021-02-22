@@ -7,7 +7,7 @@ if RUBY_VERSION >= '2.4.0'
 
     enable_coverage :branch if RUBY_VERSION >= '2.5.0'
   end
-  end
+end
 
 $LOAD_PATH.unshift File.expand_path('../lib', __dir__)
 
