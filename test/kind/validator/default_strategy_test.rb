@@ -7,22 +7,24 @@ if ENV['ACTIVEMODEL_VERSION']
     class Person
       include ActiveModel::Validations
 
-      attr_reader :name
+      attr_reader :name, :alive
 
       validates :name, kind: String
+      validates :alive, kind: Kind::Boolean
 
-      def initialize(name:)
-        @name = name
+      def initialize(name:, alive:)
+        @name, @alive = name, alive
       end
     end
 
     def test_the_default_strategy
-      invalid_person = Person.new(name: 21)
+      invalid_person = Person.new(name: 21, alive: nil)
 
       refute_predicate(invalid_person, :valid?)
       assert_equal(['must be a kind of: String'], invalid_person.errors[:name])
+      assert_equal(['must be a kind of: Boolean'], invalid_person.errors[:alive])
 
-      person = Person.new(name: MyString.new('John'))
+      person = Person.new(name: MyString.new('John'), alive: true)
 
       assert_predicate(person, :valid?)
     end
@@ -33,17 +35,18 @@ if ENV['ACTIVEMODEL_VERSION']
       Kind::Validator.default_strategy = 'instance_of'
 
       [
-        Person.new(name: 21),
-        Person.new(name: MyString.new('John'))
+        Person.new(name: 21, alive: nil),
+        Person.new(name: MyString.new('John'), alive: 0)
       ].each do |person|
         refute_predicate(person, :valid?)
         assert_equal(['must be an instance of: String'], person.errors[:name])
+        assert_equal(['must be an instance of: Boolean'], person.errors[:alive])
       end
 
       Kind::Validator.default_strategy = :kind_of
 
       [
-        Person.new(name: MyString.new('John'))
+        Person.new(name: MyString.new('John'), alive: false)
       ].each { |person| assert_predicate(person, :valid?) }
 
       Kind::Validator.default_strategy = default_strategy

@@ -646,6 +646,10 @@ class Kind::MaybeTest < Minitest::Test
     assert 'John Doe' == person_name.(first_name: 'Rodrigo')
 
     assert 'Rodrigo Serradura' == person_name.(first_name: 'Rodrigo', last_name: 'Serradura')
+
+    # --
+
+    Kind::Maybe(Array).wrap([1]).check(&:empty?).none?
   end
 
   def test_that_the_wrap_method_of_a_typed_maybe_verifies_if_the_block_arg_has_the_right_kind

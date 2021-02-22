@@ -11,8 +11,6 @@ module Kind
     end
 
     def self.[](*args)
-      Array[args]
-
       method_name = args.shift
 
       ->(object) { call!(object, method_name, args) }

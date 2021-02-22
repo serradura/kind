@@ -5,7 +5,7 @@ module Kind
     extend self
 
     def call(data, keys)
-      return unless keys.is_a?(::Array)
+      return unless keys.kind_of?(::Array)
 
       keys.reduce(data) do |memo, key|
         value = get(memo, key)

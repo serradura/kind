@@ -44,7 +44,21 @@ module Kind
       KIND.null?(value) ? value : self[value]
     end
 
+    def maybe(value = UNDEFINED, &block)
+      return __maybe[value] if UNDEFINED != value && !block
+      return __maybe.wrap(&block) if UNDEFINED == value && block
+      return __maybe.wrap(value, &block) if UNDEFINED != value && block
+
+      __maybe
+    end
+
+    alias optional maybe
+
     private
+
+      def __maybe
+        @__maybe ||= Maybe::Typed.new(self)
+      end
 
       def __or_func
         @__or_func ||= ->(tc, fb, value) { tc === value ? value : tc.or_null(fb) }.curry[self]

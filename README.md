@@ -35,7 +35,7 @@ One of the goals of this project is to do simple type checking like `"some strin
 Version    | Documentation
 ---------- | -------------
 unreleased | https://github.com/serradura/u-case/blob/main/README.md
-4.0.0      | https://github.com/serradura/u-case/blob/v4.x/README.md
+4.1.0      | https://github.com/serradura/u-case/blob/v4.x/README.md
 3.1.0      | https://github.com/serradura/u-case/blob/v3.x/README.md
 2.3.0      | https://github.com/serradura/u-case/blob/v2.x/README.md
 1.9.0      | https://github.com/serradura/u-case/blob/v1.x/README.md
@@ -51,6 +51,7 @@ unreleased | https://github.com/serradura/u-case/blob/main/README.md
   - [Kind::\<Type\>.or_undefined()](#kindtypeor_undefined)
   - [Kind::\<Type\>.or()](#kindtypeor)
   - [Kind::\<Type\>.value()](#kindtypevalue-1)
+  - [Kind::\<Type\>.maybe](#kindtypemaybe)
   - [Kind::\<Type\>?](#kindtype-2)
   - [Kind::{Array,Hash,String,Set}.value_or_empty()](#kindarrayhashstringsetvalue_or_empty)
   - [List of all type checkers](#list-of-all-type-checkers)
@@ -96,8 +97,14 @@ unreleased | https://github.com/serradura/u-case/blob/main/README.md
 - [Kind::Empty](#kindempty)
 - [Kind::Validator (ActiveModel::Validations)](#kindvalidator-activemodelvalidations)
   - [Usage](#usage-1)
-    - [Defining the default validation strategy](#defining-the-default-validation-strategy)
-    - [Using the `allow_nil` and `strict` options](#using-the-allow_nil-and-strict-options)
+    - [Object#===](#object)
+    - [Kind.is](#kindis-1)
+    - [Object#instance_of?](#objectinstance_of)
+    - [Object#respond_to?](#objectrespond_to)
+    - [Array.new.all? { |item| item.kind_of?(Class) }](#arraynewall--item-itemkind_ofclass-)
+    - [Array.new.all? { |item| expected_values.include?(item) }](#arraynewall--item-expected_valuesincludeitem-)
+  - [Defining the default validation strategy](#defining-the-default-validation-strategy)
+  - [Using the `allow_nil` and `strict` options](#using-the-allow_nil-and-strict-options)
 - [Similar Projects](#similar-projects)
 - [Development](#development)
 - [Contributing](#contributing)
@@ -109,7 +116,7 @@ unreleased | https://github.com/serradura/u-case/blob/main/README.md
 | u-case         | branch  | ruby     |  activemodel   |
 | -------------- | ------- | -------- | -------------- |
 | unreleased     | main    | >= 2.2.0 | >= 3.2, <= 6.1 |
-| 4.0.0          | v4.x    | >= 2.2.0 | >= 3.2, <= 6.1 |
+| 4.1.0          | v4.x    | >= 2.2.0 | >= 3.2, <= 6.1 |
 | 3.1.0          | v3.x    | >= 2.2.0 | >= 3.2, <= 6.1 |
 | 2.3.0          | v2.x    | >= 2.2.0 | >= 3.2, <= 6.0 |
 | 1.9.0          | v1.x    | >= 2.2.0 | >= 3.2, <= 6.0 |
@@ -258,6 +265,39 @@ Kind::String.value('1', default: 1)  # Kind::Error (1 expected to be a kind of S
 
 [⬆️ &nbsp;Back to Top](#table-of-contents-)
 
+### Kind::\<Type\>.maybe
+
+This method exposes a [typed `Kind::Maybe`](#kindmaybetype) and using it will be possible to apply a sequence of operations in the case of the wrapped value has the expected kind.
+
+```ruby
+Double = ->(value) do
+  Kind::Numeric.maybe(value)
+               .then { |number| number * 2 }
+               .value_or(0)
+end
+
+Double.('2') # 0
+Double.(2)   # 4
+```
+
+If it is invoked without arguments, it returns the typed Maybe. But, if it receives arguments, it will behave like the `Kind::Maybe.wrap` method. e.g.
+
+```ruby
+Kind::Integer.maybe #<Kind::Maybe::Typed:0x0000... @kind=Kind::Integer>
+
+Kind::Integer.maybe(0).some?               # true
+Kind::Integer.maybe { 1 }.some?            # true
+Kind::Integer.maybe(2) { |n| n * 2 }.some? # true
+
+Kind::Integer.maybe { 2 / 0 }.none?          # true
+Kind::Integer.maybe(2) { |n| n / 0 }.none?   # true
+Kind::Integer.maybe('2') { |n| n * n }.none? # true
+```
+
+> **Note:** You can use `Kind::\<Type\>.optional` as an alias for `Kind::\<Type\>.maybe`.
+
+[⬆️ &nbsp;Back to Top](#table-of-contents-)
+
 ### Kind::\<Type\>?
 
 There is a second way to do a type verification and know if one or multiple values has the expected type. You can use the predicate kind methods (`Kind::Hash?`). e.g:
@@ -397,6 +437,10 @@ kind_of_user.value(User.new, default: User.new) # #<User:0x0000...>
 kind_of_user.value('1', default: User.new)      # #<User:0x0000...>
 
 kind_of_user.value('1', default: 1)  # Kind::Error (1 expected to be a kind of User)
+
+# kind_of_user.maybe
+# This method returns a typed Kind::Maybe.
+kind_of_user.maybe('1').value_or(User.new) # #<User:0x0000...>
 ```
 
 [⬆️ &nbsp;Back to Top](#table-of-contents-)
@@ -464,6 +508,12 @@ PositiveInteger.value(2, default: 1)   # 2
 PositiveInteger.value('1', default: 1) # 1
 
 PositiveInteger.value('1', default: 0) # Kind::Error (0 expected to be a kind of PositiveInteger)
+
+# PositiveInteger.maybe
+# This method returns a typed Kind::Maybe.
+PositiveInteger.maybe(0).value_or(1) # 1
+
+PositiveInteger.maybe(2).value_or(1) # 2
 ```
 
 [⬆️ &nbsp;Back to Top](#table-of-contents-)
@@ -1420,20 +1470,31 @@ gem 'kind', require: 'kind/active_model/validation'
 require 'kind/active_model/validation'
 ```
 
+[⬆️ &nbsp;Back to Top](#table-of-contents-)
+
 ### Usage
 
-**[Object#kind_of?](https://ruby-doc.org/core-2.6.4/Object.html#method-i-kind_of-3F)**
+#### [Object#===](https://ruby-doc.org/core-3.0.0/Object.html#method-i-3D-3D-3D)
 
 ```ruby
 validates :name, kind: { of: String }
+```
 
-# Use an array to verify if the attribute
-# is an instance of one of the classes/modules.
+Use an array to verify if the attribute is an instance of one of the classes/modules.
 
+```ruby
 validates :status, kind: { of: [String, Symbol]}
 ```
 
-**[Kind.is](#verifying-the-kind-of-some-classmodule)**
+Because of kind verification be made via `===` you can use type checkers as the expected kinds.
+
+```ruby
+validates :alive, kind: Kind::Boolean
+```
+
+[⬆️ &nbsp;Back to Top](#table-of-contents-)
+
+#### [Kind.is](#verifying-the-kind-of-some-classmodule)
 
 ```ruby
 #
@@ -1469,7 +1530,9 @@ validates :human_kind, kind: { is: Human }
 validates :human_kind, kind: { is: [Person, User] }
 ```
 
-**[Object#instance_of?](https://ruby-doc.org/core-2.6.4/Object.html#method-i-instance_of-3F)**
+[⬆️ &nbsp;Back to Top](#table-of-contents-)
+
+#### [Object#instance_of?](https://ruby-doc.org/core-3.0.0/Object.html#method-i-instance_of-3F)
 
 ```ruby
 validates :name, kind: { instance_of: String }
@@ -1480,13 +1543,23 @@ validates :name, kind: { instance_of: String }
 validates :name, kind: { instance_of: [String, Symbol] }
 ```
 
-**[Object#respond_to?](https://ruby-doc.org/core-2.6.4/Object.html#method-i-respond_to-3F)**
+[⬆️ &nbsp;Back to Top](#table-of-contents-)
+
+#### [Object#respond_to?](https://ruby-doc.org/core-3.0.0/Object.html#method-i-respond_to-3F)
 
 ```ruby
 validates :handler, kind: { respond_to: :call }
 ```
 
-**Array.new.all? { |item| item.kind_of?(Class) }**
+This validation can verify one or multiple methods.
+
+```ruby
+validates :params, kind: { respond_to: [:[], :values_at] }
+```
+
+[⬆️ &nbsp;Back to Top](#table-of-contents-)
+
+#### Array.new.all? { |item| item.kind_of?(Class) }
 
 ```ruby
 validates :account_types, kind: { array_of: String }
@@ -1497,7 +1570,9 @@ validates :account_types, kind: { array_of: String }
 validates :account_types, kind: { array_of: [String, Symbol] }
 ```
 
-**Array.new.all? { |item| expected_values.include?(item) }**
+[⬆️ &nbsp;Back to Top](#table-of-contents-)
+
+#### Array.new.all? { |item| expected_values.include?(item) }
 
 ```ruby
 # Verifies if the attribute value
@@ -1506,7 +1581,9 @@ validates :account_types, kind: { array_of: [String, Symbol] }
 validates :account_types, kind: { array_with: ['foo', 'bar'] }
 ```
 
-#### Defining the default validation strategy
+[⬆️ &nbsp;Back to Top](#table-of-contents-)
+
+### Defining the default validation strategy
 
 By default, you can define the attribute type directly (without a hash). e.g.
 
@@ -1528,7 +1605,9 @@ And these are the available options to define the default strategy:
 -  `kind_of` *(default)*
 -  `instance_of`
 
-#### Using the `allow_nil` and `strict` options
+[⬆️ &nbsp;Back to Top](#table-of-contents-)
+
+### Using the `allow_nil` and `strict` options
 
 You can use the `allow_nil` option with any of the kind validations. e.g.
 

@@ -99,6 +99,50 @@ class Kind::TypeCheckersTest < Minitest::Test
     assert Kind.is?(Kind::TypeChecker, Kind::Integer)
     assert Kind::Integer.kind == ::Integer
     assert Kind::Integer.name == 'Integer'
+
+    [
+      [0, Kind::Integer.maybe(0)],
+      [1, Kind::Integer.maybe { 1 }],
+      [4, Kind::Integer.maybe(2) { |n| n * 2 }],
+      [0, Kind::Integer.optional(0)],
+      [1, Kind::Integer.optional { 1 }],
+      [4, Kind::Integer.optional(2) { |n| n * 2 }]
+    ].each do |expected, maybe|
+      assert expected === maybe.value
+    end
+
+    [nil, Kind::Undefined, '', []].each do |value|
+      [
+        Kind::Integer.maybe(value),
+        Kind::Integer.maybe { value },
+        Kind::Integer.maybe(value) { |n| n },
+        Kind::Integer.optional(value),
+        Kind::Integer.optional { value },
+        Kind::Integer.optional(value) { |n| n },
+      ].each { |maybe| assert(maybe.none?, maybe.inspect) }
+    end
+
+    [
+      Kind::Integer.maybe('2') { |v| v.to_i },
+      Kind::Integer.optional('2') { |v| v.to_i },
+    ].each { |maybe| assert(maybe.none?, maybe.inspect) }
+
+    [
+      Kind::Integer.maybe(2) { |v| v / 0 },
+      Kind::Integer.optional(2) { |v| v / 0 },
+      Kind::Integer.maybe { 2 / 0 },
+      Kind::Integer.optional { 2 / 0 },
+    ].each do |maybe|
+      assert(maybe.none?, maybe.inspect)
+      assert_instance_of(ZeroDivisionError, maybe.value, maybe.inspect)
+    end
+
+    assert_instance_of(Kind::Maybe::Typed, Kind::Integer.maybe)
+
+    assert Kind::Integer.maybe[1].some?
+    assert Kind::Integer.maybe.new(1).some?
+    assert Kind::Integer.maybe.wrap(1).some?
+
     assert Kind::Integer?(1)
     assert Kind::Integer?(1, 2)
     refute Kind::Integer?(2, 1.0)
