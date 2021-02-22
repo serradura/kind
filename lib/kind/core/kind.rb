@@ -27,7 +27,7 @@ module Kind
     end
 
     def self.of_module?(value) # :nodoc:
-      ::Module == value || (value.is_a?(::Module) && !of_class?(value))
+      ::Module == value || (value.kind_of?(::Module) && !of_class?(value))
     end
 
     def self.of_module_or_class!(value) # :nodoc:

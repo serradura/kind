@@ -10,7 +10,7 @@ module Kind
 
             input = __call_before_expose_the_arg_in_a_block(arg)
 
-            input.kind_of?(Kind::Maybe::None) ? input : new(yield(input))
+            input.kind_of?(Maybe::None) ? input : new(yield(input))
           rescue StandardError => exception
             Maybe.__none__(exception)
           end
