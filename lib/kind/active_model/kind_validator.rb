@@ -45,7 +45,7 @@ class KindValidator < ActiveModel::EachValidator
     def kind_is(expected, value)
       return kind_is_not(expected, value) unless expected.kind_of?(::Array)
 
-      result = expected.map { |kind| kind_is_not(kind, value) }.compact
+      result = expected.map { |kind| kind_is_not(kind, value) }.tap(&:compact!)
 
       result.empty? || result.size < expected.size ? nil : result.join(', ')
     end
