@@ -76,6 +76,10 @@ module Kind
     end
   end
 
+  def self.value(kind, value, default:)
+    KIND.value(kind, value, of(kind, default))
+  end
+
   def self.Of(kind, opt = Empty::HASH)
     TypeChecker::Object.new(kind, opt)
   end
