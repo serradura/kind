@@ -7,9 +7,21 @@ module Kind
     def call(*args)
       object = args.shift
 
+      call!(object, args.shift, args)
+    end
+
+    def self.[](*args)
+      Array[args]
+
+      method_name = args.shift
+
+      ->(object) { call!(object, method_name, args) }
+    end
+
+    def call!(object, method_name, args) # :nodoc
       return if KIND.null?(object)
 
-      resolve(object, args.shift, args)
+      resolve(object, method_name, args)
     end
 
     private

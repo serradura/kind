@@ -20,4 +20,18 @@ class Kind::TryTest < Minitest::Test
       '1 is not a symbol nor a string',
     ) { Kind::Try.({a: 1}, 1, :a) }
   end
+
+  def test_the_creation_of_a_lambda_that_knows_how_to_performs_the_try_strategy
+    results =
+      [
+        {},
+        {name: 'Foo Bar'},
+        {name: 'Rodrigo Serradura'},
+      ].map(&Kind::Try[:fetch, :name, 'John Doe'])
+
+    assert_equal(
+      ['John Doe', 'Foo Bar', 'Rodrigo Serradura'],
+      results
+    )
+  end
 end
