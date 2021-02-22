@@ -66,10 +66,17 @@ class KindValidator < ActiveModel::EachValidator
       end
     end
 
-    def respond_to(method_name, value)
-      return if value.respond_to?(method_name)
+    def respond_to(expected, value)
+      method_names = Array(expected)
 
-      "must respond to the method `#{method_name}`"
+      expected_methods = method_names.select { |method_name| !value.respond_to?(method_name) }
+      expected_methods.map! { |method_name| "`#{method_name}`" }
+
+      return if expected_methods.empty?
+
+      methods = expected_methods.size == 1 ? 'method' : 'methods'
+
+      "must respond to the #{methods}: #{expected_methods.join(', ')}"
     end
 
     def instance_of(expected, value)
