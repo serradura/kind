@@ -23,6 +23,14 @@ module Kind
         raise NotImplementedError
       end
 
+      alias_method :map!, :map
+      alias_method :then, :map
+      alias_method :then!, :map
+
+      def check(&fn)
+        raise NotImplementedError
+      end
+
       def try(method_name = UNDEFINED, &block)
         raise NotImplementedError
       end

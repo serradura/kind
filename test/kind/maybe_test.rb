@@ -17,6 +17,10 @@ class Kind::MaybeTest < Minitest::Test
     assert_raises(NotImplementedError) { maybe_result.none? }
     assert_raises(NotImplementedError) { maybe_result.some? }
     assert_raises(NotImplementedError) { maybe_result.map { 0 } }
+    assert_raises(NotImplementedError) { maybe_result.map! { 0 } }
+    assert_raises(NotImplementedError) { maybe_result.then { 0 } }
+    assert_raises(NotImplementedError) { maybe_result.then! { 0 } }
+    assert_raises(NotImplementedError) { maybe_result.check { true } }
     assert_raises(NotImplementedError) { maybe_result.try(:anything) }
     assert_raises(NotImplementedError) { maybe_result.try!(:anything) }
     assert_raises(NotImplementedError) { maybe_result.try { |value| value.anything } }
