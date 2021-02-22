@@ -16,6 +16,10 @@ module Kind
       end
     end
 
+    def [](*keys)
+      ->(data) { call(data, keys) }
+    end
+
     private
 
       def get(data, key)

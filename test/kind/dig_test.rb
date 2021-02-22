@@ -48,4 +48,17 @@ class Kind::DigTest < Minitest::Test
 
     assert 'Rodrigo' == Kind::Dig.({people: [person]}, [:people, 0, :name])
   end
+
+  def test_the_creation_of_a_lambda_that_knows_how_to_performs_the_try_strategy
+    results = [
+      { person: {} },
+      { person: { name: 'Foo Bar'} },
+      { person: { name: 'Rodrigo Serradura'} },
+    ].map(&Kind::Dig[:person, :name])
+
+    assert_equal(
+      [nil, 'Foo Bar', 'Rodrigo Serradura'],
+      results
+    )
+  end
 end
