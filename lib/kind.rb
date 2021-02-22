@@ -59,7 +59,7 @@ module Kind
 
     return is?(expected, object) if UNDEFINED != object
 
-    raise ArgumentError, 'wrong number of arguments (given 1, expected 2)'
+    WRONG_NUMBER_OF_ARGS.error!(given: 1, expected: 2)
   end
 
   def self.of(kind = UNDEFINED, object = UNDEFINED)

@@ -3,8 +3,6 @@
 module Kind
   module Maybe
     module Wrappable
-      WRONG_NUMBER_OF_ARGS = 'wrong number of arguments (given 0, expected 1)'.freeze
-
       def wrap(arg = UNDEFINED)
         if block_given?
           begin
@@ -19,7 +17,7 @@ module Kind
         else
           return new(arg) if UNDEFINED != arg
 
-          raise ArgumentError, WRONG_NUMBER_OF_ARGS
+          WRONG_NUMBER_OF_ARGS.error!(given: 0, expected: 1)
         end
       end
 
