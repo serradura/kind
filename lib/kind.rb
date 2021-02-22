@@ -12,10 +12,10 @@ require 'kind/dig'
 require 'kind/try'
 require 'kind/presence'
 require 'kind/undefined'
-require 'kind/type_checker'
-
-require 'kind/type_checkers'
 require 'kind/maybe'
+
+require 'kind/type_checker'
+require 'kind/type_checkers'
 
 require 'kind/deprecations/checker'
 require 'kind/deprecations/of'

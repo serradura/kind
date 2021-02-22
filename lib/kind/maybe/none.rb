@@ -23,7 +23,7 @@ module Kind
       alias_method :check, :map
 
       def try!(method_name = UNDEFINED, *args, &block)
-        Kind::Symbol[method_name] if UNDEFINED != method_name
+        KIND.of!(::Symbol, method_name)if UNDEFINED != method_name
 
         self
       end
