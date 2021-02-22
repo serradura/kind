@@ -7,7 +7,7 @@ module Kind
     def kind; ::Array; end
 
     def value_or_empty(arg)
-      __value(arg, Empty::ARRAY)
+      KIND.value(self, arg, Empty::ARRAY)
     end
   end
 

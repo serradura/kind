@@ -7,7 +7,7 @@ module Kind
     def kind; ::Hash; end
 
     def value_or_empty(arg)
-      __value(arg, Empty::HASH)
+      KIND.value(self, arg, Empty::HASH)
     end
   end
 

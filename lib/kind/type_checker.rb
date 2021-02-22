@@ -37,7 +37,7 @@ module Kind
     end
 
     def value(arg, default:)
-      __value(arg, self[default])
+      KIND.value(self, arg, self[default])
     end
 
     def or_null(value) # :nodoc:
@@ -48,10 +48,6 @@ module Kind
 
       def __or_func
         @__or_func ||= ->(tc, fb, value) { tc === value ? value : tc.or_null(fb) }.curry[self]
-      end
-
-      def __value(arg, default)
-        self === arg ? arg : default
       end
   end
 
