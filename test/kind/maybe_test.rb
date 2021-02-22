@@ -486,7 +486,9 @@ class Kind::MaybeTest < Minitest::Test
     assert_predicate(Kind::Maybe(Hash).new([]), :none?)
 
     assert_predicate(Kind::Maybe(Hash)[{}], :some?)
+    assert_predicate(Kind::Maybe(Hash)[Kind::Some({})], :some?)
     assert_predicate(Kind::Maybe(Hash).new({}), :some?)
+    assert_predicate(Kind::Maybe(Hash).new(Kind::Some({})), :some?)
 
     # ---
 
@@ -494,7 +496,9 @@ class Kind::MaybeTest < Minitest::Test
     assert_predicate(Kind::Optional(Hash).new([]), :none?)
 
     assert_predicate(Kind::Optional(Hash)[{}], :some?)
+    assert_predicate(Kind::Optional(Hash)[Kind::Some({})], :some?)
     assert_predicate(Kind::Optional(Hash).new({}), :some?)
+    assert_predicate(Kind::Optional(Hash).new(Kind::Some({})), :some?)
   end
 
   def test_the_wrap_method
@@ -526,6 +530,9 @@ class Kind::MaybeTest < Minitest::Test
 
     assert_predicate(Kind::Optional(Hash).wrap(''), :none?)
     assert_predicate(Kind::Optional(Hash).wrap({}), :some?)
+    assert_predicate(Kind::Optional(Hash).wrap(Kind::Some({})), :some?)
+
+    assert_predicate(Kind::Optional(Hash).wrap { Kind::Some({}) }, :some?)
 
     exception2 = Kind::Maybe(Numeric).wrap { 3 / 0 }
     assert_predicate(exception2, :none?)

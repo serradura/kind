@@ -9,7 +9,9 @@ module Kind
         @kind = kind
       end
 
-      def new(value)
+      def new(arg)
+        value = Result::Value.(arg)
+
         value.kind_of?(@kind) ? Maybe.some(value) : Maybe.none
       end
 
