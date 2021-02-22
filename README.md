@@ -1099,7 +1099,7 @@ def person_name(params)
 
   return default if names.size != 2
 
-  first_name, last_name = default
+  first_name, last_name = names
 
   "#{first_name} #{last_name}"
 end
@@ -1126,7 +1126,7 @@ module PersonIntroduction1
     end
 
     def age(optional)
-      optional.map { |hash| hash[:age] }.value_or(0)
+      optional.dig(:age).value_or(0)
     end
 end
 
