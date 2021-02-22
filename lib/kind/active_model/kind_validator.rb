@@ -35,9 +35,9 @@ class KindValidator < ActiveModel::EachValidator
     def kind_of(expected, value)
       types = Array(expected)
 
-      return if types.any? { |type| value.kind_of?(type) }
+      return if types.any? { |type| type === value }
 
-      "must be a kind of: #{types.map { |klass| klass.name }.join(', ')}"
+      "must be a kind of: #{types.map { |type| type.name }.join(', ')}"
     end
 
     CLASS_OR_MODULE = 'Class/Module'.freeze

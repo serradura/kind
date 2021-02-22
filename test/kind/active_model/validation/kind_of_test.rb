@@ -5,24 +5,26 @@ if ENV['ACTIVEMODEL_VERSION']
     class Person
       include ActiveModel::Validations
 
-      attr_reader :name, :age
+      attr_reader :name, :age, :alive
 
       validates :name, kind: { of: String }
       validates :age, kind: { of: Integer }
+      validates :alive, kind: { of: Kind::Boolean }
 
-      def initialize(name:, age:)
-        @name, @age = name, age
+      def initialize(name:, age:, alive:)
+        @name, @age, @alive = name, age, alive
       end
     end
 
     def test_the_validation_with_a_single_type
-      invalid_person = Person.new(name: 21, age: 'John')
+      invalid_person = Person.new(name: 21, age: 'John', alive: 0)
 
       refute_predicate(invalid_person, :valid?)
       assert_equal(['must be a kind of: String'], invalid_person.errors[:name])
       assert_equal(['must be a kind of: Integer'], invalid_person.errors[:age])
+      assert_equal(['must be a kind of: Boolean'], invalid_person.errors[:alive])
 
-      person = Person.new(name: 'John', age: 21)
+      person = Person.new(name: 'John', age: 21, alive: false)
 
       assert_predicate(person, :valid?)
     end
@@ -30,7 +32,7 @@ if ENV['ACTIVEMODEL_VERSION']
     class MyString < String; end
 
     def test_that_will_be_valid_when_checks_a_subclass
-      person = Person.new(name: MyString.new('John'), age: 21)
+      person = Person.new(name: MyString.new('John'), age: 21, alive: true)
 
       assert_predicate(person, :valid?)
     end
