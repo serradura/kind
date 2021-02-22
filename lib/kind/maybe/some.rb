@@ -17,6 +17,12 @@ module Kind
 
       alias_method :then, :map
 
+      def check(&fn)
+        result = fn.call(@value)
+
+        !result || KIND.null?(result) ? NONE_WITH_NIL_VALUE : self
+      end
+
       def map!(&fn)
         result = fn.call(@value)
 

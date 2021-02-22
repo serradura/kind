@@ -629,6 +629,25 @@ class Kind::MaybeTest < Minitest::Test
     end
   end
 
+  def test_the_check_method
+    person_name = ->(params) do
+      Kind::Maybe(Hash)
+        .wrap(params)
+        .then  { |hash| hash.values_at(:first_name, :last_name) }
+        .then  { |names| names.map(&Kind::Presence).tap(&:compact!) }
+        .check { |names| names.size == 2 }
+        .then  { |(first_name, last_name)| "#{first_name} #{last_name}" }
+        .value_or { 'John Doe' }
+    end
+
+    assert 'John Doe' == person_name.('')
+    assert 'John Doe' == person_name.(nil)
+    assert 'John Doe' == person_name.(last_name: 'Serradura')
+    assert 'John Doe' == person_name.(first_name: 'Rodrigo')
+
+    assert 'Rodrigo Serradura' == person_name.(first_name: 'Rodrigo', last_name: 'Serradura')
+  end
+
   def test_that_the_wrap_method_of_a_typed_maybe_verifies_if_the_block_arg_has_the_right_kind
     assert_nil(Kind::Maybe(Numeric).wrap('2') { |number| number / 0 }.value)
 
