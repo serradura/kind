@@ -16,6 +16,14 @@ module Kind
       end
 
       alias_method :[], :new
+
+      private
+
+        def __call_before_expose_the_arg_in_a_block(arg)
+          value = Result::Value.(arg)
+
+          value.kind_of?(@kind) ? value : Maybe.none
+        end
     end
   end
 end

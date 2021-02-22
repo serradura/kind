@@ -628,4 +628,13 @@ class Kind::MaybeTest < Minitest::Test
       Kind::Maybe.new(0).then! { |value| 2 / value }
     end
   end
+
+  def test_that_the_wrap_method_of_a_typed_maybe_verifies_if_the_block_arg_has_the_right_kind
+    assert_nil(Kind::Maybe(Numeric).wrap('2') { |number| number / 0 }.value)
+
+    assert_instance_of(
+      ZeroDivisionError,
+      Kind::Maybe(Numeric).wrap(2) { |number| number / 0 }.value
+    )
+  end
 end
