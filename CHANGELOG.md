@@ -3,6 +3,9 @@
 This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the recommendations of [keepachangelog.com](http://keepachangelog.com/).
 
 - [Unreleased](#unreleased)
+- [5.0.0 (2021-02-22)](#500-2021-02-22)
+  - [Breaking Changes](#breaking-changes)
+  - [Removed](#removed)
 - [4.1.0 (2021-02-22)](#410-2021-02-22)
   - [Added](#added)
 - [4.0.0 (2021-02-22)](#400-2021-02-22)
@@ -12,7 +15,7 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
 - [3.1.0 (2020-07-08)](#310-2020-07-08)
   - [Added](#added-2)
 - [3.0.0 (2020-06-25)](#300-2020-06-25)
-  - [Breaking Changes](#breaking-changes)
+  - [Breaking Changes](#breaking-changes-1)
   - [Added](#added-3)
 - [2.3.0 (2020-06-24)](#230-2020-06-24)
   - [Added](#added-4)
@@ -20,11 +23,11 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
   - [Added](#added-5)
 - [2.1.0 (2020-05-12)](#210-2020-05-12)
   - [Added](#added-6)
-  - [Breaking Changes](#breaking-changes-1)
+  - [Breaking Changes](#breaking-changes-2)
 - [2.0.0 (2020-05-07)](#200-2020-05-07)
   - [Added](#added-7)
-  - [Breaking Changes](#breaking-changes-2)
-  - [Removed](#removed)
+  - [Breaking Changes](#breaking-changes-3)
+  - [Removed](#removed-1)
 - [1.9.0 (2020-05-06)](#190-2020-05-06)
   - [Added](#added-8)
 - [1.8.0 (2020-05-03)](#180-2020-05-03)
@@ -55,7 +58,7 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
   - [Added](#added-19)
 - [0.3.0 (2020-01-03)](#030-2020-01-03)
   - [Added](#added-20)
-  - [Breaking Changes](#breaking-changes-3)
+  - [Breaking Changes](#breaking-changes-4)
 - [0.2.0 (2020-01-02)](#020-2020-01-02)
   - [Added](#added-21)
 - [0.1.0 (2019-12-26)](#010-2019-12-26)
@@ -70,6 +73,31 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
 ### Removed
 ### Fixed
 -->
+
+5.0.0 (2021-02-22)
+------------------
+
+### Breaking Changes
+
+* [#44](https://github.com/serradura/kind/pull/44) - Now, do you need to require `"kind/empty/constant"` to define the constant `Empty` as a `Kind::Empty` alias.
+
+### Removed
+
+* [#44](https://github.com/serradura/kind/pull/44) - Remove `Kind::Is.call`
+
+* [#44](https://github.com/serradura/kind/pull/44) - Remove `Kind::Of.call`
+
+* [#44](https://github.com/serradura/kind/pull/44) - Remove `Kind::Types.add`.
+
+* [#44](https://github.com/serradura/kind/pull/44) - Remove `Kind::Of::<Type>` and `Kind::Is::<Type>` modules.
+
+* [#44](https://github.com/serradura/kind/pull/44) - Remove `Kind::Checker`, `Kind::Checker::Protocol`, `Kind::Checker::Factory`.
+
+* [#44](https://github.com/serradura/kind/pull/44) - Remove the invocation of `Kind.is` without arguments.
+
+* [#44](https://github.com/serradura/kind/pull/44) - Remove the invocation of `Kind.of` without arguments.
+
+* [#44](https://github.com/serradura/kind/pull/44) - Remove the invocation of `Kind.of` with a single argument (the kind).
 
 4.1.0 (2021-02-22)
 ------------------

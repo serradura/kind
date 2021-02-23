@@ -30,6 +30,32 @@ class Kind::UtilityMethodsTest < Minitest::Test
     ) { Kind.is?(String, '2') }
   end
 
+  def test_Kind_is
+    # FACT: Can check if the given value is the class or a subclass of the expected kind
+    assert Kind.is(Class, Array)
+    assert Kind.is(Array, Array)
+    assert Kind.is(Array, MyArray)
+    refute Kind.is(Module, Array)
+
+    # FACT: Can check if the given value extend or include the expected module
+    assert Kind.is(Enumerable, Enumerable)
+    assert Kind.is(Enumerable, Array)
+    assert Kind.is(Module, Enumerable)
+    refute Kind.is(Class, Enumerable)
+
+    # FACT: Raises an exception if the kind isn't a class or module
+    assert_raises_with_message(
+      Kind::Error,
+      '"1" expected to be a kind of Module/Class'
+    ) { Kind.is('1', String) }
+
+    # FACT: Raises an exception if the value isn't a class or module
+    assert_raises_with_message(
+      Kind::Error,
+      '"2" expected to be a kind of Module/Class'
+    ) { Kind.is(String, '2') }
+  end
+
   def test_Kind_of?
     # FACT: Can check one instance
     assert Kind.of?(Array, [])
