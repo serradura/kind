@@ -11,5 +11,3 @@ module Kind
     STR = STRING
   end
 end
-
-Empty = Kind::Empty unless defined?(Empty)
