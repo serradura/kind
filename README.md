@@ -35,6 +35,7 @@ One of the goals of this project is to do simple type checking like `"some strin
 Version    | Documentation
 ---------- | -------------
 unreleased | https://github.com/serradura/u-case/blob/main/README.md
+5.0.0      | https://github.com/serradura/u-case/blob/v5.x/README.md
 4.1.0      | https://github.com/serradura/u-case/blob/v4.x/README.md
 3.1.0      | https://github.com/serradura/u-case/blob/v3.x/README.md
 2.3.0      | https://github.com/serradura/u-case/blob/v2.x/README.md
@@ -95,6 +96,7 @@ unreleased | https://github.com/serradura/u-case/blob/main/README.md
   - [Kind::Maybe#check](#kindmaybecheck)
   - [Kind::Maybe#presence](#kindmaybepresence)
 - [Kind::Empty](#kindempty)
+  - [Defining Empty as Kind::Empty an alias](#defining-empty-as-kindempty-an-alias)
 - [Kind::Validator (ActiveModel::Validations)](#kindvalidator-activemodelvalidations)
   - [Usage](#usage-1)
     - [Object#===](#object)
@@ -1429,7 +1431,11 @@ def do_something(value, with_options: Kind::Empty::HASH)
 end
 ```
 
-One last thing, if there is no constant declared as Empty, the `kind` gem will define `Empty` as an alias for `Kind::Empty`. Knowing this, the previous example could be written like this:
+### Defining Empty as Kind::Empty an alias
+
+You can require `kind/empty/constant` to define `Empty` as a `Kind::Empty` alias. But, a `LoadError` will be raised if there is an already defined constant `Empty`.
+
+So if you required this file, the previous example could be written like this:
 
 ```ruby
 def do_something(value, with_options: Empty::HASH)
@@ -1437,7 +1443,7 @@ def do_something(value, with_options: Empty::HASH)
 end
 ```
 
-Follows the list of constants, if the alias is available to be created:
+Follows the list of constants if the alias was defined:
 
 - `Empty::SET`
 - `Empty::HASH`
