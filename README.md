@@ -5,11 +5,15 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/ruby->%3D%202.2.0-ruby.svg?colorA=99004d&colorB=cc0066" alt="Ruby">
-
   <a href="https://rubygems.org/gems/kind">
     <img alt="Gem" src="https://img.shields.io/gem/v/kind.svg?style=flat-square">
   </a>
+
+  <img src="https://img.shields.io/badge/ruby%20%3E=%202.1.0,%20%3C%203.1-ruby.svg?colorA=99004d&colorB=cc0066" alt="Ruby">
+
+  <img src="https://img.shields.io/badge/rails%20%3E=%203.2.0,%20%3C%207-rails.svg?colorA=8B0000&colorB=FF0000" alt="Rails">
+
+  <br />
 
   <a href="https://travis-ci.com/serradura/kind">
     <img alt="Build Status" src="https://travis-ci.com/serradura/kind.svg?branch=master">
@@ -35,7 +39,7 @@ One of the goals of this project is to do simple type checking like `"some strin
 Version    | Documentation
 ---------- | -------------
 unreleased | https://github.com/serradura/u-case/blob/main/README.md
-5.0.0      | https://github.com/serradura/u-case/blob/v5.x/README.md
+5.1.0      | https://github.com/serradura/u-case/blob/v5.x/README.md
 4.1.0      | https://github.com/serradura/u-case/blob/v4.x/README.md
 3.1.0      | https://github.com/serradura/u-case/blob/v3.x/README.md
 2.3.0      | https://github.com/serradura/u-case/blob/v2.x/README.md
@@ -117,7 +121,8 @@ unreleased | https://github.com/serradura/u-case/blob/main/README.md
 
 | u-case         | branch  | ruby     |  activemodel   |
 | -------------- | ------- | -------- | -------------- |
-| unreleased     | main    | >= 2.2.0 | >= 3.2, <= 6.1 |
+| unreleased     | main    | >= 2.1.0 | >= 3.2, <= 6.1 |
+| 5.1.0          | v5.x    | >= 2.1.0 | >= 3.2, <= 6.1 |
 | 4.1.0          | v4.x    | >= 2.2.0 | >= 3.2, <= 6.1 |
 | 3.1.0          | v3.x    | >= 2.2.0 | >= 3.2, <= 6.1 |
 | 2.3.0          | v2.x    | >= 2.2.0 | >= 3.2, <= 6.0 |
@@ -1470,10 +1475,10 @@ And to make use of it, you will need to do an explicitly require. e.g:
 
 ```ruby
 # In some Gemfile
-gem 'kind', require: 'kind/active_model/validation'
+gem 'kind', require: 'kind/validator'
 
 # In some .rb file
-require 'kind/active_model/validation'
+require 'kind/validator'
 ```
 
 [⬆️ &nbsp;Back to Top](#table-of-contents-)
