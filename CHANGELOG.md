@@ -3,66 +3,69 @@
 This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the recommendations of [keepachangelog.com](http://keepachangelog.com/).
 
 - [Unreleased](#unreleased)
+- [5.1.0 (2021-02-23)](#510-2021-02-23)
+  - [Added](#added)
+  - [Deprecated](#deprecated)
 - [5.0.0 (2021-02-22)](#500-2021-02-22)
   - [Breaking Changes](#breaking-changes)
   - [Removed](#removed)
 - [4.1.0 (2021-02-22)](#410-2021-02-22)
-  - [Added](#added)
-- [4.0.0 (2021-02-22)](#400-2021-02-22)
   - [Added](#added-1)
-  - [Deprecated](#deprecated)
+- [4.0.0 (2021-02-22)](#400-2021-02-22)
+  - [Added](#added-2)
+  - [Deprecated](#deprecated-1)
   - [Fixed](#fixed)
 - [3.1.0 (2020-07-08)](#310-2020-07-08)
-  - [Added](#added-2)
+  - [Added](#added-3)
 - [3.0.0 (2020-06-25)](#300-2020-06-25)
   - [Breaking Changes](#breaking-changes-1)
-  - [Added](#added-3)
-- [2.3.0 (2020-06-24)](#230-2020-06-24)
   - [Added](#added-4)
-- [2.2.0 (2020-06-23)](#220-2020-06-23)
+- [2.3.0 (2020-06-24)](#230-2020-06-24)
   - [Added](#added-5)
-- [2.1.0 (2020-05-12)](#210-2020-05-12)
+- [2.2.0 (2020-06-23)](#220-2020-06-23)
   - [Added](#added-6)
+- [2.1.0 (2020-05-12)](#210-2020-05-12)
+  - [Added](#added-7)
   - [Breaking Changes](#breaking-changes-2)
 - [2.0.0 (2020-05-07)](#200-2020-05-07)
-  - [Added](#added-7)
+  - [Added](#added-8)
   - [Breaking Changes](#breaking-changes-3)
   - [Removed](#removed-1)
 - [1.9.0 (2020-05-06)](#190-2020-05-06)
-  - [Added](#added-8)
-- [1.8.0 (2020-05-03)](#180-2020-05-03)
   - [Added](#added-9)
+- [1.8.0 (2020-05-03)](#180-2020-05-03)
+  - [Added](#added-10)
 - [1.7.0 (2020-05-03)](#170-2020-05-03)
   - [Fixed](#fixed-1)
 - [1.6.0 (2020-04-17)](#160-2020-04-17)
-  - [Added](#added-10)
+  - [Added](#added-11)
   - [Changes](#changes)
 - [1.5.0 (2020-04-12)](#150-2020-04-12)
-  - [Added](#added-11)
-- [1.4.0 (2020-04-12)](#140-2020-04-12)
   - [Added](#added-12)
-- [1.3.0 (2020-04-12)](#130-2020-04-12)
+- [1.4.0 (2020-04-12)](#140-2020-04-12)
   - [Added](#added-13)
-- [1.2.0 (2020-04-12)](#120-2020-04-12)
+- [1.3.0 (2020-04-12)](#130-2020-04-12)
   - [Added](#added-14)
-- [1.1.0 (2020-04-09)](#110-2020-04-09)
+- [1.2.0 (2020-04-12)](#120-2020-04-12)
   - [Added](#added-15)
+- [1.1.0 (2020-04-09)](#110-2020-04-09)
+  - [Added](#added-16)
   - [Fixed](#fixed-2)
 - [1.0.0 (2020-03-16)](#100-2020-03-16)
-  - [Added](#added-16)
-- [0.6.0 (2020-01-06)](#060-2020-01-06)
   - [Added](#added-17)
-- [0.5.0 (2020-01-04)](#050-2020-01-04)
+- [0.6.0 (2020-01-06)](#060-2020-01-06)
   - [Added](#added-18)
-- [0.4.0 (2020-01-03)](#040-2020-01-03)
+- [0.5.0 (2020-01-04)](#050-2020-01-04)
   - [Added](#added-19)
-- [0.3.0 (2020-01-03)](#030-2020-01-03)
+- [0.4.0 (2020-01-03)](#040-2020-01-03)
   - [Added](#added-20)
+- [0.3.0 (2020-01-03)](#030-2020-01-03)
+  - [Added](#added-21)
   - [Breaking Changes](#breaking-changes-4)
 - [0.2.0 (2020-01-02)](#020-2020-01-02)
-  - [Added](#added-21)
-- [0.1.0 (2019-12-26)](#010-2019-12-26)
   - [Added](#added-22)
+- [0.1.0 (2019-12-26)](#010-2019-12-26)
+  - [Added](#added-23)
 
 ## Unreleased
 
@@ -73,6 +76,17 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
 ### Removed
 ### Fixed
 -->
+
+5.1.0 (2021-02-23)
+------------------
+
+### Added
+
+* [#45](https://github.com/serradura/kind/pull/45) - Add support to Ruby `>= 2.1.0`.
+
+### Deprecated
+
+* [#45](https://github.com/serradura/kind/pull/45) - `kind/active_model/validation` is deprecated; use `kind/validator` instead.
 
 5.0.0 (2021-02-22)
 ------------------
