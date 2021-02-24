@@ -1,7 +1,6 @@
 <p align="center">
   <h1 align="center">🤷 kind</h1>
   <p align="center"><i>A simple type system (at runtime) for Ruby - free of dependencies.</i></p>
-  <br>
 </p>
 
 <p align="center">
@@ -9,15 +8,17 @@
     <img alt="Gem" src="https://img.shields.io/gem/v/kind.svg?style=flat-square">
   </a>
 
-  <img src="https://img.shields.io/badge/ruby%20%3E=%202.1.0,%20%3C%203.1-ruby.svg?colorA=99004d&colorB=cc0066" alt="Ruby">
-
-  <img src="https://img.shields.io/badge/rails%20%3E=%203.2.0,%20%3C%207-rails.svg?colorA=8B0000&colorB=FF0000" alt="Rails">
-
-  <br />
-
   <a href="https://travis-ci.com/serradura/kind">
     <img alt="Build Status" src="https://travis-ci.com/serradura/kind.svg?branch=master">
   </a>
+
+  <br />
+
+  <img src="https://img.shields.io/badge/ruby%20%3E=%202.1,%20%3C%203.1-ruby.svg?colorA=99004d&colorB=cc0066" alt="Ruby">
+
+  <img src="https://img.shields.io/badge/rails%20%3E=%203.2.0,%20%3C%207.0-rails.svg?colorA=8B0000&colorB=FF0000" alt="Rails">
+
+  <br />
 
   <a href="https://codeclimate.com/github/serradura/kind/maintainability">
     <img alt="Maintainability" src="https://api.codeclimate.com/v1/badges/711329decb2806ccac95/maintainability">
@@ -1459,7 +1460,7 @@ Follows the list of constants if the alias was defined:
 
 ## Kind::Validator (ActiveModel::Validations)
 
-This module enables the capability to validate types via [`ActiveModel::Validations >= 3.2, < 6.1.0`](https://api.rubyonrails.org/classes/ActiveModel/Validations.html). e.g
+This module enables the capability to validate types via [`ActiveModel::Validations >= 3.2, < 7.0`](https://api.rubyonrails.org/classes/ActiveModel/Validations.html). e.g
 
 ```ruby
 class Person
