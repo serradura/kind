@@ -44,11 +44,11 @@ module Kind
     NONE_WITH_NIL_VALUE = None.new(nil)
     NONE_WITH_UNDEFINED_VALUE = None.new(Undefined)
 
-    def none
+    def self.none
       NONE_WITH_NIL_VALUE
     end
 
-    def __none__(value) # :nodoc:
+    def self.__none__(value) # :nodoc:
       None.new(value)
     end
 

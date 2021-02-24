@@ -3,21 +3,10 @@
 require 'set'
 require 'ostruct'
 
-require 'kind/version'
-require 'kind/core'
-
-require 'kind/error'
-require 'kind/empty'
-require 'kind/dig'
-require 'kind/try'
-require 'kind/presence'
-require 'kind/undefined'
-require 'kind/maybe'
-
-require 'kind/type_checker'
-require 'kind/type_checkers'
-
 module Kind
+  require 'kind/version'
+  require 'kind/core'
+
   extend self
 
   def is?(kind, arg)
