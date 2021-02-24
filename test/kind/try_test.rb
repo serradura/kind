@@ -15,10 +15,10 @@ class Kind::TryTest < Minitest::Test
     assert_nil(Kind::Try.(Kind::Undefined, :strip))
 
     # FACT: Raises an exception if the method name isn't a string or a symbol
-    assert_raises_with_message(
-      TypeError,
-      '1 is not a symbol nor a string',
-    ) { Kind::Try.({a: 1}, 1, :a) }
+    exception_message =
+      RUBY_VERSION < '2.2.0' ? '1 is not a symbol' : '1 is not a symbol nor a string'
+
+    assert_raises_with_message(TypeError, exception_message) { Kind::Try.({a: 1}, 1, :a) }
   end
 
   def test_the_creation_of_a_lambda_that_knows_how_to_performs_the_try_strategy

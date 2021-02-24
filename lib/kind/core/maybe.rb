@@ -1,16 +1,14 @@
 # frozen_string_literal: true
 
-require 'kind/dig'
-
 module Kind
   module Maybe
-    extend self
+    require 'kind/core/maybe/result'
+    require 'kind/core/maybe/none'
+    require 'kind/core/maybe/some'
+    require 'kind/core/maybe/wrappable'
+    require 'kind/core/maybe/typed'
 
-    require 'kind/maybe/result'
-    require 'kind/maybe/none'
-    require 'kind/maybe/some'
-    require 'kind/maybe/wrappable'
-    require 'kind/maybe/typed'
+    extend self
 
     def new(value)
       (KIND.null?(value) ? None : Some)

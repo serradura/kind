@@ -79,7 +79,7 @@ module Kind
 
     VALUE_CANT_BE_NONE = "value can't be nil or Kind::Undefined".freeze
 
-    def some(value)
+    def self.some(value)
       return Maybe::Some.new(value) if !KIND.null?(value)
 
       raise ArgumentError, VALUE_CANT_BE_NONE

@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-require 'kind'
+warn '[DEPRECATION] "kind/active_model/validation" is deprecated; use "kind/validator" instead.' \
+    'It will be removed on next major release.'
+
 require 'kind/validator'
-require 'active_model'
-require 'active_model/validations'
-require_relative 'kind_validator'

@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.description   = %q{A simple type system (at runtime) for Ruby - free of dependencies.}
   spec.homepage      = 'https://github.com/serradura/kind'
   spec.license       = 'MIT'
-  spec.required_ruby_version = Gem::Requirement.new('>= 2.2.0')
+  spec.required_ruby_version = Gem::Requirement.new('>= 2.1.0')
 
   spec.metadata['homepage_uri'] = spec.homepage
   spec.metadata['source_code_uri'] = 'https://github.com/serradura/kind'

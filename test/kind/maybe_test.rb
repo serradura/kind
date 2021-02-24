@@ -411,9 +411,10 @@ class Kind::MaybeTest < Minitest::Test
 
     # --
 
-    assert_raises_with_message(ArgumentError, 'wrong number of arguments (given 1, expected 0)') do
-      Kind::None(nil)
-    end
+    exception_message =
+      RUBY_VERSION < '2.2.0' ? 'wrong number of arguments (1 for 0)' : 'wrong number of arguments (given 1, expected 0)'
+
+    assert_raises_with_message(ArgumentError, exception_message) { Kind::None(nil) }
   end
 
   def test_the_kind_some_method
@@ -430,9 +431,10 @@ class Kind::MaybeTest < Minitest::Test
 
     # --
 
-    assert_raises_with_message(ArgumentError, 'wrong number of arguments (given 0, expected 1)') do
-      Kind::Some()
-    end
+    exception_message =
+      RUBY_VERSION < '2.2.0' ? 'wrong number of arguments (0 for 1)' : 'wrong number of arguments (given 0, expected 1)'
+
+    assert_raises_with_message(ArgumentError, exception_message) { Kind::Some() }
 
     # --
 

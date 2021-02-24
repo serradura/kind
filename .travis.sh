@@ -19,12 +19,17 @@ function run_with_am_version_and_bundler {
   run_with_bundler "$2" "ACTIVEMODEL_VERSION=$1"
 }
 
+if [[ $RUBY_V =~ "ruby 2.[12]." ]]; then
+  run_with_bundler "$BUNDLER_V1"
+
+  run_with_am_version_and_bundler "3.2" "$BUNDLER_V1"
+fi
+
 RUBY_2_2345="ruby 2.[2345]."
 
 if [[ $RUBY_V =~ $RUBY_2_2345 ]]; then
   run_with_bundler "$BUNDLER_V1"
 
-  run_with_am_version_and_bundler "3.2" "$BUNDLER_V1"
   run_with_am_version_and_bundler "4.0" "$BUNDLER_V1"
   run_with_am_version_and_bundler "4.1" "$BUNDLER_V1"
   run_with_am_version_and_bundler "4.2" "$BUNDLER_V1"

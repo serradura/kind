@@ -7,6 +7,7 @@ cache:
     - /home/travis/.rvm/
 
 rvm:
+  - 2.1.10
   - 2.2.2
   - 2.3.0
   - 2.4.0

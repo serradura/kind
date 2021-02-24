@@ -33,7 +33,7 @@ module Kind
     def value?(value = UNDEFINED)
       return self === value if UNDEFINED != value
 
-      @__is_value ||= ->(ck) { ->(value) { ck === value } }.(self)
+      @__is_value ||= ->(tc) { ->(arg) { tc === arg } }.(self)
     end
 
     def value(arg, default:)
