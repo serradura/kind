@@ -5,6 +5,7 @@ require 'kind/core/utils/undefined'
 
 require 'kind/core/error'
 require 'kind/core/union_type'
+require 'kind/core/nil'
 require 'kind/core/empty'
 require 'kind/core/dig'
 require 'kind/core/try'
