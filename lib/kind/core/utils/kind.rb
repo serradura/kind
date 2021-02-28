@@ -18,8 +18,8 @@ module Kind
       error!(kind_name || kind.name, value)
     end
 
-    def self.error!(kind_name, value) # :nodoc:
-      raise Error.new(kind_name, value)
+    def self.error!(kind_name, value, label = nil) # :nodoc:
+      raise Error.new(kind_name, value, label: label)
     end
 
     def self.of_class?(value) # :nodoc:

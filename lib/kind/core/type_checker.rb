@@ -10,10 +10,10 @@ module Kind
       kind === value
     end
 
-    def [](value)
+    def [](value, label: nil)
       return value if self === value
 
-      KIND.error!(name, value)
+      KIND.error!(name, value, label)
     end
 
     def or_nil(value)

@@ -43,8 +43,10 @@ module Kind
     KIND.of_module_or_class!(value)
   end
 
-  def of(kind, object)
-    KIND.of!(kind, object)
+  def of(kind, value, label: nil)
+    return value if kind === value
+
+    KIND.error!(kind.name, value, label)
   end
 
   def value(kind, value, default:)
