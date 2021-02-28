@@ -11,7 +11,7 @@ module Kind
     extend self
 
     def new(value)
-      (KIND.null?(value) ? None : Some)
+      (Exception === value || KIND.null?(value) ? None : Some)
         .new(value)
     end
 

@@ -17,6 +17,10 @@ module Kind
 
       alias_method :[], :new
 
+      def inspect
+        "Kind::Maybe<#{@kind}>"
+      end
+
       private
 
         def __call_before_expose_the_arg_in_a_block(arg)

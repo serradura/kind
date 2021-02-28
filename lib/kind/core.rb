@@ -2,6 +2,7 @@
 
 require 'kind/core/utils/kind'
 require 'kind/core/utils/undefined'
+require 'kind/core/utils/args_error'
 
 require 'kind/core/error'
 require 'kind/core/respond_to'

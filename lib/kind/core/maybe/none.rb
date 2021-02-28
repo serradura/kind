@@ -3,17 +3,15 @@
 module Kind
   module Maybe
     class None < Result
-      INVALID_DEFAULT_ARG = 'the default value must be defined as an argument or block'.freeze
-
       def value_or(default = UNDEFINED, &block)
-        raise ArgumentError, INVALID_DEFAULT_ARG if UNDEFINED == default && !block
+        ARGS_ERROR.invalid_default! if UNDEFINED == default && !block
 
         UNDEFINED != default ? default : block.call
       end
 
       def none?; true; end
 
-      def map(&fn)
+      def map(_method_name = UNDEFINED, &fn)
         self
       end
 
@@ -21,6 +19,8 @@ module Kind
       alias_method :then, :map
       alias_method :then!, :map
       alias_method :check, :map
+      alias_method :accept, :map
+      alias_method :reject, :map
 
       def try!(method_name = UNDEFINED, *args, &block)
         KIND.of!(::Symbol, method_name)if UNDEFINED != method_name
@@ -38,7 +38,9 @@ module Kind
         self
       end
 
-      private_constant :INVALID_DEFAULT_ARG
+      def inspect
+        '#<%s value=%s>' % ['Kind::None', value.inspect]
+      end
     end
 
     NONE_WITH_NIL_VALUE = None.new(nil)

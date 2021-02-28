@@ -11,7 +11,7 @@ module Kind
         @value = Value.(arg)
       end
 
-      def value_or(method_name = UNDEFINED, &block)
+      def value_or(_method_name = UNDEFINED, &block)
         raise NotImplementedError
       end
 
@@ -33,7 +33,10 @@ module Kind
         raise NotImplementedError
       end
 
-      def try(method_name = UNDEFINED, &block)
+      alias_method :accept, :check
+      alias_method :reject, :check
+
+      def try(_method_name = UNDEFINED, &block)
         raise NotImplementedError
       end
 

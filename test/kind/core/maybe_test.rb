@@ -21,6 +21,8 @@ class Kind::MaybeTest < Minitest::Test
     assert_raises(NotImplementedError) { maybe_result.then { 0 } }
     assert_raises(NotImplementedError) { maybe_result.then! { 0 } }
     assert_raises(NotImplementedError) { maybe_result.check { true } }
+    assert_raises(NotImplementedError) { maybe_result.accept { true } }
+    assert_raises(NotImplementedError) { maybe_result.reject { false } }
     assert_raises(NotImplementedError) { maybe_result.try(:anything) }
     assert_raises(NotImplementedError) { maybe_result.try!(:anything) }
     assert_raises(NotImplementedError) { maybe_result.try { |value| value.anything } }
@@ -36,6 +38,8 @@ class Kind::MaybeTest < Minitest::Test
 
     refute_predicate(Kind::Maybe.new(nil), :some?)
     refute_predicate(Kind::Maybe.new(Kind::Undefined), :some?)
+
+    assert_equal('#<Kind::Some value={}>', Kind::Maybe.new({}).inspect)
   end
 
   def test_maybe_none
@@ -43,6 +47,10 @@ class Kind::MaybeTest < Minitest::Test
     assert_predicate(Kind::Maybe.new(Kind::Undefined), :none?)
 
     refute_predicate(Kind::Maybe.new(1), :none?)
+
+    assert_equal('#<Kind::None value=nil>', Kind::Maybe.new(nil).inspect)
+    assert_equal('#<Kind::None value=Kind::Undefined>', Kind::Maybe.new(Kind::Undefined).inspect)
+    assert_equal('#<Kind::None value=#<ZeroDivisionError: ZeroDivisionError>>', Kind::Maybe.new(ZeroDivisionError.new).inspect)
   end
 
   def test_maybe_value
@@ -132,6 +140,49 @@ class Kind::MaybeTest < Minitest::Test
 
     assert_predicate(optional2, :none?)
     assert_predicate(optional3, :none?)
+  end
+
+  def test_the_map_method_receiving_a_symbol
+    assert 'b' == Kind::Maybe[' b '].map(:strip).value
+
+    assert_nil(Kind::Maybe[2].map(:strip).value)
+
+    assert Kind::Error === Kind::Maybe[' b '].map('strip').value
+
+    assert 'c' == Kind::Maybe[' c '].map!(:strip).value
+
+    assert_nil(Kind::Maybe[3].map!(:strip).value)
+
+    assert_raises_with_message(
+      Kind::Error,
+      '"bar?" expected to be a kind of Symbol'
+    ) { Kind::Maybe[1].map!('bar?') }
+
+    # --
+
+    assert 'a' == Kind::Maybe[' a '].then(:strip).value
+
+    assert_nil(Kind::Maybe[1].then(:strip).value)
+
+    assert Kind::Error === Kind::Maybe[' a '].then('strip').value
+
+    assert 'd' == Kind::Maybe[' d '].then!(:strip).value
+
+    assert_nil(Kind::Maybe[4].then!(:strip).value)
+
+    assert_raises_with_message(
+      Kind::Error,
+      '"foo?" expected to be a kind of Symbol'
+    ) { Kind::Maybe[2].then!('foo?') }
+
+    # --
+
+    none = Kind::Maybe.new(nil)
+
+    assert none.map(:to_s).none?
+    assert none.map!(:to_s).none?
+    assert none.then(:to_s).none?
+    assert none.then!(:to_s).none?
   end
 
   def test_map_returning_an_undefined_value
@@ -492,6 +543,9 @@ class Kind::MaybeTest < Minitest::Test
     assert_predicate(Kind::Maybe(Hash).new({}), :some?)
     assert_predicate(Kind::Maybe(Hash).new(Kind::Some({})), :some?)
 
+    assert_equal('Kind::Maybe<Hash>', Kind::Maybe(Hash).inspect)
+    assert_equal('Kind::Maybe<Kind::String>', Kind::Maybe(Kind::String).inspect)
+
     # ---
 
     assert_predicate(Kind::Optional(Hash)[''], :none?)
@@ -501,6 +555,9 @@ class Kind::MaybeTest < Minitest::Test
     assert_predicate(Kind::Optional(Hash)[Kind::Some({})], :some?)
     assert_predicate(Kind::Optional(Hash).new({}), :some?)
     assert_predicate(Kind::Optional(Hash).new(Kind::Some({})), :some?)
+
+    assert_equal('Kind::Maybe<Hash>', Kind::Optional(Hash).inspect)
+    assert_equal('Kind::Maybe<Kind::String>', Kind::Optional(Kind::String).inspect)
   end
 
   def test_the_wrap_method
@@ -652,6 +709,17 @@ class Kind::MaybeTest < Minitest::Test
     # --
 
     Kind::Maybe(Array).wrap([1]).check(&:empty?).none?
+
+    Kind::Maybe(Array).wrap([1]).check(:empty?).none?
+
+    Kind::Maybe[1].check(:foo?).none?
+
+    # --
+
+    assert_raises_with_message(
+      Kind::Error,
+      '"foo?" expected to be a kind of Symbol'
+    ) { Kind::Maybe[1].check('foo?') }
   end
 
   def test_that_the_wrap_method_of_a_typed_maybe_verifies_if_the_block_arg_has_the_right_kind
@@ -661,5 +729,61 @@ class Kind::MaybeTest < Minitest::Test
       ZeroDivisionError,
       Kind::Maybe(Numeric).wrap(2) { |number| number / 0 }.value
     )
+  end
+
+  def test_the_accept_method
+    person_name = ->(params) do
+      Kind::Maybe(Hash)
+        .wrap(params)
+        .then  { |hash| hash.values_at(:first_name, :last_name) }
+        .then  { |names| names.map(&Kind::Presence).tap(&:compact!) }
+        .accept { |names| names.size == 2 }
+        .then  { |(first_name, last_name)| "#{first_name} #{last_name}" }
+        .value_or { 'John Doe' }
+    end
+
+    assert 'John Doe' == person_name.('')
+    assert 'John Doe' == person_name.(nil)
+    assert 'John Doe' == person_name.(last_name: 'Serradura')
+    assert 'John Doe' == person_name.(first_name: 'Rodrigo')
+
+    assert 'Rodrigo Serradura' == person_name.(first_name: 'Rodrigo', last_name: 'Serradura')
+
+    # --
+
+    Kind::Maybe(Array).wrap([1]).accept(&:empty?).none?
+
+    Kind::Maybe(Array).wrap([1]).accept(:empty?).none?
+
+    Kind::Maybe[1].accept(:foo?).none?
+
+    # --
+
+    assert_raises_with_message(
+      Kind::Error,
+      '"foo?" expected to be a kind of Symbol'
+    ) { Kind::Maybe[1].accept('foo?') }
+  end
+
+  def test_the_reject_method
+    Kind::Maybe[''].reject(:empty?).none?
+    Kind::Maybe[''].reject(&:empty?).none?
+    Kind::Maybe[''].reject{ |v| v.empty? }.none?
+
+    assert 'a' == Kind::Maybe['a'].reject(:empty?).value
+    assert 'b' == Kind::Maybe['b'].reject(&:empty?).value
+    assert 'c' == Kind::Maybe['c'].reject{ |v| v.empty? }.value
+
+    assert Kind::Maybe['c'].reject{ |v| nil }.none?
+    assert Kind::Maybe['c'].reject{ |v| Kind::Undefined }.none?
+
+    Kind::Maybe[''].reject(:foo?).none?
+
+    # --
+
+    assert_raises_with_message(
+      Kind::Error,
+      '"foo?" expected to be a kind of Symbol'
+    ) { Kind::Maybe[1].reject('foo?') }
   end
 end

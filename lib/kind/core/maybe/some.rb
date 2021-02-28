@@ -3,33 +3,61 @@
 module Kind
   module Maybe
     class Some < Result
-      def value_or(default = UNDEFINED, &block)
+      KindSymbol = ->(value) { KIND.of!(::Symbol, value) }
+
+      def value_or(_default = UNDEFINED, &block)
         @value
       end
 
       def none?; false; end
 
-      def map(&fn)
-        map!(&fn)
+      def map(method_name = UNDEFINED, &fn)
+        map!(method_name, &fn)
       rescue StandardError => exception
         None.new(exception)
       end
 
       alias_method :then, :map
 
-      def check(&fn)
-        result = fn.call(@value)
+      def map!(method_name = UNDEFINED, &fn)
+        result = if UNDEFINED != method_name
+          return NONE_WITH_NIL_VALUE unless @value.respond_to?(KindSymbol[method_name])
 
-        !result || KIND.null?(result) ? NONE_WITH_NIL_VALUE : self
-      end
-
-      def map!(&fn)
-        result = fn.call(@value)
+          @value.public_send(method_name)
+        else
+          fn.call(@value)
+        end
 
         resolve(result)
       end
 
       alias_method :then!, :map!
+
+      def check(method_name = UNDEFINED, &fn)
+        result = if UNDEFINED != method_name
+          return NONE_WITH_NIL_VALUE unless @value.respond_to?(KindSymbol[method_name])
+
+          @value.public_send(method_name)
+        else
+          fn.call(@value)
+        end
+
+        !result || KIND.null?(result) ? NONE_WITH_NIL_VALUE : self
+      end
+
+      alias_method :accept, :check
+
+      def reject(method_name = UNDEFINED, &fn)
+        result = if UNDEFINED != method_name
+          return NONE_WITH_NIL_VALUE unless @value.respond_to?(KindSymbol[method_name])
+
+          @value.public_send(method_name)
+        else
+          fn.call(@value)
+        end
+
+        result || KIND.null?(result) ? NONE_WITH_NIL_VALUE : self
+      end
 
       def try!(method_name = UNDEFINED, *args, &block)
         return __try_block__(block, args) if block
@@ -55,10 +83,14 @@ module Kind
         resolve(Presence.(value))
       end
 
+      def inspect
+        '#<%s value=%s>' % ['Kind::Some', value.inspect]
+      end
+
       private
 
         def __try_method__(method_name, args)
-          __try_block__(KIND.of!(::Symbol, method_name).to_proc, args)
+          __try_block__(KindSymbol[method_name].to_proc, args)
         end
 
         def __try_block__(block, args)
@@ -75,6 +107,8 @@ module Kind
 
           Some.new(result)
         end
+
+      private_constant :KindSymbol
     end
 
     VALUE_CANT_BE_NONE = "value can't be nil or Kind::Undefined".freeze

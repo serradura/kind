@@ -17,7 +17,7 @@ module Kind
         else
           return new(arg) if UNDEFINED != arg
 
-          raise ArgumentError, 'wrong number of arguments (given 0, expected 1)'
+          ARGS_ERROR.wrong_number!(given: 0, expected: 1)
         end
       end
 
