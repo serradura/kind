@@ -54,6 +54,10 @@ module Kind
 
     alias optional maybe
 
+    def |(another_kind)
+      UnionType.new(self) | another_kind
+    end
+
     private
 
       def __maybe
@@ -80,6 +84,10 @@ module Kind
 
       @name = KIND.of!(::String, name)
       @kind = KIND.respond_to!(:===, kind)
+    end
+
+    def inspect
+      "Kind::TypeChecker<#{name}>"
     end
 
     private_constant :ResolveKindName

@@ -17,6 +17,12 @@ class Kind::TypeCheckersTest < Minitest::Test
     assert_predicate(Kind::Array.value_or_empty(1), :empty?)
     assert_predicate(Kind::Array.value_or_empty(1), :frozen?)
 
+    union_type = Kind::Array | Kind::Hash
+    assert union_type === []
+    assert union_type === {}
+    refute union_type === 1
+    refute union_type === ''
+
     # == Kind::Class ==
 
     assert Kind.of_module?(Kind::Class)

@@ -54,6 +54,14 @@ class Kind::TypeCheckerObjectTest < Minitest::Test
       Kind::Error,
       '1 expected to be a kind of String'
     ) { string_checker.value(2, default: 1) }
+
+    assert_equal('Kind::TypeChecker<String>', string_checker.inspect)
+
+    interface = string_checker | Kind::Nil
+
+    assert interface === ''
+    assert interface === nil
+    refute interface === 1
   end
 
   PositiveInteger = -> value { value.kind_of?(Integer) && value > 0 }
@@ -114,6 +122,15 @@ class Kind::TypeCheckerObjectTest < Minitest::Test
       Kind::Error,
       '0 expected to be a kind of PositiveInteger'
     ) { positive_integer_checker.value(-1, default: 0) }
+
+    assert_equal('Kind::TypeChecker<PositiveInteger>', positive_integer_checker.inspect)
+
+    interface = positive_integer_checker | Kind::Nil
+
+    assert interface === 1
+    assert interface === nil
+    refute interface === 0
+    refute interface === {}
   end
 
   def test_the_core_checker_object_receiving_an_object_that_doesnt_have_a_name
