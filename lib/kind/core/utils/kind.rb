@@ -40,6 +40,10 @@ module Kind
       raise Error.new("expected #{value} to respond to :#{method_name}")
     end
 
+    def self.interface?(method_names, value) # :nodoc:
+      method_names.all? { |method_name| value.respond_to?(method_name) }
+    end
+
     def self.is?(expected, value) # :nodoc:
       is!(of_module_or_class!(expected), value)
     end

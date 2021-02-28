@@ -76,6 +76,19 @@ class Kind::UtilityMethodsTest < Minitest::Test
     refute is_string.call(nil)
   end
 
+  def test_Kind_respond_to?
+    assert Kind.respond_to?({}, :[])
+    assert Kind.respond_to?({}, :[], :fetch)
+    refute Kind.respond_to?({}, :[], :fetch, :foo)
+    refute Kind.respond_to?('', :fetch)
+
+    # --
+
+    assert Kind.respond_to?(:is)
+    assert Kind.respond_to?(:is?)
+    refute Kind.respond_to?(:foo)
+  end
+
   def test_Kind_of_class?
     # FACT: Can check if the given value is a class
     assert Kind.of_class?(Array)

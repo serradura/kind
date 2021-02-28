@@ -27,6 +27,12 @@ module Kind
     KIND.of_module?(value)
   end
 
+  def respond_to?(value, *method_names)
+    return super(value) if method_names.empty?
+
+    KIND.interface?(method_names, value)
+  end
+
   def respond_to(value, *method_names)
     method_names.each { |method_name| KIND.respond_to!(method_name, value) }
 
