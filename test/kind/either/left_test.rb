@@ -1,0 +1,49 @@
+require 'test_helper'
+
+class Kind::EitherLeftTest < Minitest::Test
+  require 'kind/either'
+
+  def test_the_either_left
+    either = Kind::Left(1)
+
+    assert_equal(1, either.value)
+
+    assert_equal('#<Kind::Left value=1>', either.inspect)
+
+    assert either.left?
+    refute either.right?
+
+    assert_equal(1, either.map { |n| n + 2 }.value)
+    assert_equal(1, either.map { |n| Kind::Right(n + 2) }.value)
+
+    assert_equal(1, either.then { |n| n + 2 }.value)
+    assert_equal(1, either.then { |n| Kind::Right(n + 2) }.value)
+
+    assert_equal(2, either.value_or(2))
+    assert_equal(3, either.value_or { 3 })
+
+    assert_raises_with_message(
+      ArgumentError,
+      'the default value must be defined as an argument or block'
+    ) { either.value_or }
+
+    assert_same(either, either.on_left {})
+    assert_same(either, either.on_right { raise RuntimeError })
+
+    count = 0
+
+    either
+      .on_left { |n| count += n }
+      .on_right { raise RuntimeError }
+      .on_left { |n| count += n }
+
+    assert_equal(2, count)
+
+    assert_nil(either.on {})
+    assert_nil(either.on { |result| result.right {} })
+    assert_equal(0, either.on do |result|
+      result.left { |value| value - 1 }
+      result.right { |value| value + 1 }
+    end)
+  end
+end
