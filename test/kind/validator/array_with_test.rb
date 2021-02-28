@@ -1,7 +1,7 @@
 require 'test_helper'
 
 if ENV['ACTIVEMODEL_VERSION']
-  class KindActiveModelValidationArrayWithTest < Minitest::Test
+  class KindValidatorArrayWithTest < Minitest::Test
     class Person
       include ActiveModel::Validations
 

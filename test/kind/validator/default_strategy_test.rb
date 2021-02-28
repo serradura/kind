@@ -1,7 +1,7 @@
 require 'test_helper'
 
 if ENV['ACTIVEMODEL_VERSION']
-  class KindActiveModelValidationDefaultStrategyTest < Minitest::Test
+  class KindValidatorDefaultStrategyTest < Minitest::Test
     class MyString < String; end
 
     class Person

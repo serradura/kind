@@ -1,7 +1,7 @@
 require 'test_helper'
 
 if ENV['ACTIVEMODEL_VERSION']
-  class KindActiveModelValidationKindIsTest < Minitest::Test
+  class KindValidatorKindIsTest < Minitest::Test
     def build_instance(klass, options)
       klass.new.tap { |instance| options.each { |k, v| instance.public_send("#{k}=", v) } }
     end
@@ -122,7 +122,7 @@ if ENV['ACTIVEMODEL_VERSION']
 
       refute_predicate(bar_model1, :valid?)
       assert_equal(
-        ['must be the class or a subclass of `KindActiveModelValidationKindIsTest::Bara`, must be the class or a subclass of `KindActiveModelValidationKindIsTest::Barb`'],
+        ['must be the class or a subclass of `KindValidatorKindIsTest::Bara`, must be the class or a subclass of `KindValidatorKindIsTest::Barb`'],
         bar_model1.errors[:bar]
       )
 
@@ -130,7 +130,7 @@ if ENV['ACTIVEMODEL_VERSION']
 
       refute_predicate(bar_model2, :valid?)
       assert_equal(
-        ['must be the class or a subclass of `KindActiveModelValidationKindIsTest::Bara`, must be the class or a subclass of `KindActiveModelValidationKindIsTest::Barb`'],
+        ['must be the class or a subclass of `KindValidatorKindIsTest::Bara`, must be the class or a subclass of `KindValidatorKindIsTest::Barb`'],
         bar_model2.errors[:bar]
       )
     end
