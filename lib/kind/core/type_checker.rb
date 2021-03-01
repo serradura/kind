@@ -73,8 +73,8 @@ module Kind
     include TypeChecker
 
     ResolveKindName = ->(kind, opt) do
-      name = Try.(opt, :[], :name)
-      name || Try.(kind, :name)
+      name = Try.call!(opt, :[], :name)
+      name || Try.call!(kind, :name)
     end
 
     attr_reader :kind, :name
