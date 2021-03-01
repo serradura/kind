@@ -4,6 +4,8 @@ module Kind
   class UnionType
     Interface = Kind::RespondTo[:name, :===]
 
+    singleton_class.send(:alias_method, :[], :new)
+
     def initialize(kind)
       @kinds = Array(kind)
       @inspect = "(#{@kinds.map(&:name).join(' | ')})"

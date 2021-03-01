@@ -55,7 +55,7 @@ module Kind
     alias optional maybe
 
     def |(another_kind)
-      UnionType.new(self) | another_kind
+      UnionType[self] | another_kind
     end
 
     private

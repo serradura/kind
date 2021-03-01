@@ -15,7 +15,7 @@ module Kind
     end
 
     def |(another_kind)
-      UnionType.new(self) | another_kind
+      UnionType[self] | another_kind
     end
 
     def ===(value)
