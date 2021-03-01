@@ -5,9 +5,9 @@ module Kind
     extend self
 
     def call(object)
-      return object.blank? ? nil : object if object.respond_to?(:blank?)
+      return if KIND.null?(object)
 
-      return object if TrueClass === object
+      return object.blank? ? nil : object if object.respond_to?(:blank?)
 
       return blank_str?(object) ? nil : object if String === object
 
