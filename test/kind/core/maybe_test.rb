@@ -786,4 +786,38 @@ class Kind::MaybeTest < Minitest::Test
       '"foo?" expected to be a kind of Symbol'
     ) { Kind::Maybe[1].reject('foo?') }
   end
+
+  def test_the_on_method
+    assert_instance_of(
+      ZeroDivisionError,
+      Kind::Maybe[0].then{ |n| 2 / n }.on do |result|
+        result.none { |value| value}
+        result.some { raise }
+      end
+    )
+
+    assert_equal(
+      0,
+      Kind::Maybe[''].then(:strip).presence.on do |result|
+        result.none { 0 }
+        result.some { 1 }
+      end
+    )
+
+    assert_equal(
+      'A',
+      Kind::Maybe[' a '].then(:strip).presence.on do |result|
+        result.some { |value| value.upcase  }
+        result.none { 0 }
+      end
+    )
+
+    assert_equal(
+      1,
+      Kind::Maybe[' a  '].then(:strip).presence.on do |result|
+        result.some { 1 }
+        result.none { 0 }
+      end
+    )
+  end
 end

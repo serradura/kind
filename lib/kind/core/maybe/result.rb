@@ -3,6 +3,8 @@
 module Kind
   module Maybe
     class Result
+      require 'kind/core/maybe/result/wrapper'
+
       attr_reader :value
 
       Value = ->(arg) { arg.kind_of?(Maybe::Result) ? arg.value : arg } # :nodoc:
@@ -48,6 +50,14 @@ module Kind
 
       def presence
         raise NotImplementedError
+      end
+
+      def on
+        result = Wrapper.new(self)
+
+        yield(result)
+
+        result.output
       end
     end
   end

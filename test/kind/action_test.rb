@@ -340,12 +340,10 @@ class KindActionTest < Minitest::Test
     end
 
     def update(params)
-      Kind::Maybe[params[:name]]
-        .then(:strip)
-        .presence
-        .then { |name| @name = name }
-        .then { true }
-        .value_or(false)
+      Kind::Maybe[params[:name]].then(:strip).presence.on do |result|
+        result.none { false }
+        result.some { |name| @name = name and true }
+      end
     end
 
     def errors
