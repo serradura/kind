@@ -13,7 +13,7 @@ class KindFunctionTest < Minitest::Test
     private
 
       def number(value)
-        Kind::Numeric.or(0, value)
+        value.kind_of?(Numeric) ? value : 0
       end
 
     require_function_contract!
@@ -57,7 +57,7 @@ class KindFunctionTest < Minitest::Test
     extend Kind::Function
 
     def call(*args)
-      args.map!(&Kind::Numeric.or(0))
+      args.map! { |value| value.kind_of?(Numeric) ? value : 0 }
       args.reduce(:+)
     end
 

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'kind'
+require 'kind/basic'
 
 module Kind
   module Result
@@ -10,9 +10,9 @@ module Kind
     require 'kind/result/success'
 
     def self.build(result, arg1, arg2, default_type:) # :nodoc:
-      type = UNDEFINED == arg2 ? default_type : Kind::Symbol[arg1]
+      type = UNDEFINED == arg2 ? default_type : KIND.of!(::Symbol, arg1)
 
-      ARGS_ERROR.wrong_number!(given: 0, expected: '1 or 2') if UNDEFINED == arg1
+      Error.wrong_number_of_args!(given: 0, expected: '1 or 2') if UNDEFINED == arg1
 
       value = UNDEFINED == arg2 ? arg1 : arg2
 

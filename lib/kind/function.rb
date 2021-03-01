@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'kind'
+require 'kind/basic'
 
 module Kind
   module Function
@@ -17,7 +17,9 @@ module Kind
     end
 
     def self.extended(base)
-      Kind::Module[base].extend(base)
+      KIND.error!('Module', base) unless Kind.of_module?(base)
+
+      base.extend(base)
     end
 
     def require_function_contract!

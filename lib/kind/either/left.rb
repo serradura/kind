@@ -7,7 +7,7 @@ module Kind
     end
 
     def value_or(default = UNDEFINED, &block)
-      ARGS_ERROR.invalid_default! if UNDEFINED == default && !block
+      Error.invalid_default_arg! if UNDEFINED == default && !block
 
       UNDEFINED != default ? default : block.call
     end

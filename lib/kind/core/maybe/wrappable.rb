@@ -17,7 +17,7 @@ module Kind
         else
           return new(arg) if UNDEFINED != arg
 
-          ARGS_ERROR.wrong_number!(given: 0, expected: 1)
+          Error.wrong_number_of_args!(given: 0, expected: 1)
         end
       end
 

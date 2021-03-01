@@ -1,12 +1,9 @@
 # frozen_string_literal: true
 
 module Kind
-  class Result::Wrapper
-    def initialize(result)
-      @result = result
-      @output = UNDEFINED
-    end
+  require 'kind/basic/monad_wrapper'
 
+  class Result::Wrapper < MonadWrapper
     def failure(*types)
       return if @result.success? || output?
 
@@ -17,14 +14,6 @@ module Kind
       return if @result.failure? || output?
 
       @output = yield(@result.value) if result_type?(types)
-    end
-
-    def output?
-      UNDEFINED != @output
-    end
-
-    def output
-      @output if output?
     end
 
     private

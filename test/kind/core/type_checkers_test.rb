@@ -343,4 +343,22 @@ class Kind::TypeCheckersTest < Minitest::Test
     assert_predicate(Kind::Set.value_or_empty(1), :empty?)
     assert_predicate(Kind::Set.value_or_empty(1), :frozen?)
   end
+
+  def test_Kind_Of
+    kind_symbol1 = Kind::Of(Symbol)
+
+    assert_instance_of(Kind::TypeChecker::Object, kind_symbol1)
+    assert_equal('Symbol', kind_symbol1.name)
+
+    # -
+
+    kind_symbol2 = Kind::Of(Symbol, name: 'MySymbol')
+
+    assert_instance_of(Kind::TypeChecker::Object, kind_symbol2)
+    assert_equal('MySymbol', kind_symbol2.name)
+
+    # -
+
+    refute_same(kind_symbol1, kind_symbol2)
+  end
 end

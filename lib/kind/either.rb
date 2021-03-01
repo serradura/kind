@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'kind'
+require 'kind/basic'
 
 module Kind
   module Either

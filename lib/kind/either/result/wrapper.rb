@@ -1,12 +1,9 @@
 # frozen_string_literal: true
 
 module Kind
-  class Either::Result::Wrapper
-    def initialize(result)
-      @result = result
-      @output = UNDEFINED
-    end
+  require 'kind/basic/monad_wrapper'
 
+  class Either::Result::Wrapper < MonadWrapper
     def left
       return if @result.right? || output?
 
@@ -17,14 +14,6 @@ module Kind
       return if @result.left? || output?
 
       @output = yield(@result.value)
-    end
-
-    def output?
-      UNDEFINED != @output
-    end
-
-    def output
-      @output if output?
     end
   end
 end

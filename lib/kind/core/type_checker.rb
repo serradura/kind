@@ -92,4 +92,9 @@ module Kind
 
     private_constant :ResolveKindName
   end
+
+  # Kind::Ok()
+  def self.Of(kind, opt = Empty::HASH)
+    TypeChecker::Object.new(kind, opt)
+  end
 end
