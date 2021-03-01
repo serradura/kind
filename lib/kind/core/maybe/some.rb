@@ -76,7 +76,7 @@ module Kind
       end
 
       def dig(*keys)
-        resolve(Dig.(value, keys))
+        resolve(Dig.call!(value, keys))
       end
 
       def presence

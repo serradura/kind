@@ -4,9 +4,7 @@ module Kind
   module Dig
     extend self
 
-    def call(data, keys)
-      return unless keys.kind_of?(::Array)
-
+    def call!(data, keys = Empty::ARRAY) # :nodoc
       keys.reduce(data) do |memo, key|
         value = get(memo, key)
 
@@ -16,8 +14,22 @@ module Kind
       end
     end
 
+    def call(data, *input)
+      args = input.size == 1 && input[0].kind_of?(::Array) ? input[0] : input
+
+      result = call!(data, args)
+
+      return result unless block_given?
+
+      yield(result) unless KIND.null?(result)
+    end
+
+    def presence(*args, &block)
+      Presence.(call(*args, &block))
+    end
+
     def [](*keys)
-      ->(data) { call(data, keys) }
+      ->(data) { call!(data, keys) }
     end
 
     private
