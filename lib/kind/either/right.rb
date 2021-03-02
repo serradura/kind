@@ -11,14 +11,23 @@ module Kind
     end
 
     def map(&fn)
+      map!(&fn)
+    rescue Kind::Monad::WrongOutput => e
+      raise e
+    rescue StandardError => e
+      Either::Left[e]
+    end
+
+    def map!(&fn)
       monad = fn.call(@value)
 
       return monad if Either::Monad === monad
 
-      KIND.error!('Kind::Right | Kind::Left', monad)
+      raise Kind::Monad::WrongOutput.new('Kind::Right | Kind::Left', monad)
     end
 
     alias_method :then, :map
+    alias_method :then!, :map!
 
     def inspect
       '#<%s value=%s>' % ['Kind::Right', value]

@@ -28,22 +28,32 @@ class Kind::EitherLeftTest < Minitest::Test
     ) { either.value_or }
 
     assert_same(either, either.on_left {})
-    assert_same(either, either.on_right { raise RuntimeError })
+    assert_same(either, either.on_right { raise })
 
     count = 0
 
     either
       .on_left { |n| count += n }
-      .on_right { raise RuntimeError }
+      .on_right { raise }
       .on_left { |n| count += n }
+      .on_left(Float) { raise }
+      .on_left(Numeric) { |n| count += n }
 
-    assert_equal(2, count)
+    assert_equal(3, count)
 
     assert_nil(either.on {})
     assert_nil(either.on { |result| result.right {} })
+
     assert_equal(0, either.on do |result|
       result.left { |value| value - 1 }
-      result.right { |value| value + 1 }
+      result.right { |value| raise }
+    end)
+
+    assert_equal(0, either.on do |result|
+      result.left(Float) { raise }
+      result.right(Numeric) { raise }
+      result.left(Numeric) { |value| value - 1 }
+      result.right { |value| raise }
     end)
   end
 

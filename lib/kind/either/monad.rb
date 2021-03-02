@@ -30,24 +30,28 @@ module Kind
 
     alias_method :then, :map
 
-    def on_right
-      yield(value) if right?
-
-      self
-    end
-
-    def on_left
-      yield(value) if left?
-
-      self
-    end
-
     def on
       monad = Wrapper.new(self)
 
       yield(monad)
 
       monad.output
+    end
+
+    def on_right(matcher = UNDEFINED)
+      yield(value) if right? && either?(matcher)
+
+      self
+    end
+
+    def on_left(matcher = UNDEFINED)
+      yield(value) if left? && either?(matcher)
+
+      self
+    end
+
+    def either?(matcher)
+      UNDEFINED == matcher || matcher === value
     end
 
     def ===(monad)

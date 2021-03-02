@@ -16,10 +16,10 @@ module Kind
   end
 
   def self.Left(value)
-    Either::Left.new(value)
+    Either::Left[value]
   end
 
   def self.Right(value)
-    Either::Right.new(value)
+    Either::Right[value]
   end
 end
