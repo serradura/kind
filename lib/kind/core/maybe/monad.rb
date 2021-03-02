@@ -59,6 +59,22 @@ module Kind
 
         monad.output
       end
+
+      def on_some(matcher = UNDEFINED)
+        yield(value) if some? && maybe?(matcher)
+
+        self
+      end
+
+      def on_none(matcher = UNDEFINED)
+        yield(value) if none? && maybe?(matcher)
+
+        self
+      end
+
+      def maybe?(matcher)
+        UNDEFINED == matcher || matcher === value
+      end
     end
   end
 end

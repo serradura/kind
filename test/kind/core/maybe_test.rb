@@ -796,11 +796,20 @@ class Kind::MaybeTest < Minitest::Test
       end
     )
 
+    assert_instance_of(
+      ZeroDivisionError,
+      Kind::Maybe[0].then{ |n| 2 / n }.on do |result|
+        result.none(TypeError) { raise}
+        result.none(ZeroDivisionError) { |value| value}
+        result.some { raise }
+      end
+    )
+
     assert_equal(
       0,
       Kind::Maybe[''].then(:strip).presence.on do |result|
         result.none { 0 }
-        result.some { 1 }
+        result.some { raise }
       end
     )
 
@@ -808,7 +817,17 @@ class Kind::MaybeTest < Minitest::Test
       'A',
       Kind::Maybe[' a '].then(:strip).presence.on do |result|
         result.some { |value| value.upcase  }
-        result.none { 0 }
+        result.none { raise }
+      end
+    )
+
+    assert_equal(
+      'A',
+      Kind::Maybe[' a '].then(:strip).presence.on do |result|
+        result.some(Numeric) { raise  }
+        result.some(String) { |value| value.upcase  }
+        result.some { raise }
+        result.none { raise }
       end
     )
 
@@ -816,8 +835,42 @@ class Kind::MaybeTest < Minitest::Test
       1,
       Kind::Maybe[' a  '].then(:strip).presence.on do |result|
         result.some { 1 }
-        result.none { 0 }
+        result.none { raise }
       end
     )
+  end
+
+  def test_the_on_some_method
+    incr = 0
+
+    Kind::Maybe[1]
+      .on_none { incr += 1 }
+      .on_some { incr += 1 }
+      .on_some(String) { incr += 1 }
+      .on_some(Numeric) { incr += 1 }
+
+    assert_equal(2, incr)
+  end
+
+  def test_the_on_none_method
+    incr = 0
+
+    Kind::Maybe[nil]
+      .on_none { incr += 1 }
+      .on_some { incr += 1 }
+      .on_some(String) { incr += 1 }
+      .on_some(Numeric) { incr += 1 }
+      .on_none(nil) { incr += 1 }
+
+    Kind::Maybe[TypeError.new]
+      .on_none { incr += 1 }
+      .on_some { incr += 1 }
+      .on_some(String) { incr += 1 }
+      .on_some(Numeric) { incr += 1 }
+      .on_none(nil) { incr += 1 }
+      .on_none(ZeroDivisionError) { incr += 1 }
+      .on_none(TypeError) { incr += 1 }
+
+    assert_equal(4, incr)
   end
 end
