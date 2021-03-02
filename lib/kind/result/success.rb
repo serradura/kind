@@ -13,17 +13,26 @@ module Kind
     end
 
     def map(&fn)
+      map!(&fn)
+    rescue Kind::Monad::WrongOutput => e
+      raise e
+    rescue StandardError => e
+      Result::Failure[:exception, e]
+    end
+
+    def map!(&fn)
       monad = fn.call(@value)
 
       return monad if Result::Monad === monad
 
-      KIND.error!('Kind::Success | Kind::Failure', monad)
+      raise Kind::Monad::WrongOutput.new('Kind::Success | Kind::Failure', monad)
     end
 
     alias_method :then, :map
+    alias_method :then!, :map!
 
     def inspect
-      '#<%s value=%s>' % ['Kind::Success', value]
+      '#<%s type=%p value=%p>' % ['Kind::Success', type, value]
     end
   end
 end

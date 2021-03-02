@@ -1,25 +1,19 @@
 # frozen_string_literal: true
 
 module Kind
-  require 'kind/basic/monad_wrapper'
+  require 'kind/basic/monad'
 
-  class Result::Monad::Wrapper < MonadWrapper
-    def failure(*types)
+  class Result::Monad::Wrapper < Kind::Monad::Wrapper
+    def failure(types = Undefined, matcher = Undefined)
       return if @monad.success? || output?
 
-      @output = yield(@monad.value) if result_type?(types)
+      @output = yield(@monad.value) if @monad.result?(types, matcher)
     end
 
-    def success(*types)
+    def success(types = Undefined, matcher = Undefined)
       return if @monad.failure? || output?
 
-      @output = yield(@monad.value) if result_type?(types)
+      @output = yield(@monad.value) if @monad.result?(types, matcher)
     end
-
-    private
-
-      def result_type?(types)
-        types.empty? || types.include?(@monad.type)
-      end
   end
 end

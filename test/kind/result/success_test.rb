@@ -13,7 +13,7 @@ class Kind::ResultSuccessTest < Minitest::Test
 
     assert_equal(2, result.value)
 
-    assert_equal('#<Kind::Success value=2>', result.inspect)
+    assert_equal('#<Kind::Success type=:ok value=2>', result.inspect)
 
     refute result.failed?
     refute result.failure?
@@ -91,12 +91,18 @@ class Kind::ResultSuccessTest < Minitest::Test
 
     result
       .on_success { |n| count += n }
-      .on_failure { raise RuntimeError }
+      .on_failure { raise }
       .on_success(:ok) { |n| count += n }
-      .on_success(:valid, :ok) { |n| count += n }
-      .on_success { |n| count += n }
+      .on_success([:valid, :ok]) { |n| count += n }
+      .on_success(Float) { raise }
+      .on_success(String) { raise }
+      .on_success(Numeric) { |n| count += n }
+      .on_success(:ok, Float) { raise }
+      .on_success(:ok, Numeric) { |n| count += n }
+      .on_success([:valid, :ok], String) { raise }
+      .on_success([:valid, :ok], Numeric) { |n| count += n }
 
-    assert_equal(8, count)
+    assert_equal(12, count)
 
     # --
 
@@ -114,7 +120,27 @@ class Kind::ResultSuccessTest < Minitest::Test
     end)
 
     assert_equal(3, result.on do |_|
-      _.success(:valid, :ok) { |value| value + 1 }
+      _.success(:ok, Float) { |value| value + 1 }
+      _.success(:ok, Numeric) { |value| value + 1 }
+      _.failure { |value| value - 1 }
+    end)
+
+    assert_equal(3, result.on do |_|
+      _.success(Float)   { |value| value + 3 }
+      _.failure(Numeric) { |value| value - 2 }
+      _.success(Numeric) { |value| value + 1 }
+      _.failure { |value| value - 1 }
+    end)
+
+    assert_equal(3, result.on do |_|
+      _.success([:valid, :ok]) { |value| value + 1 }
+      _.failure { |value| value - 1 }
+    end)
+
+    assert_equal(3, result.on do |_|
+      _.success([:valid, :ok], Float) { |value| value + 2 }
+      _.failure([:valid, :ok], Numeric) { |value| value + 3 }
+      _.success([:valid, :ok], Numeric) { |value| value + 1 }
       _.failure { |value| value - 1 }
     end)
 
@@ -147,5 +173,53 @@ class Kind::ResultSuccessTest < Minitest::Test
     end
 
     assert_equal(2, count)
+
+    incr = 0
+
+    case 1
+    when Kind::Success(:ok)     then incr += 1
+    when Kind::Success(Numeric) then incr += 1
+    when Kind::Failure(:error)  then incr += 1
+    when Kind::Failure(Numeric) then incr += 1
+    end
+
+    case Object.new.tap { |obj| obj.send(:extend, Kind::Result::Abstract) }
+    when Kind::Success(:ok)     then incr += 1
+    when Kind::Success(Numeric) then incr += 1
+    when Kind::Failure(:error)  then incr += 1
+    when Kind::Failure(Numeric) then incr += 1
+    end
+
+    assert_equal(0, incr)
+  end
+
+  def test_error_handling
+    [
+      Kind::Success(0).map { |n| Kind::Success(2 / n) },
+      Kind::Success(0).then { |n| Kind::Success(2 / n) }
+    ].each do |result|
+      assert result.type == :exception
+      assert ZeroDivisionError === result.value
+    end
+
+    assert_raises_with_message(
+      Kind::Monad::WrongOutput,
+      '2 expected to be a kind of Kind::Success | Kind::Failure'
+    ) { Kind::Success(0).map { |n| n + 2 } }
+
+    assert_raises_with_message(
+      Kind::Monad::WrongOutput,
+      '3 expected to be a kind of Kind::Success | Kind::Failure'
+    ) { Kind::Success(0).then { |n| n + 3 } }
+
+    assert_raises_with_message(
+      ZeroDivisionError,
+      'divided by 0'
+    ) { Kind::Success(0).map! { |n| Kind::Success(2 / n) } }
+
+    assert_raises_with_message(
+      ZeroDivisionError,
+      'divided by 0'
+    ) { Kind::Success(0).then! { |n| Kind::Success(2 / n) } }
   end
 end

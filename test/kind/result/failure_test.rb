@@ -8,7 +8,7 @@ class Kind::ResultFailureTest < Minitest::Test
 
     assert_equal(1, result.value)
 
-    assert_equal('#<Kind::Failure value=1>', result.inspect)
+    assert_equal('#<Kind::Failure type=:error value=1>', result.inspect)
 
     assert result.failed?
     assert result.failure?
@@ -74,12 +74,16 @@ class Kind::ResultFailureTest < Minitest::Test
 
     result
       .on_failure { |n| count += n }
-      .on_success { raise RuntimeError }
+      .on_success { raise }
       .on_failure(:error) { |n| count += n }
-      .on_failure(:invalid, :error) { |n| count += n }
-      .on_failure { |n| count += n }
+      .on_failure([:invalid, :error]) { |n| count += n }
+      .on_failure(Float) { raise }
+      .on_failure(String) { raise }
+      .on_failure(Numeric) { |n| count += n }
+      .on_failure([:invalid, :error], Float) { raise }
+      .on_failure([:invalid, :error], Numeric) { |n| count += n }
 
-    assert_equal(4, count)
+    assert_equal(5, count)
 
     # --
 
@@ -97,7 +101,21 @@ class Kind::ResultFailureTest < Minitest::Test
     end)
 
     assert_equal(0, result.on do |_|
-      _.failure(:invalid, :error) { |value| value - 1 }
+      _.success([:invalid, :error]) { |value| value - 2 }
+      _.failure([:invalid, :error]) { |value| value - 1 }
+      _.success { |value| value + 1 }
+    end)
+
+    assert_equal(0, result.on do |_|
+      _.failure(String) { |value| value - 2 }
+      _.success(Numeric) { |value| value - 3 }
+      _.failure(Numeric) { |value| value - 1 }
+      _.success { |value| value + 1 }
+    end)
+
+    assert_equal(0, result.on do |_|
+      _.failure([:invalid, :error], String) { |value| value - 1 }
+      _.failure([:invalid, :error], Numeric) { |value| value - 1 }
       _.success { |value| value + 1 }
     end)
 

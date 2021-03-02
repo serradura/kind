@@ -18,10 +18,12 @@ module Kind
       self
     end
 
+    alias_method :map!, :map
     alias_method :then, :map
+    alias_method :then!, :map
 
     def inspect
-      '#<%s value=%s>' % ['Kind::Failure', value]
+      '#<%s type=%p value=%p>' % ['Kind::Failure', type, value]
     end
   end
 end

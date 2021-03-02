@@ -2,6 +2,8 @@
 
 module Kind
   class Result::Monad
+    include Result::Abstract
+
     require 'kind/result/monad/wrapper'
 
     attr_reader :type, :value
@@ -23,22 +25,6 @@ module Kind
       @value = value
     end
 
-    def failure?
-      false
-    end
-
-    def failed?
-      failure?
-    end
-
-    def success?
-      false
-    end
-
-    def succeeded?
-      success?
-    end
-
     def value_or(_method_name = UNDEFINED, &block)
       raise NotImplementedError
     end
@@ -47,19 +33,9 @@ module Kind
       raise NotImplementedError
     end
 
+    alias_method :map!, :map
     alias_method :then, :map
-
-    def on_success(*types)
-      yield(value) if success? && hook_type?(types)
-
-      self
-    end
-
-    def on_failure(*types)
-      yield(value) if failure? && hook_type?(types)
-
-      self
-    end
+    alias_method :then!, :map
 
     def on
       monad = Wrapper.new(self)
@@ -69,18 +45,23 @@ module Kind
       monad.output
     end
 
-    def to_ary
-      [type, value]
+    def on_success(types = Undefined, matcher = Undefined)
+      yield(value) if success? && result?(types, matcher)
+
+      self
     end
 
-    def ===(monad)
-      self.class === monad && self.type == monad.type && self.value === monad.value
+    def on_failure(types = Undefined, matcher = Undefined)
+      yield(value) if failure? && result?(types, matcher)
+
+      self
     end
 
-    private
+    def ===(m)
+      return false unless Result::Abstract === m
+      return false unless (self.success? && m.success?) || (self.failure? && m.failure?)
 
-      def hook_type?(types)
-        types.empty? || types.include?(type)
-      end
+      self.type == m.type && self.value === m.value
+    end
   end
 end

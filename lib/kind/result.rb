@@ -4,6 +4,7 @@ require 'kind/basic'
 
 module Kind
   module Result
+    require 'kind/result/abstract'
     require 'kind/result/monad'
     require 'kind/result/failure'
     require 'kind/result/success'
