@@ -46,4 +46,22 @@ class Kind::EitherLeftTest < Minitest::Test
       result.right { |value| value + 1 }
     end)
   end
+
+  def test_the_case_equality
+    success = Kind::Left(0)
+
+    count = 0
+
+    case success
+    when Kind::Left(2)       then count -= 1
+    when Kind::Left(Numeric) then count += 1
+    end
+
+    case success
+    when Kind::Left(0)       then count += 1
+    when Kind::Left(Numeric) then count -= 1
+    end
+
+    assert_equal(2, count)
+  end
 end

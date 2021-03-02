@@ -1,12 +1,12 @@
 require 'test_helper'
 
-class Kind::EitherResultTest < Minitest::Test
+class Kind::EitherMonadTest < Minitest::Test
   require 'kind/either'
 
-  def test_the_either_result
+  def test_the_either_monad
     object = Object.new
 
-    either = Kind::Either::Result.new(object)
+    either = Kind::Either::Monad[object]
 
     assert_same(object, either.value)
 

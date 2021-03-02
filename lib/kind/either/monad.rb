@@ -1,10 +1,12 @@
 # frozen_string_literal: true
 
 module Kind
-  class Either::Result
-    require 'kind/either/result/wrapper'
+  class Either::Monad
+    require 'kind/either/monad/wrapper'
 
     attr_reader :value
+
+    singleton_class.send(:alias_method, :[], :new)
 
     def initialize(value)
       @value = value
@@ -41,11 +43,15 @@ module Kind
     end
 
     def on
-      result = Wrapper.new(self)
+      monad = Wrapper.new(self)
 
-      yield(result)
+      yield(monad)
 
-      result.output
+      monad.output
+    end
+
+    def ===(monad)
+      self.class === monad && self.value === monad.value
     end
   end
 end

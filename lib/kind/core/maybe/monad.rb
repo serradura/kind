@@ -2,15 +2,15 @@
 
 module Kind
   module Maybe
-    class Result
-      require 'kind/core/maybe/result/wrapper'
+    class Monad
+      require 'kind/core/maybe/monad/wrapper'
 
       attr_reader :value
 
-      Value = ->(arg) { arg.kind_of?(Maybe::Result) ? arg.value : arg } # :nodoc:
+      Value = ->(arg) { arg.kind_of?(Maybe::Monad) ? arg.value : arg } # :nodoc:
 
-      def initialize(arg)
-        @value = Value.(arg)
+      def initialize(value)
+        @value = Value[value]
       end
 
       def value_or(_method_name = UNDEFINED, &block)
@@ -53,11 +53,11 @@ module Kind
       end
 
       def on
-        result = Wrapper.new(self)
+        monad = Wrapper.new(self)
 
-        yield(result)
+        yield(monad)
 
-        result.output
+        monad.output
       end
     end
   end

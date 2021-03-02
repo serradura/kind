@@ -2,8 +2,8 @@
 
 module Kind
   class MonadWrapper
-    def initialize(result)
-      @result = result
+    def initialize(monad)
+      @monad = monad
       @output = UNDEFINED
     end
 

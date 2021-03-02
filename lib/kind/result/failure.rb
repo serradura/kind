@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 module Kind
-  class Result::Failure < Result::Object
+  class Result::Failure < Result::Monad
+    DEFAULT_TYPE = :error
+
     def failure?
       true
     end

@@ -1,12 +1,12 @@
 require 'test_helper'
 
-class Kind::ResultObjectTest < Minitest::Test
+class Kind::ResultMonadTest < Minitest::Test
   require 'kind/result'
 
-  def test_the_result_object
+  def test_the_result_monad
     object = Object.new
 
-    result = Kind::Result::Object.new(:type, object)
+    result = Kind::Result::Monad[:type, object]
 
     assert_same(object, result.value)
     assert_equal(:type, result.type)

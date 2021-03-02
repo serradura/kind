@@ -112,4 +112,23 @@ class Kind::ResultFailureTest < Minitest::Test
       _.failure(:bar) { |value| value - 1 }
     end)
   end
+
+  def test_the_case_equality
+    success = Kind::Failure(:invalid, 0)
+
+    count = 0
+
+    case success
+    when Kind::Failure(Numeric)           then count -= 1
+    when Kind::Failure(:invalid, 2)       then count -= 1
+    when Kind::Failure(:invalid, Numeric) then count += 1
+    end
+
+    case success
+    when Kind::Failure(Numeric)     then count -= 1
+    when Kind::Failure(:invalid, 0) then count += 1
+    end
+
+    assert_equal(2, count)
+  end
 end

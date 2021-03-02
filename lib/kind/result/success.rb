@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 module Kind
-  class Result::Success < Result::Object
+  class Result::Success < Result::Monad
+    DEFAULT_TYPE = :ok
+
     def success?
       true
     end
@@ -11,11 +13,11 @@ module Kind
     end
 
     def map(&fn)
-      result = fn.call(@value)
+      monad = fn.call(@value)
 
-      return result if Result::Object === result
+      return monad if Result::Monad === monad
 
-      KIND.error!('Kind::Success | Kind::Failure', result)
+      KIND.error!('Kind::Success | Kind::Failure', monad)
     end
 
     alias_method :then, :map

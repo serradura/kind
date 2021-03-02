@@ -22,7 +22,7 @@ module Kind
       'def call(%s)',
       '  result = call!(%s)',
       '',
-      '  return result if Kind::Result::Object === result',
+      '  return result if Kind::Result::Monad === result',
       '',
       '  raise Kind::Error, "#{self.class.name}#call! must return a Kind::Success or Kind::Failure"',
       'end'

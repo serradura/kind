@@ -3,6 +3,11 @@ require 'test_helper'
 class Kind::ResultSuccessTest < Minitest::Test
   require 'kind/result'
 
+  def test_the_kind_result_constructor
+    assert Kind::Result::Success === Kind::Result[1]
+    assert Kind::Result::Success === Kind::Result.new(1)
+  end
+
   def test_the_result_success
     result = Kind::Success(2)
 
@@ -123,5 +128,24 @@ class Kind::ResultSuccessTest < Minitest::Test
       _.success(:bar) { |value| value + 2 }
       _.success(:foo) { |value| value + 1 }
     end)
+  end
+
+  def test_the_case_equality
+    success = Kind::Success(:valid, 1)
+
+    count = 0
+
+    case success
+    when Kind::Success(Numeric)         then count -= 1
+    when Kind::Success(:valid, 2)       then count -= 1
+    when Kind::Success(:valid, Numeric) then count += 1
+    end
+
+    case success
+    when Kind::Success(Numeric)   then count -= 1
+    when Kind::Success(:valid, 1) then count += 1
+    end
+
+    assert_equal(2, count)
   end
 end

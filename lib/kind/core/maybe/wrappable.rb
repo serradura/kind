@@ -12,7 +12,7 @@ module Kind
 
             input.kind_of?(Maybe::None) ? input : new(yield(input))
           rescue StandardError => exception
-            Maybe.__none__(exception)
+            Maybe::None.new(exception)
           end
         else
           return new(arg) if UNDEFINED != arg

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Kind
-  class Either::Right < Either::Result
+  class Either::Right < Either::Monad
     def right?
       true
     end
@@ -11,11 +11,11 @@ module Kind
     end
 
     def map(&fn)
-      result = fn.call(@value)
+      monad = fn.call(@value)
 
-      return result if Either::Result === result
+      return monad if Either::Monad === monad
 
-      KIND.error!('Kind::Right | Kind::Left', result)
+      KIND.error!('Kind::Right | Kind::Left', monad)
     end
 
     alias_method :then, :map

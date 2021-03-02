@@ -10,7 +10,7 @@ class Kind::MaybeTest < Minitest::Test
   def test_maybe_result
     object = Object.new
 
-    maybe_result = Kind::Maybe::Result.new(object)
+    maybe_result = Kind::Maybe::Monad.new(object)
 
     assert_same(object, maybe_result.value)
 
@@ -194,8 +194,8 @@ class Kind::MaybeTest < Minitest::Test
 
     assert_same(optional2, optional3)
 
-    assert_equal(Kind::Undefined, optional2.value)
-    assert_equal(Kind::Undefined, optional3.value)
+    assert_nil(optional2.value)
+    assert_nil(optional3.value)
 
     assert_predicate(optional2, :none?)
     assert_predicate(optional3, :none?)

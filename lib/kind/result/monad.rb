@@ -1,8 +1,22 @@
 # frozen_string_literal: true
 
 module Kind
-  class Result::Object
+  class Result::Monad
+    require 'kind/result/monad/wrapper'
+
     attr_reader :type, :value
+
+    def self.[](arg1 = UNDEFINED, arg2 = UNDEFINED) # :nodoc:
+      type = UNDEFINED == arg2 ? self::DEFAULT_TYPE : KIND.of!(::Symbol, arg1)
+
+      Error.wrong_number_of_args!(given: 0, expected: '1 or 2') if UNDEFINED == arg1
+
+      value = UNDEFINED == arg2 ? arg1 : arg2
+
+      new(type, value)
+    end
+
+    private_class_method :new
 
     def initialize(type, value)
       @type = type
@@ -48,15 +62,19 @@ module Kind
     end
 
     def on
-      result = Result::Wrapper.new(self)
+      monad = Wrapper.new(self)
 
-      yield(result)
+      yield(monad)
 
-      result.output
+      monad.output
     end
 
     def to_ary
       [type, value]
+    end
+
+    def ===(monad)
+      self.class === monad && self.type == monad.type && self.value === monad.value
     end
 
     private

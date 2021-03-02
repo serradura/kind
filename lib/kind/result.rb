@@ -4,27 +4,22 @@ require 'kind/basic'
 
 module Kind
   module Result
-    require 'kind/result/wrapper'
-    require 'kind/result/object'
+    require 'kind/result/monad'
     require 'kind/result/failure'
     require 'kind/result/success'
 
-    def self.build(result, arg1, arg2, default_type:) # :nodoc:
-      type = UNDEFINED == arg2 ? default_type : KIND.of!(::Symbol, arg1)
-
-      Error.wrong_number_of_args!(given: 0, expected: '1 or 2') if UNDEFINED == arg1
-
-      value = UNDEFINED == arg2 ? arg1 : arg2
-
-      result.new(type, value)
+    def self.new(value)
+      Success[value]
     end
+
+    singleton_class.send(:alias_method, :[], :new)
   end
 
   def self.Failure(arg1 = UNDEFINED, arg2 = UNDEFINED)
-    Result.build(Result::Failure, arg1, arg2, default_type: :error)
+    Result::Failure[arg1, arg2]
   end
 
   def self.Success(arg1 = UNDEFINED, arg2 = UNDEFINED)
-    Result.build(Result::Success, arg1, arg2, default_type: :ok)
+    Result::Success[arg1, arg2]
   end
 end

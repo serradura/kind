@@ -2,7 +2,7 @@
 
 module Kind
   module Maybe
-    class None < Result
+    class None < Monad
       def value_or(default = UNDEFINED, &block)
         Error.invalid_default_arg! if UNDEFINED == default && !block
 
@@ -43,17 +43,6 @@ module Kind
       end
     end
 
-    NONE_WITH_NIL_VALUE = None.new(nil)
-    NONE_WITH_UNDEFINED_VALUE = None.new(Undefined)
-
-    def self.none
-      NONE_WITH_NIL_VALUE
-    end
-
-    def self.__none__(value) # :nodoc:
-      None.new(value)
-    end
-
-    private_constant :NONE_WITH_NIL_VALUE, :NONE_WITH_UNDEFINED_VALUE
+    NONE_INSTANCE = None.new(nil)
   end
 end

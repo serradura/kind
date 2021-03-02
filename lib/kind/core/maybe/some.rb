@@ -2,8 +2,16 @@
 
 module Kind
   module Maybe
-    class Some < Result
+    class Some < Monad
       KindSymbol = ->(value) { KIND.of!(::Symbol, value) }
+
+      VALUE_CANT_BE_NONE = "value can't be nil or Kind::Undefined".freeze
+
+      def self.[](value)
+        return new(value) if !KIND.null?(value)
+
+        raise ArgumentError, VALUE_CANT_BE_NONE
+      end
 
       def value_or(_default = UNDEFINED, &block)
         @value
@@ -21,7 +29,7 @@ module Kind
 
       def map!(method_name = UNDEFINED, &fn)
         result = if UNDEFINED != method_name
-          return NONE_WITH_NIL_VALUE unless @value.respond_to?(KindSymbol[method_name])
+          return NONE_INSTANCE unless @value.respond_to?(KindSymbol[method_name])
 
           @value.public_send(method_name)
         else
@@ -35,28 +43,28 @@ module Kind
 
       def check(method_name = UNDEFINED, &fn)
         result = if UNDEFINED != method_name
-          return NONE_WITH_NIL_VALUE unless @value.respond_to?(KindSymbol[method_name])
+          return NONE_INSTANCE unless @value.respond_to?(KindSymbol[method_name])
 
           @value.public_send(method_name)
         else
           fn.call(@value)
         end
 
-        !result || KIND.null?(result) ? NONE_WITH_NIL_VALUE : self
+        !result || KIND.null?(result) ? NONE_INSTANCE : self
       end
 
       alias_method :accept, :check
 
       def reject(method_name = UNDEFINED, &fn)
         result = if UNDEFINED != method_name
-          return NONE_WITH_NIL_VALUE unless @value.respond_to?(KindSymbol[method_name])
+          return NONE_INSTANCE unless @value.respond_to?(KindSymbol[method_name])
 
           @value.public_send(method_name)
         else
           fn.call(@value)
         end
 
-        result || KIND.null?(result) ? NONE_WITH_NIL_VALUE : self
+        result || KIND.null?(result) ? NONE_INSTANCE : self
       end
 
       def try!(method_name = UNDEFINED, *args, &block)
@@ -72,7 +80,7 @@ module Kind
 
         return __try_method__(method_name, args) if value.respond_to?(method_name)
 
-        NONE_WITH_NIL_VALUE
+        NONE_INSTANCE
       end
 
       def dig(*keys)
@@ -101,24 +109,13 @@ module Kind
 
         def resolve(result)
           return result if Maybe::None === result
-          return None.new(result) if Exception === result
-          return NONE_WITH_NIL_VALUE if result.nil?
-          return NONE_WITH_UNDEFINED_VALUE if Undefined == result
+          return NONE_INSTANCE if KIND.null?(result)
+          return None.new(result) if ::Exception === result
 
           Some.new(result)
         end
 
-      private_constant :KindSymbol
+        private_constant :KindSymbol, :VALUE_CANT_BE_NONE
     end
-
-    VALUE_CANT_BE_NONE = "value can't be nil or Kind::Undefined".freeze
-
-    def self.some(value)
-      return Maybe::Some.new(value) if !KIND.null?(value)
-
-      raise ArgumentError, VALUE_CANT_BE_NONE
-    end
-
-    private_constant :VALUE_CANT_BE_NONE
   end
 end

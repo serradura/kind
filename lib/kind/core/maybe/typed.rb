@@ -5,14 +5,16 @@ module Kind
     class Typed
       include Wrappable
 
+      singleton_class.send(:alias_method, :[], :new)
+
       def initialize(kind)
         @kind = kind
       end
 
       def new(arg)
-        value = Result::Value.(arg)
+        value = Monad::Value[arg]
 
-        @kind === value ? Maybe.some(value) : Maybe.none
+        @kind === value ? Maybe::Some[value] : Maybe::NONE_INSTANCE
       end
 
       alias_method :[], :new
@@ -24,9 +26,9 @@ module Kind
       private
 
         def __call_before_expose_the_arg_in_a_block(arg)
-          value = Result::Value.(arg)
+          value = Monad::Value[arg]
 
-          @kind === value ? value : Maybe.none
+          @kind === value ? value : Maybe::NONE_INSTANCE
         end
     end
   end

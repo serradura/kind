@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Kind
-  class Either::Left < Either::Result
+  class Either::Left < Either::Monad
     def left?
       true
     end

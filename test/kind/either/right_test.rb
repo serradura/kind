@@ -3,6 +3,11 @@ require 'test_helper'
 class Kind::EitherRightTest < Minitest::Test
   require 'kind/either'
 
+  def test_the_either_constructor
+    assert Kind::Either::Right === Kind::Either[1]
+    assert Kind::Either::Right === Kind::Either.new(1)
+  end
+
   def test_the_either_right
     either = Kind::Right(2)
 
@@ -57,5 +62,23 @@ class Kind::EitherRightTest < Minitest::Test
       result.right { |value| value + 1 }
       result.left { |value| value - 1 }
     end)
+  end
+
+  def test_the_case_equality
+    success = Kind::Right(1)
+
+    count = 0
+
+    case success
+    when Kind::Right(2)       then count -= 1
+    when Kind::Right(Numeric) then count += 1
+    end
+
+    case success
+    when Kind::Right(1)       then count += 1
+    when Kind::Right(Numeric) then count -= 1
+    end
+
+    assert_equal(2, count)
   end
 end
