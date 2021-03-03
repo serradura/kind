@@ -203,12 +203,12 @@ class Kind::ResultSuccessTest < Minitest::Test
     end
 
     assert_raises_with_message(
-      Kind::Monad::WrongOutput,
+      Kind::Monad::Error,
       '2 expected to be a kind of Kind::Success | Kind::Failure'
     ) { Kind::Success(0).map { |n| n + 2 } }
 
     assert_raises_with_message(
-      Kind::Monad::WrongOutput,
+      Kind::Monad::Error,
       '3 expected to be a kind of Kind::Success | Kind::Failure'
     ) { Kind::Success(0).then { |n| n + 3 } }
 

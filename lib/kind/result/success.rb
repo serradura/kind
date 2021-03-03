@@ -14,7 +14,7 @@ module Kind
 
     def map(&fn)
       map!(&fn)
-    rescue Kind::Monad::WrongOutput => e
+    rescue Kind::Monad::Error => e
       raise e
     rescue StandardError => e
       Result::Failure[:exception, e]
@@ -25,7 +25,7 @@ module Kind
 
       return monad if Result::Monad === monad
 
-      raise Kind::Monad::WrongOutput.new('Kind::Success | Kind::Failure', monad)
+      raise Kind::Monad::Error.new('Kind::Success | Kind::Failure', monad)
     end
 
     alias_method :then, :map

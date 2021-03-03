@@ -2,7 +2,7 @@
 
 module Kind
   module Monad
-    WrongOutput = ::Class.new(Kind::Error)
+    Error = ::Class.new(Kind::Error)
 
     class Wrapper
       def initialize(monad)
