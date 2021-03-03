@@ -45,21 +45,24 @@ module Kind
     KIND.interface?(method_names, value)
   end
 
-  def respond_to(value, *method_names)
-    method_names.each { |method_name| KIND.respond_to!(method_name, value) }
-
-    value
-  end
-
-  def of_module_or_class(value)
-    KIND.of_module_or_class!(value)
-  end
-
   def of(kind, value, label: nil)
     return value if kind === value
 
     KIND.error!(kind.name, value, label)
   end
+
+  alias_method :of!, :of
+
+  def of_module_or_class(value)
+    KIND.of_module_or_class!(value)
+  end
+
+  def respond_to(value, *method_names)
+    method_names.each { |method_name| KIND.respond_to!(method_name, value) }
+
+    value
+  end
+  alias_method :respond_to!, :respond_to
 
   def value(kind, value, default:)
     KIND.value(kind, value, of(kind, default))
