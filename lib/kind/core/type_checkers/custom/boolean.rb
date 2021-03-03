@@ -4,7 +4,7 @@ module Kind
   module Boolean
     extend self, TypeChecker
 
-    def kind; [TrueClass, FalseClass].freeze; end
+    def kind; [TrueClass, FalseClass]; end
 
     def name; 'Boolean'; end
 

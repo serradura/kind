@@ -3,69 +3,70 @@
 This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the recommendations of [keepachangelog.com](http://keepachangelog.com/).
 
 - [Unreleased](#unreleased)
-- [5.1.0 (2021-02-23)](#510-2021-02-23)
   - [Added](#added)
+- [5.1.0 (2021-02-23)](#510-2021-02-23)
+  - [Added](#added-1)
   - [Deprecated](#deprecated)
 - [5.0.0 (2021-02-22)](#500-2021-02-22)
   - [Breaking Changes](#breaking-changes)
   - [Removed](#removed)
 - [4.1.0 (2021-02-22)](#410-2021-02-22)
-  - [Added](#added-1)
-- [4.0.0 (2021-02-22)](#400-2021-02-22)
   - [Added](#added-2)
+- [4.0.0 (2021-02-22)](#400-2021-02-22)
+  - [Added](#added-3)
   - [Deprecated](#deprecated-1)
   - [Fixed](#fixed)
 - [3.1.0 (2020-07-08)](#310-2020-07-08)
-  - [Added](#added-3)
+  - [Added](#added-4)
 - [3.0.0 (2020-06-25)](#300-2020-06-25)
   - [Breaking Changes](#breaking-changes-1)
-  - [Added](#added-4)
-- [2.3.0 (2020-06-24)](#230-2020-06-24)
   - [Added](#added-5)
-- [2.2.0 (2020-06-23)](#220-2020-06-23)
+- [2.3.0 (2020-06-24)](#230-2020-06-24)
   - [Added](#added-6)
-- [2.1.0 (2020-05-12)](#210-2020-05-12)
+- [2.2.0 (2020-06-23)](#220-2020-06-23)
   - [Added](#added-7)
+- [2.1.0 (2020-05-12)](#210-2020-05-12)
+  - [Added](#added-8)
   - [Breaking Changes](#breaking-changes-2)
 - [2.0.0 (2020-05-07)](#200-2020-05-07)
-  - [Added](#added-8)
+  - [Added](#added-9)
   - [Breaking Changes](#breaking-changes-3)
   - [Removed](#removed-1)
 - [1.9.0 (2020-05-06)](#190-2020-05-06)
-  - [Added](#added-9)
-- [1.8.0 (2020-05-03)](#180-2020-05-03)
   - [Added](#added-10)
+- [1.8.0 (2020-05-03)](#180-2020-05-03)
+  - [Added](#added-11)
 - [1.7.0 (2020-05-03)](#170-2020-05-03)
   - [Fixed](#fixed-1)
 - [1.6.0 (2020-04-17)](#160-2020-04-17)
-  - [Added](#added-11)
+  - [Added](#added-12)
   - [Changes](#changes)
 - [1.5.0 (2020-04-12)](#150-2020-04-12)
-  - [Added](#added-12)
-- [1.4.0 (2020-04-12)](#140-2020-04-12)
   - [Added](#added-13)
-- [1.3.0 (2020-04-12)](#130-2020-04-12)
+- [1.4.0 (2020-04-12)](#140-2020-04-12)
   - [Added](#added-14)
-- [1.2.0 (2020-04-12)](#120-2020-04-12)
+- [1.3.0 (2020-04-12)](#130-2020-04-12)
   - [Added](#added-15)
-- [1.1.0 (2020-04-09)](#110-2020-04-09)
+- [1.2.0 (2020-04-12)](#120-2020-04-12)
   - [Added](#added-16)
+- [1.1.0 (2020-04-09)](#110-2020-04-09)
+  - [Added](#added-17)
   - [Fixed](#fixed-2)
 - [1.0.0 (2020-03-16)](#100-2020-03-16)
-  - [Added](#added-17)
-- [0.6.0 (2020-01-06)](#060-2020-01-06)
   - [Added](#added-18)
-- [0.5.0 (2020-01-04)](#050-2020-01-04)
+- [0.6.0 (2020-01-06)](#060-2020-01-06)
   - [Added](#added-19)
-- [0.4.0 (2020-01-03)](#040-2020-01-03)
+- [0.5.0 (2020-01-04)](#050-2020-01-04)
   - [Added](#added-20)
-- [0.3.0 (2020-01-03)](#030-2020-01-03)
+- [0.4.0 (2020-01-03)](#040-2020-01-03)
   - [Added](#added-21)
+- [0.3.0 (2020-01-03)](#030-2020-01-03)
+  - [Added](#added-22)
   - [Breaking Changes](#breaking-changes-4)
 - [0.2.0 (2020-01-02)](#020-2020-01-02)
-  - [Added](#added-22)
-- [0.1.0 (2019-12-26)](#010-2019-12-26)
   - [Added](#added-23)
+- [0.1.0 (2019-12-26)](#010-2019-12-26)
+  - [Added](#added-24)
 
 ## Unreleased
 
@@ -76,6 +77,255 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
 ### Removed
 ### Fixed
 -->
+
+### Added
+
+* [#46](https://github.com/serradura/kind/pull/46) - Add `Kind.respond_to?`. This method has two different behaviors, when it receives just one argument it will behave like the native Ruby's
+ `respond_to?` method, that is, it will check if the `Kind` method implements some method. But if it receives two arguments, the first one will be the object, and the others (one or more) will be a list of method names that will be used to check if the given object implements them. e.g.
+  ```ruby
+  Kind.respond_to?(:is?)  # true
+
+  Kind.respond_to?(:foo?) # true
+
+  # --
+
+  Kind.respond_to?({}, :fetch, :merge) # true
+
+  Kind.respond_to?([], :fetch, :merge) # false
+  ```
+
+* [#46](https://github.com/serradura/kind/pull/46) - Add `Kind::UnionType`. This class allows the creation of an object that knows how to compare a value through different kinds of types. e.g.
+  ```ruby
+  # The method [] can build a union type object that will have the method #|
+  # which allows the composition with other object kinds.
+  array_or_hash = Kind::UnionType[Array] | Hash
+
+  # The method === can verify if a given value is one of the kinds that compounds the union type.
+  array_or_hash === {}  # true
+  array_or_hash === []  # true
+  array_or_hash === 1   # false
+  array_or_hash === nil # false
+
+  # The method #[] will return the given value if it has one of the expected kinds,
+  # but if not, it will raise a Kind::Error.
+  array_or_hash[{}] # {}
+
+  array_or_hash[1]  # Kind::Error (1 expected to be a kind of (Array | Hash))
+
+  # At last, the method #name is an alias to the method #inspect.
+  array_or_hash.name    # "(Array | Hash)"
+  array_or_hash.inspect # "(Array | Hash)"
+  ```
+
+* [#46](https://github.com/serradura/kind/pull/46) - Add `Kind::Nil`. This module was added to be used to create union types. e.g.
+  ```ruby
+  hash_or_nil = Kind::UnionType[Hash] | Kind::Nil
+
+  hash_or_nil === {}  # true
+  hash_or_nil === []  # false
+  hash_or_nil === 1   # false
+  hash_or_nil === nil # true
+  ```
+
+* [#46](https://github.com/serradura/kind/pull/46) - Add `Kind::NotNil`. This module was added to perform a strict verification where the given value will be returned if it is not nil, and if not, a `Kind::Error` will be raised. e.g.
+  ```ruby
+  Kind::NotNil[1]   # 1
+
+  Kind::NotNil[nil] # Kind::Error (expected to not be nil)
+  ```
+
+* [#46](https://github.com/serradura/kind/pull/46) - Add `Kind::RespondTo` to create objects that know how to verify if a given object implements one or more expected methods.
+  ```ruby
+  HashLike = Kind::RespondTo[:fetch, :merge!]
+  Fetchable = Kind::RespondTo[:fetch]
+
+  # Verifying if an object implements the expected interface.
+  HashLike === ENV # true
+  HashLike === {}  # true
+  HashLike === []  # false
+
+  Fetchable === ENV # true
+  Fetchable === []  # true
+  Fetchable === {}  # true
+
+  # Performing an strict verification
+  HashLike[ENV]       # true
+  HashLike[{}]        # true
+  HashLike[Array.new] # false Kind::Error ([] expected to be a kind of Kind::RespondTo[:fetch, :merge!])
+
+  # Creating union types using interfaces
+  HashLikeOrArray = HashLike | Array # Kind::RespondTo[:fetch, :merge!] | Array
+
+  HashLikeOrArray === {}  # true
+  HashLikeOrArray === []  # true
+  HashLikeOrArray === ENV # true
+  ```
+
+* [#46](https://github.com/serradura/kind/pull/46) - Unfreeze the output of `Kind::Boolean.kind`.
+
+* [#46](https://github.com/serradura/kind/pull/46) - Freeze `Kind::UNDEFINED` and define its inspect method.
+
+* [#46](https://github.com/serradura/kind/pull/46) - Add `Kind::TypeChecker#|` to allow the creation of union types.
+  ```ruby
+  StatusLabel = Kind::String | Kind::Symbol
+
+  StatusLabel === :ok  # true
+  StatusLabel === 'ok' # true
+  StatusLabel === true # false
+  ```
+
+* [#46](https://github.com/serradura/kind/pull/46) - Allow `Kind.of()` and `Kind::TypeChecker#[]` receive a label.
+  ```ruby
+  # Kind.of(<Type>, value, label:)
+  class Person
+    attr_reader :name
+
+    def initialize(name:)
+      @name = Kind.of(String, name, label: 'Person#name')
+    end
+  end
+
+  Person.new(name: 'Rodrigo') # #<Person:0x0000... @name="Rodrigo">
+  Person.new(name: :ok)       # Kind::Error (Person#name: :ok expected to be a kind of String)
+
+  # Kind<Type>[value, label:]
+  class User
+    attr_reader :name
+
+    def initialize(name:)
+      @name = Kind::String[name, label: 'User#name']
+    end
+  end
+
+  User.new(name: 'Rodrigo') # #<User:0x0000... @name="Rodrigo">
+  User.new(name: :ok)       # Kind::Error (User#name: :ok expected to be a kind of String)
+  ```
+
+* [#46](https://github.com/serradura/kind/pull/46) - Create `kind/basic` to expose a small set of features to do type handling/verification. This is util if you want to make use only of these features instead of all of the others that are loaded via `require "kind"`. So, use `require "kind/basic"` if you only want these features:
+  * `Kind.is?`
+  * `Kind.of`
+  * `Kind.of?`
+  * `Kind.of_class?`
+  * `Kind.of_module?`
+  * `Kind.of_module_or_class`
+  * `Kind.respond_to`
+  * `Kind.respond_to?`
+  * `Kind.value`
+  * `Kind::Error`
+  * `Kind::Undefined`
+
+* [#46](https://github.com/serradura/kind/pull/46) - Improve `Kind::Maybe`.
+  * Improve the `#inspect` output.
+  * Make `Kind::Maybe.{new,[],wrap}` return `None` if they receive an exception instance.
+  * Add `#accept` as an alias of `#check` method.
+  * Add `#reject` as the reverse of the methods `#check` and `#accept`.
+  * Allow the methods `#map`, `#map!`, `#then`, `#then!`, `#check`, `#accept`, `#reject` to receive one symbol as an argument, it will be used to perform the correspondent method in the `Maybe` value, so if the object responds to the expected method a `Some` will be returned.
+  * Add `Kind::Maybe#on`, this method allows you to use a block where will be possible to define a `Some` or `None` handling. The output of the matched result (some or none) will be the block's output.
+  ```ruby
+  # Kind::Maybe#accept (an alias of Kind::Maybe#check)
+  Kind::Maybe[1].accept(&:odd?)  # #<Kind::Some value=1>
+  Kind::Maybe[1].accept(&:even?) # #<Kind::None value=nil>
+
+  # Kind::Maybe#reject (the reverse of Kind::Maybe#check)
+  Kind::Maybe[1].reject(&:odd?)  # #<Kind::None value=nil>
+  Kind::Maybe[1].reject(&:even?) # #<Kind::Some value=1>
+
+  # Passing one symbol as an argument of the methods: `#map`, `#then`, `#check`, `#accept`, `#reject`
+  Kind::Maybe['1'].map(:to_i)   # #<Kind::Some value=1>
+  Kind::Maybe[' '].then(:strip) # #<Kind::Some value="">
+
+  Kind::Maybe['1'].map!(:to_i).accept(:odd?)     # #<Kind::Some value=1>
+  Kind::Maybe[' '].then!(:strip).reject(:empty?) # #<Kind::None value=nil>
+
+  # `Kind::Maybe#on` making use of a block to handle Some or None results.
+  number = Kind::Maybe['2'].then(:to_i).reject(:even?).on do |result|
+    result.none { 0 }
+    result.some { 1 }
+  end
+
+  p number # 0
+  ```
+
+* [#46](https://github.com/serradura/kind/pull/46) - Add `Kind::Either` (either monad). This is basically the same as the `Maybe` monad, but with `Some` called `Right` and `None` called `Left`. But this time, `Left` is also allowed to have an underlying value. This module isn't loaded by default, so you will need to require it if you desire to make use of it.
+  ```ruby
+  require 'kind/either'
+
+  # Use the methods Kind::Left() or Kind::Right() to create either monads
+  Kind::Left(0)  # #<Kind::Left value=0>
+  Kind::Right(1) # #<Kind::Right value=1>
+
+  # The Kind::Either.new() or Kind::Either[] also creates a Kind::Right monad
+  Kind::Either.new(2) # #<Kind::Right value=2>
+  Kind::Either[3]     # #<Kind::Right value=3>
+
+  # An Either has methods that allow you to know what kind it is.
+  monad = Kind::Right(1)
+  monad.right? # true
+  monad.left?  # false
+
+  # This monad allows you to chain a sequence of operations that will continue while the output
+  # of each step is a Right monad. So, if some step return a Left, all of the next steps will be avoided.
+  # Let's see an example of how you can use the method #map to define a sequence of operations.
+
+  def do_some_calculation(arg)
+    Kind::Right(arg)
+      .map { |value| Kind::Numeric?(value) ? Kind::Right(value + 2) : Kind::Left('value must be numeric') }
+      .map { |value| value.odd? ? Kind::Right(value) : Kind::Left('value can\'t be even') }
+      .map { |value| Kind::Right(value * 3) }
+  end
+
+  do_some_calculation('1') # #<Kind::Left value="value must be numeric">
+  do_some_calculation(2)   # #<Kind::Left value="value can't be even">
+  do_some_calculation(1)   # #<Kind::Right value=9>
+
+  # You can use procs/lambdas as an alternative of blocks
+  Add = ->(a, b) do
+    return Kind::Right(a + b) if Kind::Numeric?(a, b)
+
+    Kind::Left('the arguments must be numerics')
+  end
+
+  Double = ->(number) do
+    return Kind::Right(number * 2) if Kind::Numeric?(number)
+
+    Kind::Left('the argument must be numeric')
+  end
+
+  AsString = ->(value) { Kind::Right(value.to_s) }
+
+  Add.(1, 2).map(&Double).map(&Double)   # #<Kind::Right value=12>
+  Add.(1, 2).map(&AsString).map(&Double) # #<Kind::Left value="the argument must be numeric">
+
+  # The method #then is an alias for #map
+  Add.(2, 2).then(&Double).then(&AsString) # #<Kind::Right value="8">
+
+  # An exception will occur when your block or lambda doesn't return a Kind::Either
+  Add.(2, 2).map { |number| number * 2 } # Kind::Monad::Error (8 expected to be a kind of Kind::Right | Kind::Left)
+
+  # The methods #map, #then auto handle StandardError exceptions,
+  # so Left will be returned when an exception occur.
+  Add.(0, 0).map { |number| Kind::Right(10 / number) } # #<Kind::Left value=#<ZeroDivisionError: divided by 0>>
+
+  # You can use #map! or #then! if you don't want this auto exception handling.
+  Add.(0, 0).map! { |number| Kind::Right(10 / number) }  # ZeroDivisionError (divided by 0)
+
+  Add.(0, 0).then! { |number| Kind::Right(10 / number) } # ZeroDivisionError (divided by 0)
+  ```
+
+* [#46](https://github.com/serradura/kind/pull/46) - Add `Kind::Result` (an Either monad variation)
+
+* [#46](https://github.com/serradura/kind/pull/46) - Add `Kind::Function`.
+
+* [#46](https://github.com/serradura/kind/pull/46) - Add `Kind::Functional`.
+
+* [#46](https://github.com/serradura/kind/pull/46) - Add `Kind::Action`.
+
+* [#46](https://github.com/serradura/kind/pull/46) - Add `Kind::Try.presence` and improve the input/output handling of `Kind::Try.call`.
+
+* [#46](https://github.com/serradura/kind/pull/46) - Add `Kind::Dig.presence` and improve the input/output handling of `Kind::Dig.call`.
+
+
+[⬆️ &nbsp;Back to Top](#changelog-)
 
 5.1.0 (2021-02-23)
 ------------------

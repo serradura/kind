@@ -12,12 +12,12 @@ module Kind
 
             input.kind_of?(Maybe::None) ? input : new(yield(input))
           rescue StandardError => exception
-            Maybe.__none__(exception)
+            Maybe::None.new(exception)
           end
         else
           return new(arg) if UNDEFINED != arg
 
-          raise ArgumentError, 'wrong number of arguments (given 0, expected 1)'
+          Error.wrong_number_of_args!(given: 0, expected: 1)
         end
       end
 

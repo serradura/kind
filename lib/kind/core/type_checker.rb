@@ -10,10 +10,10 @@ module Kind
       kind === value
     end
 
-    def [](value)
+    def [](value, label: nil)
       return value if self === value
 
-      KIND.error!(name, value)
+      KIND.error!(name, value, label)
     end
 
     def or_nil(value)
@@ -54,6 +54,10 @@ module Kind
 
     alias optional maybe
 
+    def |(another_kind)
+      UnionType[self] | another_kind
+    end
+
     private
 
       def __maybe
@@ -69,8 +73,8 @@ module Kind
     include TypeChecker
 
     ResolveKindName = ->(kind, opt) do
-      name = Try.(opt, :[], :name)
-      name || Try.(kind, :name)
+      name = Try.call!(opt, :[], :name)
+      name || Try.call!(kind, :name)
     end
 
     attr_reader :kind, :name
@@ -82,6 +86,15 @@ module Kind
       @kind = KIND.respond_to!(:===, kind)
     end
 
+    def inspect
+      "Kind::TypeChecker<#{name}>"
+    end
+
     private_constant :ResolveKindName
+  end
+
+  # Kind::Ok()
+  def self.Of(kind, opt = Empty::HASH)
+    TypeChecker::Object.new(kind, opt)
   end
 end
