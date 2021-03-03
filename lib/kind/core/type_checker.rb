@@ -93,8 +93,16 @@ module Kind
     private_constant :ResolveKindName
   end
 
-  # Kind::Ok()
-  def self.Of(kind, opt = Empty::HASH)
+  # Kind[]
+  def self.[](kind, opt = Empty::HASH)
     TypeChecker::Object.new(kind, opt)
+  end
+
+  # Kind::Of()
+  def self.Of(*args)
+    warn '[DEPRECATION] Kind::Of() is deprecated; use Kind[] instead.' \
+        'It will be removed on next major release.'
+
+    self[*args]
   end
 end
