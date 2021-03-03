@@ -33,10 +33,16 @@ module Kind
   end
 
   def self.Maybe(kind)
+    warn '[DEPRECATION] Kind::Maybe() is deprecated; use Kind::Maybe::Typed[] instead.' \
+        'It will be removed on next major release.'
+
     Maybe::Typed[kind]
   end
 
   def self.Optional(kind)
-    Maybe::Typed[kind]
+    warn '[DEPRECATION] Kind::Optional() is deprecated; use Kind::Optional::Typed[] instead.' \
+        'It will be removed on next major release.'
+
+    Optional::Typed[kind]
   end
 end
