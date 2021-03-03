@@ -30,7 +30,7 @@ module Kind
 
     module Macros
       def require_action_contract!
-        return self if Kind.is(Behavior, self)
+        return self if Kind.is?(Behavior, self)
 
         public_methods = self.public_instance_methods - Object.new.methods
 

@@ -56,6 +56,55 @@ class Kind::KindTest < Minitest::Test
     ) { Kind.is(String, '2') }
   end
 
+  def test_Kind_is!
+    assert Array == Kind.is!(Class, Array)
+    assert Array == Kind.is!(Array, Array)
+
+    assert Array == Kind.is!(Enumerable, Array)
+    assert Enumerable == Kind.is!(Enumerable, Enumerable)
+    assert Enumerable == Kind.is!(Module, Enumerable)
+
+    assert_raises_with_message(
+      Kind::Error,
+      'Enumerable expected to be a Class'
+    ) { Kind.is!(Class, Enumerable) }
+
+    assert_raises_with_message(
+      Kind::Error,
+      'Foo#bar: Enumerable expected to be a Class'
+    ) { Kind.is!(Class, Enumerable, label: 'Foo#bar') }
+  end
+
+  def test_Kind_of
+    assert_equal([], Kind.of(Array, []))
+    assert_equal({}, Kind.of(Enumerable, {}))
+
+    assert_raises_with_message(
+      Kind::Error,
+      'nil expected to be a kind of Array'
+    ) { Kind.of(Array, nil) }
+
+    assert_raises_with_message(
+      Kind::Error,
+      'Foo#bar: nil expected to be a kind of Array'
+    ) { Kind.of(Array, nil, label: 'Foo#bar') }
+  end
+
+  def test_Kind_of!
+    assert_equal([], Kind.of!(Array, []))
+    assert_equal({}, Kind.of!(Enumerable, {}))
+
+    assert_raises_with_message(
+      Kind::Error,
+      'nil expected to be a kind of Array'
+    ) { Kind.of!(Array, nil) }
+
+    assert_raises_with_message(
+      Kind::Error,
+      'Foo#bar: nil expected to be a kind of Array'
+    ) { Kind.of!(Array, nil, label: 'Foo#bar') }
+  end
+
   def test_Kind_of?
     # FACT: Can check one instance
     assert Kind.of?(Array, [])
@@ -122,6 +171,23 @@ class Kind::KindTest < Minitest::Test
       Kind::Error,
       'expected 2 to respond to :upcase'
     ) { Kind.respond_to(2, :to_s, :upcase) }
+  end
+
+  def test_Kind_respond_to!
+    assert_equal('', Kind.respond_to!('', :upcase))
+    assert_equal('', Kind.respond_to!('', :upcase, :strip))
+
+    # -
+
+    assert_raises_with_message(
+      Kind::Error,
+      'expected 1 to respond to :upcase'
+    ) { Kind.respond_to!(1, :upcase) }
+
+    assert_raises_with_message(
+      Kind::Error,
+      'expected 2 to respond to :upcase'
+    ) { Kind.respond_to!(2, :to_s, :upcase) }
   end
 
   def test_Kind_of_module_or_class

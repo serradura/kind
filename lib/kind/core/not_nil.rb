@@ -2,10 +2,12 @@
 
 module Kind
   module NotNil
-    def self.[](value)
+    def self.[](value, label: nil)
       return value unless value.nil?
 
-      raise Error.new('expected to not be nil')
+      label_text = label ? "#{label}: " : ''
+
+      raise Error.new("#{label_text}expected to not be nil")
     end
   end
 end
