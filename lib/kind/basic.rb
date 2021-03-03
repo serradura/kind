@@ -12,7 +12,20 @@ module Kind
     KIND.is?(kind, arg)
   end
 
-  alias is is?
+  def is(*args)
+    warn '[DEPRECATION] Kind.is will behave like Kind.is! in the next major release; ' \
+        'use Kind.is? instead.'
+
+    is?(*args)
+  end
+
+  def is!(kind, arg, label: nil)
+    return arg if KIND.is?(kind, arg)
+
+    label_text = label ? "#{label}: " : ''
+
+    raise Kind::Error.new("#{label_text}#{arg} expected to be a #{kind}")
+  end
 
   def of?(kind, *args)
     KIND.of?(kind, args)

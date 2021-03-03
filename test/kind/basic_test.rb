@@ -56,6 +56,25 @@ class Kind::KindTest < Minitest::Test
     ) { Kind.is(String, '2') }
   end
 
+  def test_Kind_is!
+    assert Array == Kind.is!(Class, Array)
+    assert Array == Kind.is!(Array, Array)
+
+    assert Array == Kind.is!(Enumerable, Array)
+    assert Enumerable == Kind.is!(Enumerable, Enumerable)
+    assert Enumerable == Kind.is!(Module, Enumerable)
+
+    assert_raises_with_message(
+      Kind::Error,
+      'Enumerable expected to be a Class'
+    ) { Kind.is!(Class, Enumerable) }
+
+    assert_raises_with_message(
+      Kind::Error,
+      'Foo#bar: Enumerable expected to be a Class'
+    ) { Kind.is!(Class, Enumerable, label: 'Foo#bar') }
+  end
+
   def test_Kind_of?
     # FACT: Can check one instance
     assert Kind.of?(Array, [])
