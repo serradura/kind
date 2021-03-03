@@ -4,9 +4,10 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
 
 - [Unreleased](#unreleased)
   - [Added](#added)
+  - [Deprecated](#deprecated)
 - [5.1.0 (2021-02-23)](#510-2021-02-23)
   - [Added](#added-1)
-  - [Deprecated](#deprecated)
+  - [Deprecated](#deprecated-1)
 - [5.0.0 (2021-02-22)](#500-2021-02-22)
   - [Breaking Changes](#breaking-changes)
   - [Removed](#removed)
@@ -14,7 +15,7 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
   - [Added](#added-2)
 - [4.0.0 (2021-02-22)](#400-2021-02-22)
   - [Added](#added-3)
-  - [Deprecated](#deprecated-1)
+  - [Deprecated](#deprecated-2)
   - [Fixed](#fixed)
 - [3.1.0 (2020-07-08)](#310-2020-07-08)
   - [Added](#added-4)
@@ -127,11 +128,13 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
   hash_or_nil === nil # true
   ```
 
-* [#46](https://github.com/serradura/kind/pull/46) - Add `Kind::NotNil`. This module was added to perform a strict verification where the given value will be returned if it is not nil, and if not, a `Kind::Error` will be raised. e.g.
+* [#46](https://github.com/serradura/kind/pull/46), [#47](https://github.com/serradura/kind/pull/47) - Add `Kind::NotNil`. This module was added to perform a strict verification where the given value will be returned if it is not nil, and if not, a `Kind::Error` will be raised. e.g.
   ```ruby
   Kind::NotNil[1]   # 1
 
   Kind::NotNil[nil] # Kind::Error (expected to not be nil)
+
+  Kind::NotNil[nil, label: 'Foo#bar'] # Kind::Error (Foo#bar: expected to not be nil)
   ```
 
 * [#46](https://github.com/serradura/kind/pull/46) - Add `Kind::RespondTo` to create objects that know how to verify if a given object implements one or more expected methods.
@@ -323,6 +326,16 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
 * [#46](https://github.com/serradura/kind/pull/46) - Add `Kind::Try.presence` and improve the input/output handling of `Kind::Try.call`.
 
 * [#46](https://github.com/serradura/kind/pull/46) - Add `Kind::Dig.presence` and improve the input/output handling of `Kind::Dig.call`.
+
+* [#47](https://github.com/serradura/kind/pull/47) - Add `Kind.is!`
+
+* [#47](https://github.com/serradura/kind/pull/47) - Create aliases to the methods `Kind.of` (`Kind.of!`) and `Kind.respond_to` (`Kind.respond_to!`)
+
+* [#47](https://github.com/serradura/kind/pull/47) - Add `Kind[]` as the `Kind::Of()` substitute.
+
+### Deprecated
+
+* [#47](https://github.com/serradura/kind/pull/47) - Deprecate `Kind.is` and `Kind::Of()`.
 
 
 [⬆️ &nbsp;Back to Top](#changelog-)
