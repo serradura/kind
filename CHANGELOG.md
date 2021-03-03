@@ -5,6 +5,7 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
 - [Unreleased](#unreleased)
   - [Added](#added)
   - [Deprecated](#deprecated)
+  - [Changes](#changes)
 - [5.1.0 (2021-02-23)](#510-2021-02-23)
   - [Added](#added-1)
   - [Deprecated](#deprecated-1)
@@ -41,7 +42,7 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
   - [Fixed](#fixed-1)
 - [1.6.0 (2020-04-17)](#160-2020-04-17)
   - [Added](#added-12)
-  - [Changes](#changes)
+  - [Changes](#changes-1)
 - [1.5.0 (2020-04-12)](#150-2020-04-12)
   - [Added](#added-13)
 - [1.4.0 (2020-04-12)](#140-2020-04-12)
@@ -337,6 +338,11 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
 
 * [#47](https://github.com/serradura/kind/pull/47) - Deprecate `Kind.is` and `Kind::Of()`.
 
+* [#48](https://github.com/serradura/kind/pull/48) - Deprecate `Kind::Maybe()` and `Kind::Optional()`
+
+### Changes
+
+* [#48](https://github.com/serradura/kind/pull/48) - Rename `Kind::TypeChecker` to `Kind::Object` and `Kind::TypeChecker::Object` to `Kind::Object::Instance`.
 
 [⬆️ &nbsp;Back to Top](#changelog-)
 

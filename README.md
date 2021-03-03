@@ -60,15 +60,15 @@ unreleased | https://github.com/serradura/u-case/blob/main/README.md
   - [Kind::\<Type\>.maybe](#kindtypemaybe)
   - [Kind::\<Type\>?](#kindtype-2)
   - [Kind::{Array,Hash,String,Set}.value_or_empty()](#kindarrayhashstringsetvalue_or_empty)
-  - [List of all type checkers](#list-of-all-type-checkers)
+  - [List of all type handlers](#list-of-all-type-handlers)
     - [Core](#core)
     - [Stdlib](#stdlib)
     - [Custom](#custom)
-  - [Creating type checkers](#creating-type-checkers)
+  - [Creating type handlers](#creating-type-handlers)
     - [Dynamic creation](#dynamic-creation)
       - [Using a class or a module](#using-a-class-or-a-module)
       - [Using an object which responds to ===](#using-an-object-which-responds-to-)
-    - [Kind::<Type> module](#kindtype-module)
+    - [Kind::<Type> object](#kindtype-object)
   - [Utility methods](#utility-methods)
     - [Kind.of_class?()](#kindof_class)
     - [Kind.of_module?()](#kindof_module)
@@ -330,7 +330,7 @@ collection.select(&Kind::Enumerable?) # [{:number=>1}, {:number=>3}, [:number, 5
 
 ### Kind::{Array,Hash,String,Set}.value_or_empty()
 
-This method is available for some type checkers (`Kind::Array`, `Kind::Hash`, `Kind::String`, `Kind::Set`), and it will return an empty frozen value if the given one hasn't the expected kind.
+This method is available for some type handlers (`Kind::Array`, `Kind::Hash`, `Kind::String`, `Kind::Set`), and it will return an empty frozen value if the given one hasn't the expected kind.
 ```ruby
 Kind::Array.value_or_empty({})         # []
 Kind::Array.value_or_empty({}).frozen? # true
@@ -338,7 +338,7 @@ Kind::Array.value_or_empty({}).frozen? # true
 
 [⬆️ &nbsp;Back to Top](#table-of-contents-)
 
-### List of all type checkers
+### List of all type handlers
 
 #### Core
 
@@ -377,9 +377,9 @@ Kind::Array.value_or_empty({}).frozen? # true
 
 [⬆️ &nbsp;Back to Top](#table-of-contents-)
 
-### Creating type checkers
+### Creating type handlers
 
-There are two ways to do this, you can create type checkers dynamically or defining a module.
+There are two ways to do this, you can create type handlers dynamically or defining a module.
 
 #### Dynamic creation
 
@@ -395,7 +395,7 @@ kind_of_user = Kind::Of(User)
 
 # kind_of_user.name
 # kind_of_user.kind
-# The type checker can return its kind and its name
+# The type handler can return its kind and its name
 kind_of_user.name # "User"
 kind_of_user.kind # User
 
@@ -465,7 +465,7 @@ PositiveInteger = Kind::Of(
 
 # PositiveInteger.name
 # PositiveInteger.kind
-# The type checker can return its kind and its name
+# The type handler can return its kind and its name
 PositiveInteger.name # "PositiveInteger"
 PositiveInteger.kind # #<Proc:0x0000.... >
 
@@ -526,9 +526,9 @@ PositiveInteger.maybe(2).value_or(1) # 2
 
 [⬆️ &nbsp;Back to Top](#table-of-contents-)
 
-#### Kind::<Type> module
+#### Kind::<Type> object
 
-The idea here is to create a type checker inside of the `Kind` namespace, so to do this, you will only need to use pure Ruby. e.g:
+The idea here is to create a type handler inside of the `Kind` namespace, so to do this, you will only need to use pure Ruby. e.g:
 
 ```ruby
 class User
@@ -536,9 +536,9 @@ end
 
 module Kind
   module User
-    extend self, TypeChecker
+    extend self, ::Kind::Object
 
-    # Define the expected kind of this type checker.
+    # Define the expected kind of this type handler.
     def kind; ::User; end
   end
 
@@ -548,7 +548,7 @@ module Kind
   end
 end
 
-# Doing this you will have the same methods of a standard type checker (like: `Kind::Symbol`).
+# Doing this you will have the same methods of a standard type handler (like: `Kind::Symbol`).
 
 user = User.new
 
@@ -566,7 +566,7 @@ The advantages of this approach are:
 
 The disadvantage is:
 
-1. You could overwrite some standard type checker or constant. I believe that this will be hard to happen, but must be your concern if you decide to use this kind of approach.
+1. You could overwrite some standard type handler or constant. I believe that this will be hard to happen, but must be your concern if you decide to use this kind of approach.
 
 [⬆️ &nbsp;Back to Top](#table-of-contents-)
 
@@ -1498,7 +1498,7 @@ Use an array to verify if the attribute is an instance of one of the classes/mod
 validates :status, kind: { of: [String, Symbol]}
 ```
 
-Because of kind verification be made via `===` you can use type checkers as the expected kinds.
+Because of kind verification be made via `===` you can use type handlers as the expected kinds.
 
 ```ruby
 validates :alive, kind: Kind::Boolean

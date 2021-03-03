@@ -71,7 +71,7 @@ module Kind
       def require_functional_contract!
         return self if Kind.is?(Behavior, self)
 
-        public_methods = self.public_instance_methods - Object.new.methods
+        public_methods = self.public_instance_methods - ::Object.new.methods
 
         unless public_methods.include?(:call)
           raise Kind::Error.new("expected #{self} to implement `#call`")
