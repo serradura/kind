@@ -8,5 +8,10 @@ class Kind::NoteNilTest < Minitest::Test
       Kind::Error,
       'expected to not be nil'
     ) { Kind::NotNil[nil] }
+
+    assert_raises_with_message(
+      Kind::Error,
+      'Foo#bar: expected to not be nil'
+    ) { Kind::NotNil[nil, label: 'Foo#bar'] }
   end
 end
