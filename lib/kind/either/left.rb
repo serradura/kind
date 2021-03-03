@@ -19,7 +19,7 @@ module Kind
     alias_method :then, :map
 
     def inspect
-      '#<%s value=%s>' % ['Kind::Left', value]
+      '#<%s value=%p>' % ['Kind::Left', value]
     end
   end
 end
