@@ -5,6 +5,10 @@ class Kind::UndefinedTest < Minitest::Test
     assert_equal('Kind::Undefined', Kind::Undefined.inspect)
   end
 
+  def test_empty?
+    assert Kind::Undefined.empty?
+  end
+
   def test_to_s
     assert_same(Kind::Undefined.inspect, Kind::Undefined.to_s)
   end
