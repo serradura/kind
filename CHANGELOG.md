@@ -334,6 +334,10 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
 
 * [#47](https://github.com/serradura/kind/pull/47) - Add `Kind[]` as the `Kind::Of()` substitute.
 
+* [#49](https://github.com/serradura/kind/pull/49) - Add `Kind::Either::Methods` and `Kind::Result::Methods`
+
+* [#49](https://github.com/serradura/kind/pull/49) - Add `Kind::Undefined.empty?`
+
 ### Deprecated
 
 * [#47](https://github.com/serradura/kind/pull/47) - Deprecate `Kind.is` and `Kind::Of()`.
