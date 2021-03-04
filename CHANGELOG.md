@@ -338,6 +338,8 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
 
 * [#49](https://github.com/serradura/kind/pull/49) - Add `Kind::Undefined.empty?`
 
+* [#50](https://github.com/serradura/kind/pull/50) - Add `Kind::<Type>.empty_or` as an alias of `Kind::<Type>.value_or_empty`
+
 ### Deprecated
 
 * [#47](https://github.com/serradura/kind/pull/47) - Deprecate `Kind.is` and `Kind::Of()`.
