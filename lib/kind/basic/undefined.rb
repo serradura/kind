@@ -16,6 +16,11 @@ module Kind
     def undefined.inspect
       @inspect ||= 'Kind::Undefined'.freeze
     end
+    undefined.inspect
+
+    def undefined.empty?
+      true
+    end
 
     def undefined.to_s
       inspect
@@ -35,7 +40,6 @@ module Kind
       default.respond_to?(:call) ? default.call : default
     end
 
-    undefined.inspect
     undefined.freeze
   end
 end
