@@ -11,7 +11,7 @@ class Kind::ResultMethodsTest < Minitest::Test
     end
 
     def call
-      return Success(@a + @b) if Kind::Numeric?(@a, @b)
+      return Success(@a + @b) if Kind.of?(Numeric, @a, @b)
 
       Failure('a anb b must be numerics')
     end

@@ -11,7 +11,7 @@ class Kind::EitherMethodsTest < Minitest::Test
     end
 
     def call
-      return Right(@a + @b) if Kind::Numeric?(@a, @b)
+      return Right(@a + @b) if Kind.of?(Numeric, @a, @b)
 
       Left('a anb b must be numerics')
     end
