@@ -6,18 +6,6 @@ require 'kind/functional'
 
 module Kind
   module Action
-    module Behavior
-      private
-
-        def Success(type = UNDEFINED, value = UNDEFINED)
-          Kind::Success(type, value)
-        end
-
-        def Failure(type = UNDEFINED, value = UNDEFINED)
-          Kind::Failure(type, value)
-        end
-    end
-
     CALL_TMPL = [
       'def call(%s)',
       '  result = call!(%s)',
@@ -30,7 +18,7 @@ module Kind
 
     module Macros
       def require_action_contract!
-        return self if Kind.is?(Behavior, self)
+        return self if Kind.is?(Result::Methods, self)
 
         public_methods = self.public_instance_methods - ::Object.new.methods
 
@@ -70,10 +58,10 @@ module Kind
         )
 
         if KIND.of_module?(self)
-          self.send(:extend, Behavior)
+          self.send(:extend, Result::Methods)
         else
+          self.send(:include, Result::Methods)
           self.send(:include, Functional::Behavior)
-          self.send(:include, Behavior)
 
           __dependencies__.freeze
         end
@@ -96,6 +84,6 @@ module Kind
       base.send(:extend, Macros)
     end
 
-    private_constant :Behavior, :Macros, :CALL_TMPL
+    private_constant :Macros, :CALL_TMPL
   end
 end
