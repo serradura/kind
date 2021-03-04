@@ -9,6 +9,8 @@ module Kind
     def value_or_empty(arg)
       KIND.value(self, arg, Empty::HASH)
     end
+
+    alias empty_or value_or_empty
   end
 
   def self.Hash?(*values)
