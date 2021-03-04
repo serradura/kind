@@ -17,6 +17,8 @@ class Kind::ObjectsTest < Minitest::Test
     assert_predicate(Kind::Array.value_or_empty(1), :empty?)
     assert_predicate(Kind::Array.value_or_empty(1), :frozen?)
 
+    assert_equal(Kind::Array.value_or_empty(nil), Kind::Array.empty_or(nil))
+
     union_type = Kind::Array | Kind::Hash
     assert union_type === []
     assert union_type === {}
@@ -98,6 +100,8 @@ class Kind::ObjectsTest < Minitest::Test
     assert_kind_of(::Hash, Kind::Hash.value_or_empty(1))
     assert_predicate(Kind::Hash.value_or_empty(1), :empty?)
     assert_predicate(Kind::Hash.value_or_empty(1), :frozen?)
+
+    assert_equal(Kind::Hash.value_or_empty(nil), Kind::Hash.empty_or(nil))
 
     # == Kind::Integer ==
 
@@ -248,6 +252,8 @@ class Kind::ObjectsTest < Minitest::Test
     assert_predicate(Kind::String.value_or_empty(1), :empty?)
     assert_predicate(Kind::String.value_or_empty(1), :frozen?)
 
+    assert_equal(Kind::String.value_or_empty(nil), Kind::String.empty_or(nil))
+
     # == Kind::Struct ==
 
     struct = Struct.new(:a).new(1)
@@ -342,6 +348,8 @@ class Kind::ObjectsTest < Minitest::Test
     assert_kind_of(::Set, Kind::Set.value_or_empty([1]))
     assert_predicate(Kind::Set.value_or_empty(1), :empty?)
     assert_predicate(Kind::Set.value_or_empty(1), :frozen?)
+
+    assert_equal(Kind::Set.value_or_empty(nil), Kind::Set.empty_or(nil))
   end
 
   def test_Kind_brackets

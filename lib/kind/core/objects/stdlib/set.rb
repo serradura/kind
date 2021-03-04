@@ -9,6 +9,8 @@ module Kind
     def value_or_empty(arg)
       KIND.value(self, arg, Empty::SET)
     end
+
+    alias empty_or value_or_empty
   end
 
   def self.Set?(*values)
