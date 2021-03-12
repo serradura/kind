@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Kind
-  class Error < TypeError
+  class Error < StandardError
     INVALID_DEFAULT_ARG = 'the default value must be defined as an argument or block'.freeze
 
     def self.wrong_number_of_args!(given:, expected:)

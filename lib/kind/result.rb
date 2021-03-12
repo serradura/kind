@@ -10,11 +10,21 @@ module Kind
     require 'kind/result/success'
     require 'kind/result/methods'
 
-    def self.new(value)
+    extend self
+
+    def new(value)
       Success[value]
     end
 
-    singleton_class.send(:alias_method, :[], :new)
+    alias_method :[], :new
+
+    def self.from
+      result = yield
+
+      Result::Monad === result ? result : Result::Success[result]
+    rescue StandardError => e
+      Result::Failure[:exception, e]
+    end
   end
 
   extend Result::Methods

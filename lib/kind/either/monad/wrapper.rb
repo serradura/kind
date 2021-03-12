@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Kind
-  require 'kind/basic/monad'
+  require 'kind/monad'
 
   class Either::Monad::Wrapper < Kind::Monad::Wrapper
     def left(matcher = UNDEFINED)

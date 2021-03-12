@@ -21,6 +21,8 @@ module Kind
     alias_method :map!, :map
     alias_method :then, :map
     alias_method :then!, :map
+    alias_method :and_then, :map
+    alias_method :and_then!, :map
 
     def inspect
       '#<%s type=%p value=%p>' % ['Kind::Failure', type, value]

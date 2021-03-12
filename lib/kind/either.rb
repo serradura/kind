@@ -9,11 +9,21 @@ module Kind
     require 'kind/either/right'
     require 'kind/either/methods'
 
-    def self.new(value)
+    extend self
+
+    def new(value)
       Right[value]
     end
 
-    singleton_class.send(:alias_method, :[], :new)
+    alias_method :[], :new
+
+    def self.from
+      result = yield
+
+      Either::Monad === result ? result : Either::Right[result]
+    rescue StandardError => e
+      Either::Left[e]
+    end
   end
 
   extend Either::Methods
