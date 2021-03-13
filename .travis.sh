@@ -10,6 +10,7 @@ function run_basic_tests {
   fi
 
   eval "KIND_BASIC=t $bundle_cmd exec rake test TEST='test/kind/{basic/*_test,basic_test}.rb'"
+  eval "KIND_BASIC=t $bundle_cmd exec rake test TEST='test/kind/enum_test.rb'"
   eval "KIND_BASIC=t $bundle_cmd exec rake test TEST='test/kind/presence_test.rb'"
   eval "KIND_BASIC=t $bundle_cmd exec rake test TEST='test/kind/dig_test.rb'"
   eval "KIND_BASIC=t $bundle_cmd exec rake test TEST='test/kind/try_test.rb'"
