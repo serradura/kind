@@ -1,6 +1,8 @@
 require 'test_helper'
 
 class Kind::KindTest < Minitest::Test
+  require 'kind/basic'
+
   class MyArray < Array
   end
 

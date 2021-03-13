@@ -11,11 +11,7 @@ end
 
 $LOAD_PATH.unshift File.expand_path('../lib', __dir__)
 
-unless ENV.fetch('KIND_BASIC', '').empty?
-  require 'kind/basic'
-else
-  require 'kind'
-end
+require 'kind' if ENV.fetch('KIND_BASIC', '').empty?
 
 ENV.fetch('ACTIVEMODEL_VERSION', '7.0.0').tap do |active_model_version|
   if active_model_version < '7.0.0'
