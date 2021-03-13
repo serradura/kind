@@ -9,6 +9,7 @@ module Kind
     require 'kind/maybe/some'
     require 'kind/maybe/wrapper'
     require 'kind/maybe/typed'
+    require 'kind/maybe/methods'
 
     extend self
 
