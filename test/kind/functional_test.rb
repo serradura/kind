@@ -184,7 +184,7 @@ class KindFunctionalTest < Minitest::Test
     assert_equal("KindFunctionalTest::Add is a Kind::Functional and it can't be inherited by anyone", @@wrong_usage_error2.message)
   end
 
-  def test_the_execution_of_require_function_contract_twice
+  def test_the_execution_of_kind_functional_twice
     assert Add == Add.kind_functional!
   end
 

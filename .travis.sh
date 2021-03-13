@@ -17,6 +17,7 @@ function run_basic_tests {
   eval "KIND_BASIC=t $bundle_cmd exec rake test TEST='test/kind/maybe_test.rb'"
   eval "KIND_BASIC=t $bundle_cmd exec rake test TEST='test/kind/immutable_attributes_test.rb'"
   eval "KIND_BASIC=t $bundle_cmd exec rake test TEST='test/kind/function_test.rb'"
+  eval "KIND_BASIC=t $bundle_cmd exec rake test TEST='test/kind/action_test.rb'"
   eval "KIND_BASIC=t $bundle_cmd exec rake test TEST='test/kind/{functional/*_test,functional_test}.rb'"
   eval "KIND_BASIC=t $bundle_cmd exec rake test TEST='test/kind/either/*_test.rb'"
   eval "KIND_BASIC=t $bundle_cmd exec rake test TEST='test/kind/result/*_test.rb'"

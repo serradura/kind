@@ -36,7 +36,7 @@ module Kind
         end
 
         def self.inherited(_)
-          raise RuntimeError, "#{self.name} is a Kind::Functional::Action and it can't be inherited by anyone"
+          raise RuntimeError, "#{self.name} is a Kind::Functional::Action and it can't be inherited"
         end
 
         call_parameters.flatten!

@@ -130,7 +130,7 @@ class KindFunctionTest < Minitest::Test
     assert_equal('KindFunctionTest::Baz expected to be a kind of Module', @@wrong_usage_error2.message)
   end
 
-  def test_the_execution_of_require_function_contract_twice
+  def test_the_execution_of_kind_function_twice
     assert Add == Add.kind_function!
   end
 end

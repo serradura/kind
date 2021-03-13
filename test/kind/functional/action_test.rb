@@ -199,7 +199,7 @@ class KindFunctionalActionTest < Minitest::Test
 
   def test_the_wrong_usage_errors
     assert RuntimeError === @@wrong_usage_error1
-    assert_equal("KindFunctionalActionTest::Double is a Kind::Functional::Action and it can't be inherited by anyone", @@wrong_usage_error1.message)
+    assert_equal("KindFunctionalActionTest::Double is a Kind::Functional::Action and it can't be inherited", @@wrong_usage_error1.message)
   end
 
   def test_the_execution_of_require_function_contract_twice
