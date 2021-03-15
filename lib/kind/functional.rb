@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-require 'kind'
+require 'kind/basic'
+require 'kind/empty'
+require 'kind/__lib__/attributes'
 
 module Kind
   module Functional
@@ -9,7 +11,7 @@ module Kind
     end
 
     def self.included(base)
-      Kind::Class[base].send(:extend, ClassMethods)
+      KIND.of!(::Class, base).send(:extend, ClassMethods)
     end
 
     module Behavior
@@ -20,31 +22,12 @@ module Kind
       end
 
       def initialize(arg = Empty::HASH)
-        hash = Kind::Hash[arg]
+        hash = KIND.of!(::Hash, arg)
 
-        self.class.__dependencies__.each do |name, (kind, default)|
-          value = hash[name]
+        self.class.__dependencies__.each do |name, (kind, default, _visibility)|
+          value_to_assign = ATTRIBUTES.value_to_assign!(kind, default, hash, name)
 
-          if kind == ::Proc || kind == Kind::Proc || kind == Kind::Lambda
-            value_to_assign =
-              UNDEFINED == default ? value : KIND.value(kind, value, default)
-
-            instance_variable_set("@#{name}", Kind::Proc[value_to_assign, label: name])
-          else
-            default_value =
-              if default.respond_to?(:call)
-                default_fn = Proc === default ? default : default.method(:call)
-
-                default_fn.arity > 0 ? default_fn.call(value) : default_fn.call
-              else
-                default
-              end
-
-            value_to_assign =
-              UNDEFINED == default_value ? value : KIND.value(kind, value, default_value)
-
-            instance_variable_set("@#{name}", Kind.of(kind, value_to_assign, label: name))
-          end
+          instance_variable_set("@#{name}", value_to_assign)
         end
       end
     end
@@ -55,11 +38,11 @@ module Kind
       end
 
       def dependency(name, kind, default: UNDEFINED)
-        __dependencies__[Kind::Symbol[name]] = [Kind::NotNil[kind], default]
+        __dependencies__[ATTRIBUTES.name!(name)] = ATTRIBUTES.value!(kind, default)
 
         attr_reader(name)
 
-        private name
+        private(name)
 
         name
       end
@@ -68,7 +51,7 @@ module Kind
     module ClassMethods
       include DependencyInjection
 
-      def require_functional_contract!
+      def kind_functional!
         return self if Kind.is?(Behavior, self)
 
         public_methods = self.public_instance_methods - ::Object.new.methods

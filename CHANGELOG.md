@@ -250,7 +250,7 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
   p number # 0
   ```
 
-* [#46](https://github.com/serradura/kind/pull/46) - Add `Kind::Either` (either monad). This is basically the same as the `Maybe` monad, but with `Some` called `Right` and `None` called `Left`. But this time, `Left` is also allowed to have an underlying value. This module isn't loaded by default, so you will need to require it if you desire to make use of it.
+* [#46](https://github.com/serradura/kind/pull/46) - Add `Kind::Either` (either monad). This is basically the same as the `Maybe` monad, but with `Some` called `Right` and `None` called `Left`. But this time, `Left` is also allowed to have an underlying value. This module isn't loaded by default, so you will need to require it.
   ```ruby
   require 'kind/either'
 
@@ -322,8 +322,6 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
 
 * [#46](https://github.com/serradura/kind/pull/46) - Add `Kind::Functional`.
 
-* [#46](https://github.com/serradura/kind/pull/46) - Add `Kind::Action`.
-
 * [#46](https://github.com/serradura/kind/pull/46) - Add `Kind::Try.presence` and improve the input/output handling of `Kind::Try.call`.
 
 * [#46](https://github.com/serradura/kind/pull/46) - Add `Kind::Dig.presence` and improve the input/output handling of `Kind::Dig.call`.
@@ -339,6 +337,33 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
 * [#49](https://github.com/serradura/kind/pull/49) - Add `Kind::Undefined.empty?`
 
 * [#50](https://github.com/serradura/kind/pull/50) - Add `Kind::<Type>.empty_or` as an alias of `Kind::<Type>.value_or_empty`
+
+* [#46](https://github.com/serradura/kind/pull/46), [#51](https://github.com/serradura/kind/pull/51) - Add `Kind::Functional::Action`.
+
+* [#51](https://github.com/serradura/kind/pull/51) - Add `Kind::Action`.
+
+* [#51](https://github.com/serradura/kind/pull/51) - Add `Kind::Maybe::ImmutableAttributes`.
+
+* [#51](https://github.com/serradura/kind/pull/51) - Add `Kind::Maybe::Methods`.
+
+* [#51](https://github.com/serradura/kind/pull/51) - Add `Kind::Enum`.
+
+* [#51](https://github.com/serradura/kind/pull/51) - Modularize all the kind components. So now you can require only the modules/features that do you want, `kind/action` is the minimal requirement for all of them.
+  * `kind/action`
+  * `kind/dig`
+  * `kind/either`
+  * `kind/empty`
+  * `kind/enum`
+  * `kind/function`
+  * `kind/functional`
+  * `kind/functional/action`
+  * `kind/immutable_attributes`
+  * `kind/maybe`
+  * `kind/objects`
+  * `kind/presence`
+  * `kind/result`
+  * `kind/try`
+  * `kind/validator`
 
 ### Deprecated
 

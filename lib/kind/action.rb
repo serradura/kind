@@ -1,89 +1,92 @@
 # frozen_string_literal: true
 
-require 'kind'
+require 'kind/basic'
 require 'kind/result'
-require 'kind/functional'
+require 'kind/immutable_attributes'
 
 module Kind
   module Action
     CALL_TMPL = [
-      'def call(%s)',
-      '  result = call!(%s)',
+      'def self.call(arg)',
+      '  new(Kind.of!(::Hash, arg)).call',
+      'end',
+      '',
+      'def call',
+      '  result = call!',
       '',
       '  return result if Kind::Result::Monad === result',
       '',
-      '  raise Kind::Error, "#{self.class.name}#call! must return a Kind::Success or Kind::Failure"',
+      '  raise Kind::Error, "#{self.class.name}#call! must return a Success() or Failure()"',
       'end'
     ].join("\n").freeze
 
-    module Macros
-      def require_action_contract!
-        return self if Kind.is?(Result::Methods, self)
+    module ClassMethods
+      include ImmutableAttributes::ClassMethods
+
+      def to_proc
+        @to_proc ||= ->(arg) { call(arg) }
+      end
+
+      ATTRIBUTE_METHODS = [
+        :attributes, :attribute,
+        :attribute?, :attribute!,
+        :with_attribute, :with_attributes,
+        :nil_attributes, :nil_attributes?
+      ]
+
+      private_constant :ATTRIBUTE_METHODS
+
+      def kind_action!
+        return self if respond_to?(:call)
 
         public_methods = self.public_instance_methods - ::Object.new.methods
 
-        unless public_methods.include?(:call!)
+        remaining_methods = public_methods - (__attributes__.keys + ATTRIBUTE_METHODS)
+
+        unless remaining_methods.include?(:call!)
           raise Kind::Error.new("expected #{self} to implement `#call!`")
         end
 
-        if public_methods.size > 1
+        if remaining_methods.size > 1
           raise Kind::Error.new("#{self} can only have `#call!` as its public method")
         end
 
         call_parameters = public_instance_method(:call!).parameters
 
-        if call_parameters.empty?
-          raise ArgumentError, "#{self.name}#call! must receive at least one argument"
+        unless call_parameters.empty?
+          raise ArgumentError, "#{self.name}#call! must receive no arguments"
         end
 
         def self.inherited(_)
-          raise RuntimeError, "#{self.name} is a Kind::Action and it can't be inherited by anyone"
+          raise RuntimeError, "#{self.name} is a Kind::Action and it can't be inherited"
         end
 
-        call_parameters.flatten!
+        self.send(:private_class_method, :new)
 
-        call_with_args = call_parameters.include?(:req) || call_parameters.include?(:rest)
-        call_with_kargs = call_parameters.include?(:keyreq) || call_parameters.include?(:keyrest)
+        self.class_eval(CALL_TMPL)
 
-        call_tmpl_args = '*args, **kargs' if call_with_args && call_with_kargs
-        call_tmpl_args = '*args'          if call_with_args && !call_with_kargs
-        call_tmpl_args = '**kargs'        if !call_with_args && call_with_kargs
-
-        self.class_eval(
-          "def to_proc; @to_proc ||= method(:call!).to_proc; end" \
-          "\n" \
-          "def curry; @curry ||= to_proc.curry; end" \
-          "\n" \
-          "#{CALL_TMPL % [call_tmpl_args, call_tmpl_args]}"
-        )
-
-        if KIND.of_module?(self)
-          self.send(:extend, Result::Methods)
-        else
-          self.send(:include, Result::Methods)
-          self.send(:include, Functional::Behavior)
-
-          __dependencies__.freeze
-        end
-
-        self.send(:protected, :call!)
-
-        self
+        self.send(:alias_method, :[], :call)
+        self.send(:alias_method, :===, :call)
+        self.send(:alias_method, :yield, :call)
       end
     end
 
     def self.included(base)
-      Kind::Class[base].send(:extend, Functional::DependencyInjection)
+      KIND.of!(::Class, base).extend(ClassMethods)
 
-      base.send(:extend, Macros)
+      base.send(:include, ImmutableAttributes::Reader)
     end
 
-    def self.extended(base)
-      Kind::Module[base].send(:extend, base)
+    include ImmutableAttributes::Initializer
 
-      base.send(:extend, Macros)
-    end
+    private
 
-    private_constant :Macros, :CALL_TMPL
+      def Failure(arg1 = UNDEFINED, arg2 = UNDEFINED)
+        Result::Failure[arg1, arg2, value_must_be_a: ::Hash]
+      end
+
+      def Success(arg1 = UNDEFINED, arg2 = UNDEFINED)
+        Result::Success[arg1, arg2, value_must_be_a: ::Hash]
+      end
   end
 end

@@ -13,10 +13,10 @@ class KindFunctionalTest < Minitest::Test
     private
 
       def number(value)
-        Kind::Numeric.or(0, value)
+        value.kind_of?(Numeric) ? value : 0
       end
 
-    require_functional_contract!
+    kind_functional!
   end
 
   def test_that_an_instance_behave_like_a_lambda
@@ -43,7 +43,7 @@ class KindFunctionalTest < Minitest::Test
       n * 2
     end
 
-    require_functional_contract!
+    kind_functional!
   end
 
   class Triple
@@ -53,18 +53,18 @@ class KindFunctionalTest < Minitest::Test
       number * 3
     end
 
-    require_functional_contract!
+    kind_functional!
   end
 
   class Sum
     include Kind::Functional
 
     def call(*args)
-      args.map!(&Kind::Numeric.or(0))
+      args.map! { |value| value.kind_of?(Numeric) ? value : 0 }
       args.reduce(:+)
     end
 
-    require_functional_contract!
+    kind_functional!
   end
 
   def test_that_module_to_proc
@@ -87,7 +87,7 @@ class KindFunctionalTest < Minitest::Test
       class Foz
         include Kind::Functional
 
-        require_functional_contract!
+        kind_functional!
       end
     rescue => e
       e
@@ -104,7 +104,7 @@ class KindFunctionalTest < Minitest::Test
         def foo
         end
 
-        require_functional_contract!
+        kind_functional!
       end
     rescue => e
       e
@@ -118,7 +118,23 @@ class KindFunctionalTest < Minitest::Test
         def call()
         end
 
-        require_functional_contract!
+        kind_functional!
+      end
+    rescue => e
+      e
+    end
+
+  @@contract_error5 =
+    begin
+      class Buz
+        include Kind::Functional
+
+        dependency :foo, nil
+
+        def call(_)
+        end
+
+        kind_functional!
       end
     rescue => e
       e
@@ -136,6 +152,9 @@ class KindFunctionalTest < Minitest::Test
 
     assert ArgumentError === @@contract_error4
     assert_equal('KindFunctionalTest::Buz#call must receive at least one argument', @@contract_error4.message)
+
+    assert Kind::Error === @@contract_error5
+    assert_equal('kind expected to not be nil', @@contract_error5.message)
   end
 
   @@wrong_usage_error1 =
@@ -143,7 +162,7 @@ class KindFunctionalTest < Minitest::Test
       class Bar
         extend Kind::Functional
 
-        require_functional_contract!
+        kind_functional!
       end
     rescue => e
       e
@@ -165,8 +184,8 @@ class KindFunctionalTest < Minitest::Test
     assert_equal("KindFunctionalTest::Add is a Kind::Functional and it can't be inherited by anyone", @@wrong_usage_error2.message)
   end
 
-  def test_the_execution_of_require_function_contract_twice
-    assert Add == Add.require_functional_contract!
+  def test_the_execution_of_kind_functional_twice
+    assert Add == Add.kind_functional!
   end
 
   class UserRecord
@@ -188,17 +207,23 @@ class KindFunctionalTest < Minitest::Test
   class UserCreator
     include Kind::Functional
 
-    dependency :repository, Kind::RespondTo[:create]
+    unless ENV.fetch('KIND_BASIC', '').empty?
+      dependency(:repository, ->(value) { value.respond_to?(:create) }.tap do |kind|
+        def kind.name; 'Kind::RespondTo[:create]'; end
+      end)
+    else
+      dependency :repository, Kind::RespondTo[:create]
+    end
 
     def call(data)
-      return [:error, 'arg must be a hash'] unless Kind::Hash?(data)
+      return [:error, 'arg must be a hash'] unless data.kind_of?(Hash)
 
       user = repository.create(data)
 
       user.persisted? ? [:ok, user] : [:error, 'user cannot be created']
     end
 
-    require_functional_contract!
+    kind_functional!
   end
 
   CreateUser = UserCreator.new(repository: UserRecord)
@@ -226,10 +251,10 @@ class KindFunctionalTest < Minitest::Test
     dependency :increment, Numeric, default: 0
 
     def call(value)
-      Kind::Numeric.or(0, value) + increment
+      (value.kind_of?(Numeric) ? value : 0) + increment
     end
 
-    require_functional_contract!
+    kind_functional!
   end
 
   def test_a_static_dependency_default
@@ -248,10 +273,10 @@ class KindFunctionalTest < Minitest::Test
     dependency :increment, Numeric, default: ->{ rand(1..10) }
 
     def call(value)
-      Kind::Numeric.or(0, value) + increment
+      (value.kind_of?(Numeric) ? value : 0) + increment
     end
 
-    require_functional_contract!
+    kind_functional!
   end
 
   def test_a_proc_with_arity_0_as_a_dependency_default
@@ -266,10 +291,10 @@ class KindFunctionalTest < Minitest::Test
     dependency :increment, Numeric, default: ->(value){ value.to_i }
 
     def call(value)
-      Kind::Numeric.or(0, value) + increment
+      (value.kind_of?(Numeric) ? value : 0) + increment
     end
 
-    require_functional_contract!
+    kind_functional!
   end
 
   def test_a_proc_with_arity_1_as_a_dependency_default
@@ -289,10 +314,10 @@ class KindFunctionalTest < Minitest::Test
     dependency :increment, Numeric, default: IncrementHandler
 
     def call(value)
-      Kind::Numeric.or(0, value) + increment
+      (value.kind_of?(Numeric) ? value : 0) + increment
     end
 
-    require_functional_contract!
+    kind_functional!
   end
 
   def test_a_callable_as_a_dependency_default
@@ -307,10 +332,10 @@ class KindFunctionalTest < Minitest::Test
     dependency :increment, Proc
 
     def call(value)
-      Kind::Numeric.or(0, value) + increment.()
+      (value.kind_of?(Numeric) ? value : 0) + increment.()
     end
 
-    require_functional_contract!
+    kind_functional!
   end
 
   def test_a_proc_kind_as_a_dependency
@@ -333,10 +358,10 @@ class KindFunctionalTest < Minitest::Test
     dependency :increment, Proc, default: -> { 0 }
 
     def call(value)
-      Kind::Numeric.or(0, value) + increment.()
+      (value.kind_of?(Numeric) ? value : 0) + increment.()
     end
 
-    require_functional_contract!
+    kind_functional!
   end
 
   def test_a_proc_kind_as_a_dependency_which_has_a_default

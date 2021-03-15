@@ -16,7 +16,7 @@ class KindFunctionTest < Minitest::Test
         value.kind_of?(Numeric) ? value : 0
       end
 
-    require_function_contract!
+    kind_function!
   end
 
   def test_that_a_module_behave_like_a_lambda
@@ -40,7 +40,7 @@ class KindFunctionTest < Minitest::Test
       n * 2
     end
 
-    require_function_contract!
+    kind_function!
   end
 
   module Triple
@@ -50,7 +50,7 @@ class KindFunctionTest < Minitest::Test
       number * 3
     end
 
-    require_function_contract!
+    kind_function!
   end
 
   module Sum
@@ -61,7 +61,7 @@ class KindFunctionTest < Minitest::Test
       args.reduce(:+)
     end
 
-    require_function_contract!
+    kind_function!
   end
 
   def test_that_module_to_proc
@@ -77,7 +77,7 @@ class KindFunctionTest < Minitest::Test
       module Foo
         extend Kind::Function
 
-        require_function_contract!
+        kind_function!
       end
     rescue => e
       e
@@ -90,7 +90,7 @@ class KindFunctionTest < Minitest::Test
 
         def call; end
 
-        require_function_contract!
+        kind_function!
       end
     rescue => e
       e
@@ -130,7 +130,7 @@ class KindFunctionTest < Minitest::Test
     assert_equal('KindFunctionTest::Baz expected to be a kind of Module', @@wrong_usage_error2.message)
   end
 
-  def test_the_execution_of_require_function_contract_twice
-    assert Add == Add.require_function_contract!
+  def test_the_execution_of_kind_function_twice
+    assert Add == Add.kind_function!
   end
 end

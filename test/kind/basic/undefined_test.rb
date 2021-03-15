@@ -1,6 +1,8 @@
 require 'test_helper'
 
 class Kind::UndefinedTest < Minitest::Test
+  require 'kind/basic'
+
   def test_inspect
     assert_equal('Kind::Undefined', Kind::Undefined.inspect)
   end

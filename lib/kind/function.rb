@@ -22,7 +22,7 @@ module Kind
       base.extend(base)
     end
 
-    def require_function_contract!
+    def kind_function!
       return self if Kind.is?(Behavior, self)
 
       KIND.respond_to!(:call, self).extend(Behavior)

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'kind'
+require 'kind/basic'
 
 module Kind
   module Validator
@@ -97,11 +97,11 @@ class KindValidator < ActiveModel::EachValidator
     def kind_is_not(expected, value)
       case expected
       when ::Class
-        return if expected == Kind::Class[value] || value < expected
+        return if expected == Kind.of!(::Class, value) || value < expected
 
         "must be the class or a subclass of `#{expected.name}`"
       when ::Module
-        return if value.kind_of?(Class) && value <= expected
+        return if value.kind_of?(::Class) && value <= expected
         return if expected == Kind.of_module_or_class(value) || value.kind_of?(expected)
 
         "must include the `#{expected.name}` module"
@@ -132,7 +132,7 @@ class KindValidator < ActiveModel::EachValidator
     end
 
     def array_with(expected, value)
-      return if value.kind_of?(::Array) && !value.empty? && (value - Kind::Array[expected]).empty?
+      return if value.kind_of?(::Array) && !value.empty? && (value - Kind.of!(::Array, expected)).empty?
 
       "must be an array with: #{expected.join(', ')}"
     end

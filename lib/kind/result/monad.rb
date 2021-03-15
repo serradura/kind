@@ -8,14 +8,14 @@ module Kind
 
     attr_reader :type, :value
 
-    def self.[](arg1 = UNDEFINED, arg2 = UNDEFINED) # :nodoc:
+    def self.[](arg1 = UNDEFINED, arg2 = UNDEFINED, value_must_be_a: nil) # :nodoc:
       type = UNDEFINED == arg2 ? self::DEFAULT_TYPE : KIND.of!(::Symbol, arg1)
 
       Error.wrong_number_of_args!(given: 0, expected: '1 or 2') if UNDEFINED == arg1
 
       value = UNDEFINED == arg2 ? arg1 : arg2
 
-      new(type, value)
+      new(type, (value_must_be_a ? KIND.of!(value_must_be_a, value) : value))
     end
 
     private_class_method :new
@@ -36,6 +36,8 @@ module Kind
     alias_method :map!, :map
     alias_method :then, :map
     alias_method :then!, :map
+    alias_method :and_then, :map
+    alias_method :and_then!, :map
 
     def on
       monad = Wrapper.new(self)

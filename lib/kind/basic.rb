@@ -1,9 +1,12 @@
 # frozen_string_literal: true
 
 require 'kind/version'
+
+require 'kind/__lib__/kind'
+require 'kind/__lib__/undefined'
+
 require 'kind/basic/undefined'
 require 'kind/basic/error'
-require 'kind/basic/kind'
 
 module Kind
   extend self

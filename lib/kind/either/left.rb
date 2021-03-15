@@ -16,7 +16,11 @@ module Kind
       self
     end
 
+    alias_method :map!, :map
     alias_method :then, :map
+    alias_method :then!, :map
+    alias_method :and_then, :map
+    alias_method :and_then!, :map
 
     def inspect
       '#<%s value=%p>' % ['Kind::Left', value]
