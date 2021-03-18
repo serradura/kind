@@ -401,6 +401,8 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
   User.new(name: 'Serradura', bool: true).valid? # true
   ```
 
+* [#52](https://github.com/serradura/kind/pull/52) - Add `Kind::Enum.===`.
+
 ### Deprecated
 
 * [#47](https://github.com/serradura/kind/pull/47) - Deprecate `Kind.is` and `Kind::Of()`.
