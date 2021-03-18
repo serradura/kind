@@ -3,6 +3,7 @@
 This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the recommendations of [keepachangelog.com](http://keepachangelog.com/).
 
 - [Unreleased](#unreleased)
+- [5.2.0 (2021-03-17)](#520-2021-03-17)
   - [Added](#added)
   - [Deprecated](#deprecated)
   - [Changes](#changes)
@@ -79,6 +80,9 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
 ### Removed
 ### Fixed
 -->
+
+5.2.0 (2021-03-17)
+------------------
 
 ### Added
 
@@ -364,6 +368,38 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
   * `kind/result`
   * `kind/try`
   * `kind/validator`
+
+* [#52](https://github.com/serradura/kind/pull/52) - Improve `Kind::Validator`, now will be possible to make use of `lambdas` or objects that responds to `.===` and `.name` to perform a kind validation. e.g.
+  ```ruby
+  class User
+    include ActiveModel::Validations
+
+    attr_reader :name, :bool
+
+    FilledString = ->(value) { value.kind_of?(String) && !value.empty? }
+
+    Bool = Object.new
+    def Bool.===(value)
+      value == true || value == false
+    end
+    def Bool.name; 'Bool'; end
+
+    validates :name, kind: FilledString
+    validates :bool, kind: Bool
+
+    def initialize(name:, bool:)
+      @name, @bool = name, bool
+    end
+  end
+
+  user = User.new(name: '', bool: 1)
+
+  user.valid?        # true
+  user.errors[:name] # ['invalid kind']
+  user.errors[:bool] # ['must be a kind of Bool']
+
+  User.new(name: 'Serradura', bool: true).valid? # true
+  ```
 
 ### Deprecated
 
