@@ -19,8 +19,8 @@ if ENV['ACTIVEMODEL_VERSION']
       invalid_person = Person.new(name: 21.0, age: 'John')
 
       refute_predicate(invalid_person, :valid?)
-      assert_equal(['must be an instance of: String'], invalid_person.errors[:name])
-      assert_equal(['must be an instance of: Float'], invalid_person.errors[:age])
+      assert_equal(['must be an instance of String'], invalid_person.errors[:name])
+      assert_equal(['must be an instance of Float'], invalid_person.errors[:age])
 
       person = Person.new(name: 'John', age: 21.0)
 
@@ -34,7 +34,7 @@ if ENV['ACTIVEMODEL_VERSION']
 
       refute_predicate(person, :valid?)
 
-      assert_equal(['must be an instance of: String'], person.errors[:name])
+      assert_equal(['must be an instance of String'], person.errors[:name])
     end
 
     # ---
@@ -61,7 +61,7 @@ if ENV['ACTIVEMODEL_VERSION']
       assert_predicate(job2, :valid?)
 
       refute_predicate(job3, :valid?)
-      assert_equal(['must be an instance of: String, Symbol'], job3.errors[:status])
+      assert_equal(['must be an instance of String, Symbol'], job3.errors[:status])
     end
 
     def test_the_allow_nil_validation_options
@@ -71,7 +71,7 @@ if ENV['ACTIVEMODEL_VERSION']
       assert_predicate(job1, :valid?)
 
       refute_predicate(job2, :valid?)
-      assert_equal(['must be an instance of: Float'], job2.errors[:id])
+      assert_equal(['must be an instance of Float'], job2.errors[:id])
     end
 
     # ---
@@ -92,7 +92,7 @@ if ENV['ACTIVEMODEL_VERSION']
       assert_predicate(Task.new(title: nil), :valid?)
       assert_predicate(Task.new(title: 'Buy milk'), :valid?)
 
-      assert_raises_kind_error('title must be an instance of: String') do
+      assert_raises_kind_error('title must be an instance of String') do
         Task.new(title: 42).valid?
       end
     end

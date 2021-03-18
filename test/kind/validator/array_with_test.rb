@@ -21,7 +21,7 @@ if ENV['ACTIVEMODEL_VERSION']
         Person.new(values: [1, 2, 3, 5])
       ].each do |person|
         refute_predicate(person, :valid?)
-        assert_equal(['must be an array with: 1, 2, 3'], person.errors[:values])
+        assert_equal(['must be an array with 1, 2, 3'], person.errors[:values])
       end
 
       person = Person.new(values: [1])
@@ -62,7 +62,7 @@ if ENV['ACTIVEMODEL_VERSION']
         Task.new(values: []),
         Task.new(values: [4])
       ].each do |task|
-        assert_raises_kind_error('values must be an array with: 1, 2, 3') do
+        assert_raises_kind_error('values must be an array with 1, 2, 3') do
           task.valid?
         end
       end

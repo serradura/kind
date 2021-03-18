@@ -21,7 +21,7 @@ if ENV['ACTIVEMODEL_VERSION']
         Person.new(values: [])
       ].each do |person|
         refute_predicate(person, :valid?)
-        assert_equal(['must be an array of: String'], person.errors[:values])
+        assert_equal(['must be an array of String'], person.errors[:values])
       end
 
       person = Person.new(values: %w[a b c])
@@ -65,7 +65,7 @@ if ENV['ACTIVEMODEL_VERSION']
         Job.new(ids: [])
       ].each do |job|
         refute_predicate(job, :valid?)
-        assert_equal(['must be an array of: Integer, Float'], job.errors[:ids])
+        assert_equal(['must be an array of Integer, Float'], job.errors[:ids])
       end
     end
 
@@ -96,7 +96,7 @@ if ENV['ACTIVEMODEL_VERSION']
         Task.new(statuses: []),
         Task.new(statuses: [1])
       ].each do |task|
-        assert_raises_kind_error('statuses must be an array of: String') do
+        assert_raises_kind_error('statuses must be an array of String') do
           task.valid?
         end
       end

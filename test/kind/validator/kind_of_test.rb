@@ -20,9 +20,9 @@ if ENV['ACTIVEMODEL_VERSION']
       invalid_person = Person.new(name: 21, age: 'John', alive: 0)
 
       refute_predicate(invalid_person, :valid?)
-      assert_equal(['must be a kind of: String'], invalid_person.errors[:name])
-      assert_equal(['must be a kind of: Integer'], invalid_person.errors[:age])
-      assert_equal(['must be a kind of: Boolean'], invalid_person.errors[:alive])
+      assert_equal(['must be a kind of String'], invalid_person.errors[:name])
+      assert_equal(['must be a kind of Integer'], invalid_person.errors[:age])
+      assert_equal(['must be a kind of Boolean'], invalid_person.errors[:alive])
 
       person = Person.new(name: 'John', age: 21, alive: false)
 
@@ -61,7 +61,7 @@ if ENV['ACTIVEMODEL_VERSION']
       assert_predicate(job2, :valid?)
 
       refute_predicate(job3, :valid?)
-      assert_equal(['must be a kind of: String, Symbol'], job3.errors[:status])
+      assert_equal(['must be a kind of String, Symbol'], job3.errors[:status])
     end
 
     def test_the_allow_nil_validation_options
@@ -71,7 +71,7 @@ if ENV['ACTIVEMODEL_VERSION']
       assert_predicate(job1, :valid?)
 
       refute_predicate(job2, :valid?)
-      assert_equal(['must be a kind of: Integer'], job2.errors[:id])
+      assert_equal(['must be a kind of Integer'], job2.errors[:id])
     end
 
     # ---
@@ -92,9 +92,40 @@ if ENV['ACTIVEMODEL_VERSION']
       assert_predicate(Task.new(title: nil), :valid?)
       assert_predicate(Task.new(title: 'Buy milk'), :valid?)
 
-      assert_raises_kind_error('title must be a kind of: String') do
+      assert_raises_kind_error('title must be a kind of String') do
         Task.new(title: 42).valid?
       end
+    end
+
+    class User
+      include ActiveModel::Validations
+
+      attr_reader :name, :bool
+
+      FilledString = ->(value) { value.kind_of?(String) && !value.empty? }
+
+      Bool = Object.new
+      def Bool.===(value)
+        value == true || value == false
+      end
+      def Bool.name; 'Bool'; end
+
+      validates :name, kind: FilledString
+      validates :bool, kind: Bool
+
+      def initialize(name:, bool:)
+      @name, @bool = name, bool
+      end
+    end
+
+    def test_the_usage_of_lambdas_to_perform_validations
+      invalid_user = User.new(name: '', bool: 1)
+
+      refute_predicate(invalid_user, :valid?)
+      assert_equal(['invalid kind'], invalid_user.errors[:name])
+      assert_equal(['must be a kind of Bool'], invalid_user.errors[:bool])
+
+      assert User.new(name: 'Serradura', bool: true).valid?
     end
   end
 end
