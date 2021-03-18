@@ -12,6 +12,10 @@ module Kind
       ENUM__ITEMS
     end
 
+    def ===(arg)
+      ENUM__ITEMS.any? { |item| item === arg }
+    end
+
     def refs
       ENUM__REFS.to_a
     end

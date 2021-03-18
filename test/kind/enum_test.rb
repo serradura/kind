@@ -33,6 +33,7 @@ class Kind::EnumTest < Minitest::Test
     )
 
     [:low, :medium, :high, 'low', 'medium', 'high', 0, 1, 2].each do |key|
+      assert Level1 === key
       assert Level1.ref?(key)
     end
 
@@ -137,6 +138,7 @@ class Kind::EnumTest < Minitest::Test
     )
 
     [:low, :medium, :high, 'low', 'medium', 'high', 0, 1, 2].each do |key|
+      assert Level2 === key
       assert Level2.ref?(key)
     end
 
@@ -228,6 +230,7 @@ class Kind::EnumTest < Minitest::Test
     )
 
     [:banana, :Orange, 'banana', 'Orange', 'bANANA', 'orangE'].each do |key|
+      assert Fruits === key
       assert Fruits.ref?(key)
     end
 

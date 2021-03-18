@@ -77,11 +77,15 @@ class KindValidator < ActiveModel::EachValidator
     end
 
     def kind_of(expected, value)
-      types = Array(expected)
+      if ::Array === expected
+        return if expected.any? { |type| type === value }
 
-      return if types.any? { |type| type === value }
+        "must be a kind of #{expected.map { |type| type.name }.join(', ')}"
+      else
+        return if expected === value
 
-      "must be a kind of: #{types.map { |type| type.name }.join(', ')}"
+        expected.respond_to?(:name) ? "must be a kind of #{expected.name}" : 'invalid kind'
+      end
     end
 
     CLASS_OR_MODULE = 'Class/Module'.freeze
@@ -128,13 +132,13 @@ class KindValidator < ActiveModel::EachValidator
 
       return if types.any? { |type| value.instance_of?(type) }
 
-      "must be an instance of: #{types.map { |klass| klass.name }.join(', ')}"
+      "must be an instance of #{types.map { |klass| klass.name }.join(', ')}"
     end
 
     def array_with(expected, value)
       return if value.kind_of?(::Array) && !value.empty? && (value - Kind.of!(::Array, expected)).empty?
 
-      "must be an array with: #{expected.join(', ')}"
+      "must be an array with #{expected.join(', ')}"
     end
 
     def array_of(expected, value)
@@ -142,6 +146,6 @@ class KindValidator < ActiveModel::EachValidator
 
       return if value.kind_of?(::Array) && !value.empty? && value.all? { |val| types.any? { |type| type === val } }
 
-      "must be an array of: #{types.map { |klass| klass.name }.join(', ')}"
+      "must be an array of #{types.map { |klass| klass.name }.join(', ')}"
     end
 end

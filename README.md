@@ -39,12 +39,12 @@ One of the goals of this project is to do simple type checking like `"some strin
 
 Version    | Documentation
 ---------- | -------------
-unreleased | https://github.com/serradura/u-case/blob/main/README.md
-5.1.0      | https://github.com/serradura/u-case/blob/v5.x/README.md
-4.1.0      | https://github.com/serradura/u-case/blob/v4.x/README.md
-3.1.0      | https://github.com/serradura/u-case/blob/v3.x/README.md
-2.3.0      | https://github.com/serradura/u-case/blob/v2.x/README.md
-1.9.0      | https://github.com/serradura/u-case/blob/v1.x/README.md
+unreleased | https://github.com/serradura/kind/blob/main/README.md
+5.2.0      | https://github.com/serradura/kind/blob/v5.x/README.md
+4.1.0      | https://github.com/serradura/kind/blob/v4.x/README.md
+3.1.0      | https://github.com/serradura/kind/blob/v3.x/README.md
+2.3.0      | https://github.com/serradura/kind/blob/v2.x/README.md
+1.9.0      | https://github.com/serradura/kind/blob/v1.x/README.md
 
 ## Table of Contents <!-- omit in toc -->
 - [Compatibility](#compatibility)
@@ -59,7 +59,7 @@ unreleased | https://github.com/serradura/u-case/blob/main/README.md
   - [Kind::\<Type\>.value()](#kindtypevalue-1)
   - [Kind::\<Type\>.maybe](#kindtypemaybe)
   - [Kind::\<Type\>?](#kindtype-2)
-  - [Kind::{Array,Hash,String,Set}.value_or_empty()](#kindarrayhashstringsetvalue_or_empty)
+  - [Kind::{Array,Hash,String,Set}.empty_or()](#kindarrayhashstringsetempty_or)
   - [List of all type handlers](#list-of-all-type-handlers)
     - [Core](#core)
     - [Stdlib](#stdlib)
@@ -120,10 +120,10 @@ unreleased | https://github.com/serradura/u-case/blob/main/README.md
 
 ## Compatibility
 
-| u-case         | branch  | ruby     |  activemodel   |
+| kind           | branch  | ruby     |  activemodel   |
 | -------------- | ------- | -------- | -------------- |
 | unreleased     | main    | >= 2.1.0 | >= 3.2, <= 6.1 |
-| 5.1.0          | v5.x    | >= 2.1.0 | >= 3.2, <= 6.1 |
+| 5.2.0          | v5.x    | >= 2.1.0 | >= 3.2, <= 6.1 |
 | 4.1.0          | v4.x    | >= 2.2.0 | >= 3.2, <= 6.1 |
 | 3.1.0          | v3.x    | >= 2.2.0 | >= 3.2, <= 6.1 |
 | 2.3.0          | v2.x    | >= 2.2.0 | >= 3.2, <= 6.0 |
@@ -328,12 +328,12 @@ collection.select(&Kind::Enumerable?) # [{:number=>1}, {:number=>3}, [:number, 5
 
 [⬆️ &nbsp;Back to Top](#table-of-contents-)
 
-### Kind::{Array,Hash,String,Set}.value_or_empty()
+### Kind::{Array,Hash,String,Set}.empty_or()
 
 This method is available for some type handlers (`Kind::Array`, `Kind::Hash`, `Kind::String`, `Kind::Set`), and it will return an empty frozen value if the given one hasn't the expected kind.
 ```ruby
-Kind::Array.value_or_empty({})         # []
-Kind::Array.value_or_empty({}).frozen? # true
+Kind::Array.empty_or({})         # []
+Kind::Array.empty_or({}).frozen? # true
 ```
 
 [⬆️ &nbsp;Back to Top](#table-of-contents-)
@@ -528,7 +528,7 @@ PositiveInteger.maybe(2).value_or(1) # 2
 
 #### Kind::<Type> object
 
-The idea here is to create a type handler inside of the `Kind` namespace, so to do this, you will only need to use pure Ruby. e.g:
+The idea here is to create a type handler inside of the `Kind` namespace and to do this you will only need to use pure Ruby. e.g:
 
 ```ruby
 class User

@@ -21,8 +21,8 @@ if ENV['ACTIVEMODEL_VERSION']
       invalid_person = Person.new(name: 21, alive: nil)
 
       refute_predicate(invalid_person, :valid?)
-      assert_equal(['must be a kind of: String'], invalid_person.errors[:name])
-      assert_equal(['must be a kind of: Boolean'], invalid_person.errors[:alive])
+      assert_equal(['must be a kind of String'], invalid_person.errors[:name])
+      assert_equal(['must be a kind of Boolean'], invalid_person.errors[:alive])
 
       person = Person.new(name: MyString.new('John'), alive: true)
 
@@ -39,8 +39,8 @@ if ENV['ACTIVEMODEL_VERSION']
         Person.new(name: MyString.new('John'), alive: 0)
       ].each do |person|
         refute_predicate(person, :valid?)
-        assert_equal(['must be an instance of: String'], person.errors[:name])
-        assert_equal(['must be an instance of: Boolean'], person.errors[:alive])
+        assert_equal(['must be an instance of String'], person.errors[:name])
+        assert_equal(['must be an instance of Boolean'], person.errors[:alive])
       end
 
       Kind::Validator.default_strategy = :kind_of
@@ -70,7 +70,7 @@ if ENV['ACTIVEMODEL_VERSION']
       invalid_user = User.new(name: 21)
 
       refute_predicate(invalid_user, :valid?)
-      assert_equal(['must be a kind of: String, Symbol'], invalid_user.errors[:name])
+      assert_equal(['must be a kind of String, Symbol'], invalid_user.errors[:name])
 
       [
         User.new(name: :John),
