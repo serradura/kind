@@ -2,6 +2,7 @@
 
 require 'kind/result'
 require 'kind/functional'
+require 'kind/__lib__/action_steps'
 
 module Kind
   module Functional::Action
@@ -56,10 +57,12 @@ module Kind
           "#{CALL_TMPL % [call_tmpl_args, call_tmpl_args]}"
         )
 
-        if KIND.of_module?(self)
+        if Kind.of_module?(self)
           self.send(:extend, Result::Methods)
+          self.send(:extend, ACTION_STEPS)
         else
           self.send(:include, Result::Methods)
+          self.send(:include, ACTION_STEPS)
           self.send(:include, Functional::Behavior)
 
           __dependencies__.freeze
@@ -72,15 +75,13 @@ module Kind
     end
 
     def self.included(base)
-      KIND.of!(::Class, base).send(:extend, Functional::DependencyInjection)
+      Kind.of_class(base).send(:extend, Functional::DependencyInjection)
 
       base.send(:extend, Macros)
     end
 
     def self.extended(base)
-      KIND.error!('Module', base) unless Kind.of_module?(base)
-
-      base.send(:extend, base)
+      base.send(:extend, Kind.of_module(base))
       base.send(:extend, Macros)
     end
 

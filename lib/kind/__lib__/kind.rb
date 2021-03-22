@@ -4,7 +4,7 @@ module Kind
   module KIND
     extend self
 
-    def null?(value) # :nodoc:
+    def nil_or_undefined?(value) # :nodoc:
       value.nil? || Undefined == value
     end
 
@@ -26,10 +26,6 @@ module Kind
 
     def of_class?(value) # :nodoc:
       value.kind_of?(::Class)
-    end
-
-    def of_module?(value) # :nodoc:
-      ::Module == value || (value.kind_of?(::Module) && !of_class?(value))
     end
 
     def of_module_or_class!(value) # :nodoc:

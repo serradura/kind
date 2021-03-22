@@ -11,7 +11,7 @@ module Kind
     end
 
     def self.included(base)
-      KIND.of!(::Class, base).send(:extend, ClassMethods)
+      Kind.of_class(base).send(:extend, ClassMethods)
     end
 
     module Behavior

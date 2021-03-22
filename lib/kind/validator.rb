@@ -101,7 +101,7 @@ class KindValidator < ActiveModel::EachValidator
     def kind_is_not(expected, value)
       case expected
       when ::Class
-        return if expected == Kind.of!(::Class, value) || value < expected
+        return if expected == Kind.of_class(value) || value < expected
 
         "must be the class or a subclass of `#{expected.name}`"
       when ::Module

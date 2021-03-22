@@ -39,7 +39,7 @@ module Kind
   end
 
   def of_module?(value)
-    KIND.of_module?(value)
+    ::Module == value || (value.kind_of?(::Module) && !KIND.of_class?(value))
   end
 
   def respond_to?(value, *method_names)
@@ -55,6 +55,16 @@ module Kind
   end
 
   alias_method :of!, :of
+
+  def of_class(value)
+    KIND.of!(::Class, value)
+  end
+
+  def of_module(value)
+    return value if of_module?(value)
+
+    KIND.error!('Module', value)
+  end
 
   def of_module_or_class(value)
     KIND.of_module_or_class!(value)

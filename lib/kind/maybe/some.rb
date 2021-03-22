@@ -11,7 +11,7 @@ module Kind
       VALUE_CANT_BE_NONE = "value can't be nil or Kind::Undefined".freeze
 
       def self.[](value)
-        return new(value) if !KIND.null?(value)
+        return new(value) if !KIND.nil_or_undefined?(value)
 
         raise ArgumentError, VALUE_CANT_BE_NONE
       end
@@ -57,7 +57,7 @@ module Kind
           fn.call(@value)
         end
 
-        !result || KIND.null?(result) ? NONE_INSTANCE : self
+        !result || KIND.nil_or_undefined?(result) ? NONE_INSTANCE : self
       end
 
       alias_method :accept, :check
@@ -73,7 +73,7 @@ module Kind
           fn.call(@value)
         end
 
-        result || KIND.null?(result) ? NONE_INSTANCE : self
+        result || KIND.nil_or_undefined?(result) ? NONE_INSTANCE : self
       end
 
       def try!(method_name = UNDEFINED, *args, &block)
@@ -120,7 +120,7 @@ module Kind
 
         def resolve(result)
           return result if Maybe::None === result
-          return NONE_INSTANCE if KIND.null?(result)
+          return NONE_INSTANCE if KIND.nil_or_undefined?(result)
           return None.new(result) if ::Exception === result
 
           Some.new(result)

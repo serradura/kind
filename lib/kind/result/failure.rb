@@ -14,10 +14,12 @@ module Kind
       UNDEFINED != default ? default : block.call
     end
 
-    def map(&_)
+    def map(_ = UNDEFINED, &_fn)
       self
     end
 
+    alias_method :|, :map
+    alias_method :>>, :map
     alias_method :map!, :map
     alias_method :then, :map
     alias_method :then!, :map

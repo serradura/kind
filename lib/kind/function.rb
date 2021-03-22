@@ -17,9 +17,7 @@ module Kind
     end
 
     def self.extended(base)
-      KIND.error!('Module', base) unless Kind.of_module?(base)
-
-      base.extend(base)
+      base.extend(Kind.of_module(base))
     end
 
     def kind_function!

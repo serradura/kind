@@ -33,7 +33,7 @@ module Kind
     end
 
     def or_null(value) # :nodoc:
-      KIND.null?(value) ? value : self[value]
+      KIND.nil_or_undefined?(value) ? value : self[value]
     end
 
     private

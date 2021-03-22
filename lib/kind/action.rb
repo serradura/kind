@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
 require 'kind/basic'
+require 'kind/empty'
 require 'kind/result'
 require 'kind/immutable_attributes'
+require 'kind/__lib__/action_steps'
 
 module Kind
   module Action
@@ -19,6 +21,8 @@ module Kind
       '  raise Kind::Error, "#{self.class.name}#call! must return a Success() or Failure()"',
       'end'
     ].join("\n").freeze
+
+    private_constant :CALL_TMPL
 
     module ClassMethods
       include ImmutableAttributes::ClassMethods
@@ -71,21 +75,52 @@ module Kind
       end
     end
 
-    def self.included(base)
-      KIND.of!(::Class, base).extend(ClassMethods)
+    module StepAdapters
+      private
 
+        def Check!(mthod); __Check(mthod, Empty::HASH); end
+        def Step!(mthod); __Step(mthod, Empty::HASH); end
+        def Map!(mthod); __Map(mthod, Empty::HASH); end
+        def Tee!(_mthod); raise NotImplementedError; end
+        def Try!(mthod, opt = Empty::HASH); __Try(mthod, Empty::HASH, opt); end
+
+        def __resolve_step(method_name, value)
+          m = method(method_name)
+          m.arity > 0 ? m.call(value) : m.call
+        end
+
+        def __map_step_exception(value)
+          { exception: value }
+        end
+    end
+
+    private_constant :StepAdapters
+
+    def self.included(base)
+      Kind.of_class(base).extend(ClassMethods)
+
+      base.send(:include, ACTION_STEPS)
+      base.send(:include, StepAdapters)
       base.send(:include, ImmutableAttributes::Reader)
     end
 
     include ImmutableAttributes::Initializer
 
+    def inspect
+      '#<%s attributes=%p nil_attributes=%p>' % [self.class.name, attributes, nil_attributes]
+    end
+
     private
 
       def Failure(arg1 = UNDEFINED, arg2 = UNDEFINED)
+        arg1 = Empty::HASH if UNDEFINED == arg1 && UNDEFINED == arg2
+
         Result::Failure[arg1, arg2, value_must_be_a: ::Hash]
       end
 
       def Success(arg1 = UNDEFINED, arg2 = UNDEFINED)
+        arg1 = Empty::HASH if UNDEFINED == arg1 && UNDEFINED == arg2
+
         Result::Success[arg1, arg2, value_must_be_a: ::Hash]
       end
   end
