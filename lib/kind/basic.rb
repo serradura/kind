@@ -35,11 +35,11 @@ module Kind
   end
 
   def of_class?(value)
-    KIND.of_class?(value)
+    OF.class?(value)
   end
 
   def of_module?(value)
-    ::Module == value || (value.kind_of?(::Module) && !KIND.of_class?(value))
+    OF.module?(value)
   end
 
   def respond_to?(value, *method_names)
@@ -49,25 +49,21 @@ module Kind
   end
 
   def of(kind, value, label: nil)
-    return value if kind === value
-
-    KIND.error!(kind.name, value, label)
+    STRICT.object_is_a(kind, value, label)
   end
 
   alias_method :of!, :of
 
   def of_class(value)
-    KIND.of!(::Class, value)
+    STRICT.class!(value)
   end
 
   def of_module(value)
-    return value if of_module?(value)
-
-    KIND.error!('Module', value)
+    STRICT.module!(value)
   end
 
   def of_module_or_class(value)
-    KIND.of_module_or_class!(value)
+    STRICT.module_or_class(value)
   end
 
   def respond_to(value, *method_names)

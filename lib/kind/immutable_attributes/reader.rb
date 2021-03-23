@@ -28,7 +28,7 @@ module Kind
       end
 
       def with_attributes(arg)
-        hash = KIND.of!(::Hash, arg)
+        hash = STRICT.kind_of(::Hash, arg)
 
         self.class.new(@_____attrs.merge(hash))
       end

@@ -12,13 +12,13 @@ module Kind
     def self.[](arg1 = UNDEFINED, arg2 = UNDEFINED, opt = Empty::HASH) # :nodoc:
       value_must_be_a = opt[:value_must_be_a]
 
-      type = UNDEFINED == arg2 ? self::DEFAULT_TYPE : KIND.of!(::Symbol, arg1)
+      type = UNDEFINED == arg2 ? self::DEFAULT_TYPE : STRICT.kind_of(::Symbol, arg1)
 
       Error.wrong_number_of_args!(given: 0, expected: '1 or 2') if UNDEFINED == arg1
 
       value = UNDEFINED == arg2 ? arg1 : arg2
 
-      new(type, (value_must_be_a ? KIND.of!(value_must_be_a, value) : value))
+      new(type, (value_must_be_a ? STRICT.kind_of(value_must_be_a, value) : value))
     end
 
     private_class_method :new

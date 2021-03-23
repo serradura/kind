@@ -6,7 +6,7 @@ require 'kind/presence'
 module Kind
   module Maybe
     class Some < Monad
-      KindSymbol = ->(value) { KIND.of!(::Symbol, value) }
+      KindSymbol = ->(value) { STRICT.kind_of(::Symbol, value) }
 
       VALUE_CANT_BE_NONE = "value can't be nil or Kind::Undefined".freeze
 

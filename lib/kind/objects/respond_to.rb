@@ -5,7 +5,7 @@ module Kind
     include Kind::BasicObject
 
     def self.[](*args)
-      args.each { |arg| KIND.of!(::Symbol, arg) }
+      args.each { |arg| STRICT.kind_of(::Symbol, arg) }
 
       new(args)
     end

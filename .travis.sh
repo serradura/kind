@@ -21,6 +21,8 @@ function run_basic_tests {
   eval "KIND_BASIC=t $bundle_cmd exec rake test TEST='test/kind/{functional/*_test,functional_test}.rb'"
   eval "KIND_BASIC=t $bundle_cmd exec rake test TEST='test/kind/either/*_test.rb'"
   eval "KIND_BASIC=t $bundle_cmd exec rake test TEST='test/kind/result/*_test.rb'"
+
+  eval "KIND_STRICT=t $bundle_cmd exec rake test TEST='test/kind/strict_disabled_test.rb'"
 }
 
 function run_with_bundler {

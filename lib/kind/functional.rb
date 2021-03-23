@@ -22,7 +22,7 @@ module Kind
       end
 
       def initialize(arg = Empty::HASH)
-        hash = KIND.of!(::Hash, arg)
+        hash = STRICT.kind_of(::Hash, arg)
 
         self.class.__dependencies__.each do |name, (kind, default, _visibility)|
           value_to_assign = ATTRIBUTES.value_to_assign!(kind, default, hash, name)

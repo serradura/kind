@@ -3,9 +3,7 @@
 module Kind
   module BasicObject
     def [](value, label: nil)
-      return value if self === value
-
-      KIND.error!(name, value, label)
+      STRICT.object_is_a(self, value, label)
     end
 
     def or_nil(value)

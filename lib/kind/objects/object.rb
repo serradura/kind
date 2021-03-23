@@ -34,7 +34,7 @@ module Kind
     def initialize(kind, opt)
       name = ResolveKindName.(kind, opt)
 
-      @name = KIND.of!(::String, name)
+      @name = STRICT.kind_of(::String, name)
       @kind = KIND.respond_to!(:===, kind)
     end
 
