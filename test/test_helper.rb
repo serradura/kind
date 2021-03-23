@@ -28,6 +28,7 @@ ENV.fetch('ACTIVEMODEL_VERSION', '7.0.0').tap do |active_model_version|
 end
 
 require_relative 'support/kind_is_test'
+require_relative 'support/step_adapter_assertions'
 
 require 'minitest/pride'
 require 'minitest/autorun'

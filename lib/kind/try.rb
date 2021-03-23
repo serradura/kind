@@ -9,7 +9,7 @@ module Kind
     extend self
 
     def call!(object, method_name, args = Empty::ARRAY) # :nodoc
-      return if KIND.null?(object)
+      return if KIND.nil_or_undefined?(object)
 
       resolve(object, method_name, args)
     end
@@ -21,7 +21,7 @@ module Kind
 
       return result unless block_given?
 
-      yield(result) unless KIND.null?(result)
+      yield(result) unless KIND.nil_or_undefined?(result)
     end
 
     def presence(*args, &block)

@@ -8,7 +8,7 @@ module Kind
     extend self
 
     def name!(name)
-      KIND.of!(::Symbol, name)
+      STRICT.kind_of(::Symbol, name)
     end
 
     def value(kind, default, visibility = :private)

@@ -7,7 +7,7 @@ module Kind
     extend self
 
     def call(object)
-      return if KIND.null?(object)
+      return if KIND.nil_or_undefined?(object)
 
       return object.blank? ? nil : object if object.respond_to?(:blank?)
 

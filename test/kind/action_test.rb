@@ -170,4 +170,41 @@ class KindActionTest < Minitest::Test
     assert_equal("KindActionTest::UpdateUser is a Kind::Action and it can't be inherited", @@wrong_usage_error1.message)
   end
 
+  class Sum
+    include Kind::Action
+
+    attribute :a
+    attribute :b
+
+    def call!
+      Success number: (a || 0) + (b || 0)
+    end
+
+    kind_action!
+  end
+
+  def test_inspect
+    s = Sum.allocate
+    s.send(:initialize, {})
+
+    assert_equal('#<KindActionTest::Sum attributes={:a=>nil, :b=>nil} nil_attributes=[:a, :b]>', s.inspect)
+  end
+
+  class Foo
+    include Kind::Action
+
+    def call!
+      Failure()
+    end
+
+    kind_action!
+  end
+
+  def test_failure_receiving_no_args
+    r = Foo.({})
+    assert r.failure?
+    assert_equal(:error, r.type)
+    assert_equal({}, r.value)
+  end
+
 end

@@ -12,7 +12,7 @@ module Kind
       keys.reduce(data) do |memo, key|
         value = get(memo, key)
 
-        break if KIND.null?(value)
+        break if KIND.nil_or_undefined?(value)
 
         value
       end
@@ -25,7 +25,7 @@ module Kind
 
       return result unless block_given?
 
-      yield(result) unless KIND.null?(result)
+      yield(result) unless KIND.nil_or_undefined?(result)
     end
 
     def presence(*args, &block)

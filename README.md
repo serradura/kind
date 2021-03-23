@@ -40,7 +40,7 @@ One of the goals of this project is to do simple type checking like `"some strin
 Version    | Documentation
 ---------- | -------------
 unreleased | https://github.com/serradura/kind/blob/main/README.md
-5.2.0      | https://github.com/serradura/kind/blob/v5.x/README.md
+5.3.0      | https://github.com/serradura/kind/blob/v5.x/README.md
 4.1.0      | https://github.com/serradura/kind/blob/v4.x/README.md
 3.1.0      | https://github.com/serradura/kind/blob/v3.x/README.md
 2.3.0      | https://github.com/serradura/kind/blob/v2.x/README.md
@@ -123,7 +123,7 @@ unreleased | https://github.com/serradura/kind/blob/main/README.md
 | kind           | branch  | ruby     |  activemodel   |
 | -------------- | ------- | -------- | -------------- |
 | unreleased     | main    | >= 2.1.0 | >= 3.2, <= 6.1 |
-| 5.2.0          | v5.x    | >= 2.1.0 | >= 3.2, <= 6.1 |
+| 5.3.0          | v5.x    | >= 2.1.0 | >= 3.2, <= 6.1 |
 | 4.1.0          | v4.x    | >= 2.2.0 | >= 3.2, <= 6.1 |
 | 3.1.0          | v3.x    | >= 2.2.0 | >= 3.2, <= 6.1 |
 | 2.3.0          | v2.x    | >= 2.2.0 | >= 3.2, <= 6.0 |
