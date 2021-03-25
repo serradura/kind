@@ -1,6 +1,6 @@
 <p align="center">
   <h1 align="center">🤷 kind</h1>
-  <p align="center"><i>A simple type system (at runtime) for Ruby - free of dependencies.</i></p>
+  <p align="center"><i>A development toolkit for Ruby with several small/cohesive abstractions to empower your development workflow - It's totally free of dependencies.</i></p>
 </p>
 
 <p align="center">
@@ -31,16 +31,18 @@
 
 **Motivation:**
 
-As a creator of Ruby gems, I have a common need that I have to handle in many of my projects: type checking of method arguments.
+This project was born to help me with a simple task, create a light and fast type checker (at runtime) for Ruby. The initial idea was to have something to raise an exception when a method or function (procs) received a wrong input.
 
-One of the goals of this project is to do simple type checking like `"some string".is_a?(String)`, but, exposing useful abstractions around this. e.g: [Kind.\<Type\> methods](#verifying-the-kind-of-some-object), [active model validations](#kindvalidator-activemodelvalidations), [maybe monad](#kindmaybe).
+But through time it was natural the addition of more features to improve the development workflow, like monads ([`Kind::Maybe`](#kindmaybe), `Kind::Either` / `Kind::Result`),  enums (`Kind::Enum`), immutable objects (`Kind::ImmutableAttributes`), [type validation via ActiveModel::Validation](#kindvalidator-activemodelvalidations), and several abstractions to help the implementation of business logic (`Kind::Functional::Steps`, `Kind::Functional::Action`, `Kind::Action`).
+
+So, I invite you to check out these features to see how they could be useful for you. Enjoy!
 
 ## Documentation <!-- omit in toc -->
 
 Version    | Documentation
 ---------- | -------------
 unreleased | https://github.com/serradura/kind/blob/main/README.md
-5.3.0      | https://github.com/serradura/kind/blob/v5.x/README.md
+5.4.0      | https://github.com/serradura/kind/blob/v5.x/README.md
 4.1.0      | https://github.com/serradura/kind/blob/v4.x/README.md
 3.1.0      | https://github.com/serradura/kind/blob/v3.x/README.md
 2.3.0      | https://github.com/serradura/kind/blob/v2.x/README.md
@@ -120,14 +122,14 @@ unreleased | https://github.com/serradura/kind/blob/main/README.md
 
 ## Compatibility
 
-| kind           | branch  | ruby     |  activemodel   |
-| -------------- | ------- | -------- | -------------- |
-| unreleased     | main    | >= 2.1.0 | >= 3.2, <= 6.1 |
-| 5.3.0          | v5.x    | >= 2.1.0 | >= 3.2, <= 6.1 |
-| 4.1.0          | v4.x    | >= 2.2.0 | >= 3.2, <= 6.1 |
-| 3.1.0          | v3.x    | >= 2.2.0 | >= 3.2, <= 6.1 |
-| 2.3.0          | v2.x    | >= 2.2.0 | >= 3.2, <= 6.0 |
-| 1.9.0          | v1.x    | >= 2.2.0 | >= 3.2, <= 6.0 |
+| kind           | branch  | ruby               | activemodel    |
+| -------------- | ------- | ------------------ | -------------- |
+| unreleased     | main    | >= 2.1.0, <= 3.0.0 | >= 3.2, < 7.0  |
+| 5.4.0          | v5.x    | >= 2.1.0, <= 3.0.0 | >= 3.2, < 7.0  |
+| 4.1.0          | v4.x    | >= 2.2.0, <= 3.0.0 | >= 3.2, < 7.0  |
+| 3.1.0          | v3.x    | >= 2.2.0, <= 2.7   | >= 3.2, < 7.0  |
+| 2.3.0          | v2.x    | >= 2.2.0, <= 2.7   | >= 3.2, <= 6.0 |
+| 1.9.0          | v1.x    | >= 2.2.0, <= 2.7   | >= 3.2, <= 6.0 |
 
 > Note: The activemodel is an optional dependency, it is related with the [Kind::Validator](#kindvalidator-activemodelvalidations).
 

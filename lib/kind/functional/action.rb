@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
-require 'kind/result'
 require 'kind/functional'
-require 'kind/__lib__/action_steps'
+require 'kind/functional/steps'
 
 module Kind
   module Functional::Action
@@ -58,11 +57,9 @@ module Kind
         )
 
         if Kind.of_module?(self)
-          self.send(:extend, Result::Methods)
-          self.send(:extend, ACTION_STEPS)
+          self.send(:extend, Functional::Steps)
         else
-          self.send(:include, Result::Methods)
-          self.send(:include, ACTION_STEPS)
+          self.send(:include, Functional::Steps)
           self.send(:include, Functional::Behavior)
 
           __dependencies__.freeze
