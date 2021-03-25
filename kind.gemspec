@@ -6,8 +6,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ['Rodrigo Serradura']
   spec.email         = ['rodrigo.serradura@gmail.com']
 
-  spec.summary       = %q{A simple type system (at runtime) for Ruby.}
-  spec.description   = %q{A simple type system (at runtime) for Ruby - free of dependencies.}
+  spec.summary       = %q{A development toolkit for Ruby with several small/cohesive abstractions to empower your development workflow.}
+  spec.description   = %q{A development toolkit for Ruby with several small/cohesive abstractions (monads, enums, business logic, data validation...) to empower your development workflow - It's totally free of dependencies.}
   spec.homepage      = 'https://github.com/serradura/kind'
   spec.license       = 'MIT'
   spec.required_ruby_version = Gem::Requirement.new('>= 2.1.0')
