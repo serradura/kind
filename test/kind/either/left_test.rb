@@ -22,6 +22,8 @@ class Kind::EitherLeftTest < Minitest::Test
     assert_equal(2, either.value_or(2))
     assert_equal(3, either.value_or { 3 })
 
+    assert_equal(1, either.value_or { |value| value })
+
     assert_raises_with_message(
       ArgumentError,
       'the default value must be defined as an argument or block'
