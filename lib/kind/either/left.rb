@@ -9,7 +9,7 @@ module Kind
     def value_or(default = UNDEFINED, &block)
       Error.invalid_default_arg! if UNDEFINED == default && !block
 
-      UNDEFINED != default ? default : block.call
+      UNDEFINED != default ? default : block.call(value)
     end
 
     def map(&_)

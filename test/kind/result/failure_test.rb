@@ -26,6 +26,8 @@ class Kind::ResultFailureTest < Minitest::Test
     assert_equal(2, result.value_or(2))
     assert_equal(3, result.value_or { 3 })
 
+    assert_equal(1, result.value_or { |value| value })
+
     assert_raises_with_message(
       ArgumentError,
       'the default value must be defined as an argument or block'

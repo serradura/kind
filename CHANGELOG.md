@@ -3,6 +3,8 @@
 This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the recommendations of [keepachangelog.com](http://keepachangelog.com/).
 
 - [Unreleased](#unreleased)
+- [5.4.1 (2021-03-26)](#541-2021-03-26)
+  - [Fixed](#fixed)
 - [5.4.0 (2021-03-25)](#540-2021-03-25)
   - [Added](#added)
 - [5.3.0 (2021-03-23)](#530-2021-03-23)
@@ -22,7 +24,7 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
 - [4.0.0 (2021-02-22)](#400-2021-02-22)
   - [Added](#added-5)
   - [Deprecated](#deprecated-2)
-  - [Fixed](#fixed)
+  - [Fixed](#fixed-1)
 - [3.1.0 (2020-07-08)](#310-2020-07-08)
   - [Added](#added-6)
 - [3.0.0 (2020-06-25)](#300-2020-06-25)
@@ -44,7 +46,7 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
 - [1.8.0 (2020-05-03)](#180-2020-05-03)
   - [Added](#added-13)
 - [1.7.0 (2020-05-03)](#170-2020-05-03)
-  - [Fixed](#fixed-1)
+  - [Fixed](#fixed-2)
 - [1.6.0 (2020-04-17)](#160-2020-04-17)
   - [Added](#added-14)
   - [Changes](#changes-1)
@@ -58,7 +60,7 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
   - [Added](#added-18)
 - [1.1.0 (2020-04-09)](#110-2020-04-09)
   - [Added](#added-19)
-  - [Fixed](#fixed-2)
+  - [Fixed](#fixed-3)
 - [1.0.0 (2020-03-16)](#100-2020-03-16)
   - [Added](#added-20)
 - [0.6.0 (2020-01-06)](#060-2020-01-06)
@@ -85,8 +87,19 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
 ### Fixed
 -->
 
+5.4.1 (2021-03-26)
+------------------
+
+### Fixed
+
+* [#55](https://github.com/serradura/kind/pull/55) - Fix `Kind::Either::Left#value_or` and `Kind::Result::Failure#value_or` by allowing them to receive the value of the monad in a call using a block.
+
+[⬆️ &nbsp;Back to Top](#changelog-)
+
 5.4.0 (2021-03-25)
 ------------------
+
+### Added
 
 * [#54](https://github.com/serradura/kind/pull/54) - Add `Kind::Functional::Steps` to allow the usage of `Step`, `Map`, `Try`, `Tee`, `Check`, `Success` and `Failure` in any kind of object.
   ```ruby
@@ -150,8 +163,6 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
   ```
 
 [⬆️ &nbsp;Back to Top](#changelog-)
-
-### Added
 
 5.3.0 (2021-03-23)
 ------------------
