@@ -42,7 +42,7 @@ So, I invite you to check out these features to see how they could be useful for
 Version    | Documentation
 ---------- | -------------
 unreleased | https://github.com/serradura/kind/blob/main/README.md
-5.4.1      | https://github.com/serradura/kind/blob/v5.x/README.md
+5.5.0      | https://github.com/serradura/kind/blob/v5.x/README.md
 4.1.0      | https://github.com/serradura/kind/blob/v4.x/README.md
 3.1.0      | https://github.com/serradura/kind/blob/v3.x/README.md
 2.3.0      | https://github.com/serradura/kind/blob/v2.x/README.md
@@ -125,7 +125,7 @@ unreleased | https://github.com/serradura/kind/blob/main/README.md
 | kind           | branch  | ruby               | activemodel    |
 | -------------- | ------- | ------------------ | -------------- |
 | unreleased     | main    | >= 2.1.0, <= 3.0.0 | >= 3.2, < 7.0  |
-| 5.4.1          | v5.x    | >= 2.1.0, <= 3.0.0 | >= 3.2, < 7.0  |
+| 5.5.0          | v5.x    | >= 2.1.0, <= 3.0.0 | >= 3.2, < 7.0  |
 | 4.1.0          | v4.x    | >= 2.2.0, <= 3.0.0 | >= 3.2, < 7.0  |
 | 3.1.0          | v3.x    | >= 2.2.0, <= 2.7   | >= 3.2, < 7.0  |
 | 2.3.0          | v2.x    | >= 2.2.0, <= 2.7   | >= 3.2, <= 6.0 |

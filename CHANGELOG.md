@@ -3,79 +3,81 @@
 This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the recommendations of [keepachangelog.com](http://keepachangelog.com/).
 
 - [Unreleased](#unreleased)
+- [5.5.0 (2021-04-05)](#550-2021-04-05)
+  - [Added](#added)
 - [5.4.1 (2021-03-26)](#541-2021-03-26)
   - [Fixed](#fixed)
 - [5.4.0 (2021-03-25)](#540-2021-03-25)
-  - [Added](#added)
-- [5.3.0 (2021-03-23)](#530-2021-03-23)
   - [Added](#added-1)
-- [5.2.0 (2021-03-17)](#520-2021-03-17)
+- [5.3.0 (2021-03-23)](#530-2021-03-23)
   - [Added](#added-2)
+- [5.2.0 (2021-03-17)](#520-2021-03-17)
+  - [Added](#added-3)
   - [Deprecated](#deprecated)
   - [Changes](#changes)
 - [5.1.0 (2021-02-23)](#510-2021-02-23)
-  - [Added](#added-3)
+  - [Added](#added-4)
   - [Deprecated](#deprecated-1)
 - [5.0.0 (2021-02-22)](#500-2021-02-22)
   - [Breaking Changes](#breaking-changes)
   - [Removed](#removed)
 - [4.1.0 (2021-02-22)](#410-2021-02-22)
-  - [Added](#added-4)
-- [4.0.0 (2021-02-22)](#400-2021-02-22)
   - [Added](#added-5)
+- [4.0.0 (2021-02-22)](#400-2021-02-22)
+  - [Added](#added-6)
   - [Deprecated](#deprecated-2)
   - [Fixed](#fixed-1)
 - [3.1.0 (2020-07-08)](#310-2020-07-08)
-  - [Added](#added-6)
+  - [Added](#added-7)
 - [3.0.0 (2020-06-25)](#300-2020-06-25)
   - [Breaking Changes](#breaking-changes-1)
-  - [Added](#added-7)
-- [2.3.0 (2020-06-24)](#230-2020-06-24)
   - [Added](#added-8)
-- [2.2.0 (2020-06-23)](#220-2020-06-23)
+- [2.3.0 (2020-06-24)](#230-2020-06-24)
   - [Added](#added-9)
-- [2.1.0 (2020-05-12)](#210-2020-05-12)
+- [2.2.0 (2020-06-23)](#220-2020-06-23)
   - [Added](#added-10)
+- [2.1.0 (2020-05-12)](#210-2020-05-12)
+  - [Added](#added-11)
   - [Breaking Changes](#breaking-changes-2)
 - [2.0.0 (2020-05-07)](#200-2020-05-07)
-  - [Added](#added-11)
+  - [Added](#added-12)
   - [Breaking Changes](#breaking-changes-3)
   - [Removed](#removed-1)
 - [1.9.0 (2020-05-06)](#190-2020-05-06)
-  - [Added](#added-12)
-- [1.8.0 (2020-05-03)](#180-2020-05-03)
   - [Added](#added-13)
+- [1.8.0 (2020-05-03)](#180-2020-05-03)
+  - [Added](#added-14)
 - [1.7.0 (2020-05-03)](#170-2020-05-03)
   - [Fixed](#fixed-2)
 - [1.6.0 (2020-04-17)](#160-2020-04-17)
-  - [Added](#added-14)
+  - [Added](#added-15)
   - [Changes](#changes-1)
 - [1.5.0 (2020-04-12)](#150-2020-04-12)
-  - [Added](#added-15)
-- [1.4.0 (2020-04-12)](#140-2020-04-12)
   - [Added](#added-16)
-- [1.3.0 (2020-04-12)](#130-2020-04-12)
+- [1.4.0 (2020-04-12)](#140-2020-04-12)
   - [Added](#added-17)
-- [1.2.0 (2020-04-12)](#120-2020-04-12)
+- [1.3.0 (2020-04-12)](#130-2020-04-12)
   - [Added](#added-18)
-- [1.1.0 (2020-04-09)](#110-2020-04-09)
+- [1.2.0 (2020-04-12)](#120-2020-04-12)
   - [Added](#added-19)
+- [1.1.0 (2020-04-09)](#110-2020-04-09)
+  - [Added](#added-20)
   - [Fixed](#fixed-3)
 - [1.0.0 (2020-03-16)](#100-2020-03-16)
-  - [Added](#added-20)
-- [0.6.0 (2020-01-06)](#060-2020-01-06)
   - [Added](#added-21)
-- [0.5.0 (2020-01-04)](#050-2020-01-04)
+- [0.6.0 (2020-01-06)](#060-2020-01-06)
   - [Added](#added-22)
-- [0.4.0 (2020-01-03)](#040-2020-01-03)
+- [0.5.0 (2020-01-04)](#050-2020-01-04)
   - [Added](#added-23)
-- [0.3.0 (2020-01-03)](#030-2020-01-03)
+- [0.4.0 (2020-01-03)](#040-2020-01-03)
   - [Added](#added-24)
+- [0.3.0 (2020-01-03)](#030-2020-01-03)
+  - [Added](#added-25)
   - [Breaking Changes](#breaking-changes-4)
 - [0.2.0 (2020-01-02)](#020-2020-01-02)
-  - [Added](#added-25)
-- [0.1.0 (2019-12-26)](#010-2019-12-26)
   - [Added](#added-26)
+- [0.1.0 (2019-12-26)](#010-2019-12-26)
+  - [Added](#added-27)
 
 ## Unreleased
 
@@ -86,6 +88,29 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
 ### Removed
 ### Fixed
 -->
+
+5.5.0 (2021-04-05)
+------------------
+
+### Added
+
+* [#56](https://github.com/serradura/kind/pull/56) - Add `Kind.or_nil()`.
+  ```ruby
+  Kind.or_nil(String, 1) # nil
+
+  Kind.or_nil(String, '') # ""
+
+  # --
+
+  filled_string = ->(value) { value.is_a?(String) && !value.empty? }
+
+  Kind.or_nil(filled_string, 1)  # nil
+  Kind.or_nil(filled_string, '') # nil
+
+  Kind.or_nil(filled_string, '1') # "1"
+  ```
+
+[⬆️ &nbsp;Back to Top](#changelog-)
 
 5.4.1 (2021-03-26)
 ------------------

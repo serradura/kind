@@ -217,4 +217,19 @@ class Kind::KindTest < Minitest::Test
       '2 expected to be a kind of String'
     ) { Kind.value(String, 1, default: 2) }
   end
+
+  def test_Kind_or_nil
+    assert_nil(Kind.or_nil(String, 1))
+
+    assert_equal('', Kind.or_nil(String, ''))
+
+    # --
+
+    filled_string = ->(value) { value.is_a?(String) && !value.empty? }
+
+    assert_nil(Kind.or_nil(filled_string, 1))
+    assert_nil(Kind.or_nil(filled_string, ''))
+
+    assert_equal('1', Kind.or_nil(filled_string, '1'))
+  end
 end
