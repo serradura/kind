@@ -76,4 +76,8 @@ module Kind
   def value(kind, value, default:)
     KIND.value(kind, value, of(kind, default))
   end
+
+  def or_nil(kind, value)
+    return value if kind === value
+  end
 end
