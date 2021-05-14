@@ -4,8 +4,9 @@ class Kind::UnionTypeTest < Minitest::Test
   def test_the_union_type_builder
     union_type1 = Kind::UnionType.new(::Array) | Kind::Nil
     union_type2 = Kind::Array | Kind::Nil
+    union_type3 = Kind::Array | nil
 
-    [union_type1, union_type2].each do |union_type|
+    [union_type1, union_type2, union_type3].each do |union_type|
       assert '(Array | nil)' == union_type.name
       assert '(Array | nil)' == union_type.inspect
 
