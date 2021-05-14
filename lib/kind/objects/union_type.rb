@@ -16,7 +16,7 @@ module Kind
     end
 
     def |(kind)
-      self.class.new(@kinds + [Interface[kind]])
+      self.class.new(@kinds + [Interface[kind.nil? ? Kind::Nil : kind]])
     end
 
     def ===(value)
