@@ -49,6 +49,24 @@ module Kind
 
       raise Error.new("#{value} expected to be included in #{list.inspect}")
     end
+
+    def assert_hash!(hash, options)
+      return assert_hash_keys!(hash, options[:keys]) if options.key?(:keys)
+
+      raise ArgumentError, ':keys is missing'
+    end
+
+    private
+
+      def assert_hash_keys!(hash, arg)
+        keys = Array(arg)
+
+        hash.each_key do |k|
+          unless keys.include?(k)
+            raise ArgumentError.new("Unknown key: #{k.inspect}. Valid keys are: #{keys.map(&:inspect).join(', ')}")
+          end
+        end
+      end
   end
 
   private_constant :STRICT

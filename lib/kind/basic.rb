@@ -89,7 +89,7 @@ module Kind
     STRICT.in!(list, value)
   end
 
-  def include!(value, list)
-    STRICT.in!(list, value)
+  def assert_hash!(hash, **kargs)
+    STRICT.assert_hash!(hash, kargs)
   end
 end

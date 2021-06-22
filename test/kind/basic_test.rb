@@ -256,4 +256,56 @@ class Kind::KindTest < Minitest::Test
       '1 expected to be included in ["a", :b]'
     ) { Kind.include!(1, ['a', :b]) }
   end
+
+  def test_Kind_assert_hash!
+    assert_raises_with_message(
+      ArgumentError,
+      ':keys is missing'
+    ) { Kind.assert_hash!({}, some: :arg) }
+  end
+
+  def test_Kind_assert_hash_keys
+    h1 = {a: 1, b: 1}
+    h2 = {'a' => 1, 'b' => 2}
+
+    # --
+
+    assert_equal(h1, Kind.assert_hash!(h1, keys: [:a, :b]))
+    assert_equal(h1, Kind.assert_hash!(h1, keys: [:a, :b, :c]))
+
+    assert_raises_with_message(
+      ArgumentError,
+      'Unknown key: :b. Valid keys are: :a'
+    ) { Kind.assert_hash!(h1, keys: [:a]) }
+
+    assert_raises_with_message(
+      ArgumentError,
+      'Unknown key: :a. Valid keys are: :b'
+    ) { Kind.assert_hash!(h1, keys: :b) }
+
+    assert_raises_with_message(
+      ArgumentError,
+      'Unknown key: "a". Valid keys are: :a, :b'
+    ) { Kind.assert_hash!(h2, keys: [:a, :b]) }
+
+    # --
+
+    assert_equal(h2, Kind.assert_hash!(h2, keys: ['a', 'b']))
+    assert_equal(h2, Kind.assert_hash!(h2, keys: ['a', 'b', 'c']))
+
+    assert_raises_with_message(
+      ArgumentError,
+      'Unknown key: "a". Valid keys are: "b"'
+    ) { Kind.assert_hash!(h2, keys: ['b']) }
+
+    assert_raises_with_message(
+      ArgumentError,
+      'Unknown key: "b". Valid keys are: "a"'
+    ) { Kind.assert_hash!(h2, keys: 'a') }
+
+    assert_raises_with_message(
+      ArgumentError,
+      'Unknown key: :a. Valid keys are: "a", "b"'
+    ) { Kind.assert_hash!(h1, keys: ['a', 'b']) }
+  end
 end

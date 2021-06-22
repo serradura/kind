@@ -44,5 +44,9 @@ module Kind
     def assert_hash!(hash, _options) # :nodoc:
       hash
     end
+
+    def assert_hash!(hash, _options) # :nodoc:
+      hash
+    end
   end
 end
