@@ -43,6 +43,12 @@ module Kind
 
       raise Error.new("#{label_text}expected to not be nil")
     end
+
+    def in!(list, value)
+      return value if list.include?(value)
+
+      raise Error.new("#{value} expected to be included in #{list.inspect}")
+    end
   end
 
   private_constant :STRICT

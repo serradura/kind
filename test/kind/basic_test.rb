@@ -232,4 +232,28 @@ class Kind::KindTest < Minitest::Test
 
     assert_equal('1', Kind.or_nil(filled_string, '1'))
   end
+
+  def test_Kind_in!
+    assert 'a' == Kind.in!(['a', :b], 'a')
+
+    assert :b == Kind.in!(['a', :b], :b)
+
+    # FACT: The default value must be of the expected kind.
+    assert_raises_with_message(
+      Kind::Error,
+      '1 expected to be included in ["a", :b]'
+    ) { Kind.in!(['a', :b], 1) }
+  end
+
+  def test_Kind_include!
+    assert 'a' == Kind.include!('a', ['a', :b])
+
+    assert :b == Kind.include!(:b, ['a', :b])
+
+    # FACT: The default value must be of the expected kind.
+    assert_raises_with_message(
+      Kind::Error,
+      '1 expected to be included in ["a", :b]'
+    ) { Kind.include!(1, ['a', :b]) }
+  end
 end

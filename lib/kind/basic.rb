@@ -2,8 +2,8 @@
 
 require 'kind/version'
 
-require 'kind/__lib__/kind'
 require 'kind/__lib__/undefined'
+require 'kind/__lib__/kind'
 
 require 'kind/basic/undefined'
 require 'kind/basic/error'
@@ -79,5 +79,17 @@ module Kind
 
   def or_nil(kind, value)
     return value if kind === value
+  end
+
+  def in!(list, value)
+    STRICT.in!(list, value)
+  end
+
+  def include!(value, list)
+    STRICT.in!(list, value)
+  end
+
+  def include!(value, list)
+    STRICT.in!(list, value)
   end
 end
