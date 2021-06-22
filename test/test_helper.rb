@@ -18,7 +18,7 @@ ENV.fetch('ACTIVEMODEL_VERSION', '7.0.0').tap do |active_model_version|
     require 'kind/active_model/validation'
   end
 
-  if (RUBY_VERSION < '2.2.0' || active_model_version < '4.1')
+  if (RUBY_VERSION < '2.3.0' || active_model_version < '4.1')
     require 'minitest/unit'
 
     module Minitest

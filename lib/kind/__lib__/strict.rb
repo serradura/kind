@@ -6,6 +6,8 @@ module Kind
   module STRICT
     extend self
 
+    require 'kind/__lib__/assert_hash_schema'
+
     def error(kind_name, value, label = nil) # :nodoc:
       raise Error.new(kind_name, value, label: label)
     end
@@ -43,6 +45,41 @@ module Kind
 
       raise Error.new("#{label_text}expected to not be nil")
     end
+
+    def in!(list, value)
+      return value if list.include?(value)
+
+      raise Error.new("#{value} expected to be included in #{list.inspect}")
+    end
+
+    def assert_hash!(hash, options)
+      require_all = options[:require_all]
+
+      return assert_hash_keys!(hash, options[:keys], require_all) if options.key?(:keys)
+      return assert_hash_schema!(hash, options[:schema], require_all) if options.key?(:schema)
+
+      raise ArgumentError, ':keys or :schema is missing'
+    end
+
+    private
+
+      def assert_hash_keys!(hash, arg, require_all)
+        keys = Array(arg)
+
+        ASSERT_HASH_KEYS.require_all(keys, hash) if require_all
+
+        hash.each_key do |k|
+          unless keys.include?(k)
+            raise ArgumentError.new("Unknown key: #{k.inspect}. Valid keys are: #{keys.map(&:inspect).join(', ')}")
+          end
+        end
+      end
+
+      def assert_hash_schema!(hash, schema, require_all)
+        return ASSERT_HASH_SCHEMA.all(hash, schema) if require_all
+
+        ASSERT_HASH_SCHEMA.any(hash, schema)
+      end
   end
 
   private_constant :STRICT
