@@ -22,4 +22,17 @@ class Kind::UnionTypeTest < Minitest::Test
       ) { union_type[1] }
     end
   end
+
+  def test_assert_hash_schema
+    h1 = {hash: {}, array: []}
+
+    # --
+
+    hash_or_array = Kind::Array | Hash
+
+    assert_equal(h1, Kind.assert_hash!(h1, schema: {
+      hash: hash_or_array,
+      array: hash_or_array
+    }))
+  end
 end

@@ -260,11 +260,11 @@ class Kind::KindTest < Minitest::Test
   def test_Kind_assert_hash!
     assert_raises_with_message(
       ArgumentError,
-      ':keys is missing'
+      ':keys or :schema is missing'
     ) { Kind.assert_hash!({}, some: :arg) }
   end
 
-  def test_Kind_assert_hash_keys
+  def test_Kind_assert_hash_keys___require_all_false
     h1 = {a: 1, b: 1}
     h2 = {'a' => 1, 'b' => 2}
 
@@ -307,5 +307,135 @@ class Kind::KindTest < Minitest::Test
       ArgumentError,
       'Unknown key: :a. Valid keys are: "a", "b"'
     ) { Kind.assert_hash!(h1, keys: ['a', 'b']) }
+  end
+
+  def test_Kind_assert_hash_keys___require_all_true
+    h1 = {a: 1, b: 1}
+    h2 = {'a' => 1, 'b' => 2}
+
+    # --
+
+    assert_equal(h1, Kind.assert_hash!(h1, keys: [:a, :b], require_all: true))
+
+    assert_raises_with_message(
+      KeyError,
+      '{:a=>1, :b=>1} expected to have these keys: [:c]'
+    ) { Kind.assert_hash!(h1, keys: [:a, :b, :c], require_all: true) }
+
+    assert_raises_with_message(
+      KeyError,
+      '{:a=>1, :b=>1} expected to NOT have these keys: [:b]'
+    ) { Kind.assert_hash!(h1, keys: [:a], require_all: true) }
+
+    assert_raises_with_message(
+      KeyError,
+      '{:a=>1, :b=>1} expected to NOT have these keys: [:a]'
+    ) { Kind.assert_hash!(h1, keys: :b, require_all: true) }
+
+    assert_raises_with_message(
+      KeyError,
+      '{"a"=>1, "b"=>2} expected to have these keys: [:a, :b]'
+    ) { Kind.assert_hash!(h2, keys: [:a, :b], require_all: true) }
+
+    # --
+
+    assert_equal(h2, Kind.assert_hash!(h2, keys: ['a', 'b'], require_all: true))
+
+    assert_raises_with_message(
+      KeyError,
+      '{"a"=>1, "b"=>2} expected to have these keys: ["c"]'
+    ) { Kind.assert_hash!(h2, keys: ['a', 'b', 'c'], require_all: true) }
+
+    assert_raises_with_message(
+      KeyError,
+      '{"a"=>1, "b"=>2} expected to NOT have these keys: ["a"]'
+    ) { Kind.assert_hash!(h2, keys: ['b'], require_all: true) }
+
+    assert_raises_with_message(
+      KeyError,
+      '{"a"=>1, "b"=>2} expected to NOT have these keys: ["b"]'
+    ) { Kind.assert_hash!(h2, keys: 'a', require_all: true) }
+
+    assert_raises_with_message(
+      KeyError,
+      '{:a=>1, :b=>1} expected to have these keys: ["a", "b"]'
+    ) { Kind.assert_hash!(h1, keys: ['a', 'b'], require_all: true) }
+  end
+
+  def test_Kind_assert_schema___require_all_false
+    h1 = {hash: {}, array: [], number: 1, string: 'foo', email: 'bar@bar.com', null: nil}
+
+    # --
+
+    assert_equal(h1, Kind.assert_hash!(h1, schema: {
+      hash: {},
+      array: [],
+      email: 'bar@bar.com',
+      string: 'foo',
+      number: 1,
+      null: nil
+    }))
+
+    assert_equal(h1, Kind.assert_hash!(h1, schema: {
+      hash: Enumerable,
+      array: Enumerable,
+      email: /\A.+@.+\..+\z/,
+      string: String
+    }))
+
+    assert_equal(h1, Kind.assert_hash!(h1, schema: {
+      hash: Hash,
+      array: Array,
+      email: String,
+      string: String
+    }))
+
+    assert_equal(h1, Kind.assert_hash!(h1, schema: {
+      email: ->(value) { value.is_a?(String) && value.include?('@') }
+    }))
+
+    # # --
+
+    assert_raises_with_message(
+      Kind::Error,
+      'The key :email has an invalid value'
+    ) do
+      Kind.assert_hash!(h1, schema: {email: ->(value) { !value.is_a?(String) }})
+    end
+
+    assert_raises_with_message(
+      Kind::Error,
+      'The key :email has an invalid value'
+    ) { Kind.assert_hash!(h1, schema: {email: /\s.*\s/ }) }
+
+    assert_raises_with_message(
+      Kind::Error,
+      'The key :email has an invalid value'
+    ) { Kind.assert_hash!(h1, schema: {email: Numeric}) }
+
+    assert_raises_with_message(
+      Kind::Error,
+      'The key :email has an invalid value'
+    ) { Kind.assert_hash!(h1, schema: {email: 'foo@foo.com'}) }
+
+    assert_raises_with_message(
+      Kind::Error,
+      'The key :email has an invalid value'
+    ) { Kind.assert_hash!(h1, schema: {email: nil}) }
+  end
+
+  def test_Kind_assert_schema___require_all_true
+    h1 = {email: '', number: 1}
+
+    # --
+
+    assert_raises_with_message(
+      KeyError,
+      '{:email=>"", :number=>1} expected to NOT have these keys: [:number]'
+    ) { Kind.assert_hash!(h1, require_all: true, schema: {email: String}) }
+
+    # --
+
+    assert_equal(h1, Kind.assert_hash!(h1, require_all: true, schema: {email: String, number: Numeric}))
   end
 end
