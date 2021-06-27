@@ -53,6 +53,8 @@ module Kind
     end
 
     def assert_hash!(hash, options)
+      raise ArgumentError, "hash cannot be empty" if hash.empty?
+      
       require_all = options[:require_all]
 
       return assert_hash_keys!(hash, options[:keys], require_all) if options.key?(:keys)

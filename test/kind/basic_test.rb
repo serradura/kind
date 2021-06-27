@@ -261,7 +261,14 @@ class Kind::KindTest < Minitest::Test
     assert_raises_with_message(
       ArgumentError,
       ':keys or :schema is missing'
-    ) { Kind.assert_hash!({}, some: :arg) }
+    ) { Kind.assert_hash!({a: 'a'}, some: :arg) }
+  end
+
+  def test_with_an_empty_hash_Kind_assert_hash!
+    assert_raises_with_message(
+      ArgumentError,
+      'hash cannot be empty'
+    ) { Kind.assert_hash!({}) }
   end
 
   def test_Kind_assert_hash_keys___require_all_false
