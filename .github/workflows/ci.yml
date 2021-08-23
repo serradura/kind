@@ -1,5 +1,5 @@
 
-name: Test and generate code coverage
+name: build
 on: [push, pull_request]
 jobs:
   test:
