@@ -1,5 +1,8 @@
 require 'test_helper'
 
+require 'set'
+require 'ostruct'
+
 class Kind::PresenceTest < Minitest::Test
   require 'kind/presence'
 

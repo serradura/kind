@@ -1,5 +1,7 @@
 require 'test_helper'
 
+require 'ostruct'
+
 class Kind::MaybeTest < Minitest::Test
   require 'kind/maybe'
 
