@@ -4,7 +4,22 @@ set -e
 
 RUBY_V=$(ruby -v)
 
-function run_basic_tests {
+function reset_gemfile_and_test {
+  rm Gemfile.lock
+
+  eval "$1 bundle update"
+  eval "$1 bundle exec rake test"
+}
+
+function test_with_activemodel {
+  reset_gemfile_and_test "ACTIVEMODEL_VERSION=$1"
+}
+
+function run_tests_by_modules {
+  rm Gemfile.lock
+
+  bundle update
+
   eval "KIND_BASIC=t bundle exec rake test TEST='test/kind/{basic/*_test,basic_test}.rb'"
   eval "KIND_BASIC=t bundle exec rake test TEST='test/kind/enum_test.rb'"
   eval "KIND_BASIC=t bundle exec rake test TEST='test/kind/presence_test.rb'"
@@ -21,47 +36,34 @@ function run_basic_tests {
   eval "KIND_STRICT=t bundle exec rake test TEST='test/kind/strict_disabled_test.rb'"
 }
 
-function run_with_bundler {
-  rm Gemfile.lock
+if [[ $RUBY_V =~ "ruby 2.[12345]." ]]; then
+  if [[ $RUBY_V =~ "ruby 2.[12]." ]]; then
+    test_with_activemodel "3.2"
+  fi
 
-  eval "$1 bundle update"
-  eval "$1 bundle exec rake test"
-}
+  if [[ $RUBY_V =~ "ruby 2.[2345]." ]]; then
+    test_with_activemodel "4.0"
+    test_with_activemodel "4.1"
+    test_with_activemodel "4.2"
+    test_with_activemodel "5.0"
+    test_with_activemodel "5.1"
+    test_with_activemodel "5.2"
+  fi
 
-function run_with_am_version_and_bundler {
-  run_with_bundler "ACTIVEMODEL_VERSION=$1"
-}
+  if [[ $RUBY_V =~ "ruby 2.[1234]." ]]; then
+    run_tests_by_modules
 
-RUBY_2_12="ruby 2.[12]."
-RUBY_2_2345="ruby 2.[2345]."
-RUBY_2_12345="ruby 2.[12345]."
-RUBY_2_567="ruby 2.[567]."
-RUBY_3_0="ruby 3.0."
-
-if [[ $RUBY_V =~ $RUBY_2_12 ]]; then
-  run_with_am_version_and_bundler "3.2"
+    reset_gemfile_and_test
+  fi
 fi
 
-if [[ $RUBY_V =~ $RUBY_2_2345 ]]; then
-  run_with_am_version_and_bundler "4.0"
-  run_with_am_version_and_bundler "4.1"
-  run_with_am_version_and_bundler "4.2"
-  run_with_am_version_and_bundler "5.0"
-  run_with_am_version_and_bundler "5.1"
-  run_with_am_version_and_bundler "5.2"
-fi
-
-if [[ $RUBY_V =~ $RUBY_2_12345 ]]; then
-  run_basic_tests
-  run_with_bundler
-fi
-
-if [[ $RUBY_V =~ $RUBY_2_567 ]] || [[ $RUBY_V =~ $RUBY_3_0 ]]; then
+if [[ $RUBY_V =~ "ruby 2.[567]." ]] || [[ $RUBY_V =~ "ruby 3.0." ]]; then
   gem install bundler -v ">= 2" --no-doc
 
-  run_with_am_version_and_bundler "6.0"
-  run_with_am_version_and_bundler "6.1"
+  test_with_activemodel "6.0"
+  test_with_activemodel "6.1"
 
-  run_basic_tests
-  run_with_bundler
+  run_tests_by_modules
+
+  reset_gemfile_and_test
 fi
