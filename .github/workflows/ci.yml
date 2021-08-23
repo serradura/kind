@@ -21,7 +21,7 @@ jobs:
       - uses: paambaati/codeclimate-action@v2.7.5
         if: ${{ matrix.ruby >= 3 }}
         env:
-          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+          CC_TEST_REPORTER_ID: 9561ceed21b6724aea8063e82e5700bc8266e962978089594bf2d8f8ca5ffc94
         with:
           debug: true
           coverageLocations: coverage/.resultset.json:simplecov
