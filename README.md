@@ -8,8 +8,8 @@
     <img alt="Gem" src="https://img.shields.io/gem/v/kind.svg?style=flat-square">
   </a>
 
-  <a href="https://travis-ci.com/serradura/kind">
-    <img alt="Build Status" src="https://travis-ci.com/serradura/kind.svg?branch=master">
+  <a href="https://github.com/serradura/kind/actions/workflows/ci.yml">
+    <img alt="Build Status" src="https://github.com/serradura/kind/actions/workflows/ci.yml/badge.svg">
   </a>
 
   <br />
