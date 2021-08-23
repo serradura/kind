@@ -1,0 +1,67 @@
+#!/bin/bash
+
+set -e
+
+RUBY_V=$(ruby -v)
+
+function run_basic_tests {
+  eval "KIND_BASIC=t bundle exec rake test TEST='test/kind/{basic/*_test,basic_test}.rb'"
+  eval "KIND_BASIC=t bundle exec rake test TEST='test/kind/enum_test.rb'"
+  eval "KIND_BASIC=t bundle exec rake test TEST='test/kind/presence_test.rb'"
+  eval "KIND_BASIC=t bundle exec rake test TEST='test/kind/dig_test.rb'"
+  eval "KIND_BASIC=t bundle exec rake test TEST='test/kind/try_test.rb'"
+  eval "KIND_BASIC=t bundle exec rake test TEST='test/kind/maybe_test.rb'"
+  eval "KIND_BASIC=t bundle exec rake test TEST='test/kind/immutable_attributes_test.rb'"
+  eval "KIND_BASIC=t bundle exec rake test TEST='test/kind/function_test.rb'"
+  eval "KIND_BASIC=t bundle exec rake test TEST='test/kind/action_test.rb'"
+  eval "KIND_BASIC=t bundle exec rake test TEST='test/kind/{functional/*_test,functional_test}.rb'"
+  eval "KIND_BASIC=t bundle exec rake test TEST='test/kind/either/*_test.rb'"
+  eval "KIND_BASIC=t bundle exec rake test TEST='test/kind/result/*_test.rb'"
+
+  eval "KIND_STRICT=t bundle exec rake test TEST='test/kind/strict_disabled_test.rb'"
+}
+
+function run_with_bundler {
+  rm Gemfile.lock
+
+  eval "$1 bundle update"
+  eval "$1 bundle exec rake test"
+}
+
+function run_with_am_version_and_bundler {
+  run_with_bundler "ACTIVEMODEL_VERSION=$1"
+}
+
+RUBY_2_12="ruby 2.[12]."
+RUBY_2_2345="ruby 2.[2345]."
+RUBY_2_12345="ruby 2.[12345]."
+RUBY_2_567="ruby 2.[567]."
+RUBY_3_0="ruby 3.0."
+
+if [[ $RUBY_V =~ $RUBY_2_12 ]]; then
+  run_with_am_version_and_bundler "3.2"
+fi
+
+if [[ $RUBY_V =~ $RUBY_2_2345 ]]; then
+  run_with_am_version_and_bundler "4.0"
+  run_with_am_version_and_bundler "4.1"
+  run_with_am_version_and_bundler "4.2"
+  run_with_am_version_and_bundler "5.0"
+  run_with_am_version_and_bundler "5.1"
+  run_with_am_version_and_bundler "5.2"
+fi
+
+if [[ $RUBY_V =~ $RUBY_2_12345 ]]; then
+  run_basic_tests
+  run_with_bundler
+fi
+
+if [[ $RUBY_V =~ $RUBY_2_567 ]] || [[ $RUBY_V =~ $RUBY_3_0 ]]; then
+  gem install bundler -v ">= 2" --no-doc
+
+  run_with_am_version_and_bundler "6.0"
+  run_with_am_version_and_bundler "6.1"
+
+  run_basic_tests
+  run_with_bundler
+fi

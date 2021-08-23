@@ -1,5 +1,7 @@
 require 'test_helper'
 
+require 'ostruct'
+
 class Kind::DigTest < Minitest::Test
   require 'kind/dig'
 
