@@ -310,6 +310,24 @@ class Kind::ModulesTest < Minitest::Test
     assert Kind::Callable?(-> {}, ''.method(:upcase))
     refute Kind::Callable?(-> {}, 1)
 
+    # == Kind::ID ==
+
+    assert Kind.of_module?(Kind::ID)
+    assert Kind.is?(Kind::Object, Kind::ID)
+    assert Kind::ID.kind == [Integer, String]
+    assert Kind::ID.name == 'ID'
+    assert Kind::ID?(12345)
+    assert Kind::ID?('12345')
+    assert Kind::ID?('e4379200-061c-11ec-9a03-0242ac130003')
+    assert Kind::ID?('7dfea486-bd6e-423a-80ab-003dfec23933')
+    refute Kind::ID?(0)
+    refute Kind::ID?('0')
+    refute Kind::ID?('12345t')
+    refute Kind::ID?('123t45')
+    refute Kind::ID?('t12345')
+    refute Kind::ID?('e4379200-061c-11ec-9a03-0242ac13000')
+    refute Kind::ID?('7dfea486-bd6e-423a-80ab-003dfec2393')
+
     # == Kind::Lambda ==
 
     assert Kind.of_module?(Kind::Lambda)

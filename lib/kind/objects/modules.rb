@@ -29,4 +29,5 @@ require 'kind/objects/modules/stdlib/set'
 
 require 'kind/objects/modules/custom/boolean'
 require 'kind/objects/modules/custom/callable'
+require 'kind/objects/modules/custom/id'
 require 'kind/objects/modules/custom/lambda'
