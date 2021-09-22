@@ -262,6 +262,16 @@ class Kind::KindTest < Minitest::Test
       ArgumentError,
       ':keys or :schema is missing'
     ) { Kind.assert_hash!({}, some: :arg) }
+
+    assert_raises_with_message(
+      ArgumentError,
+      "hash can't be empty"
+    ) { Kind.assert_hash!({}, keys: :arg) }
+
+    assert_raises_with_message(
+      ArgumentError,
+      "hash can't be empty"
+    ) { Kind.assert_hash!({}, schema: {}) }
   end
 
   def test_Kind_assert_hash_keys___require_all_false
@@ -405,23 +415,46 @@ class Kind::KindTest < Minitest::Test
 
     assert_raises_with_message(
       Kind::Error,
-      'The key :email has an invalid value'
+      'The key :email has an invalid value. Expected: (?-mix:\\s.*\\s)'
     ) { Kind.assert_hash!(h1, schema: {email: /\s.*\s/ }) }
 
     assert_raises_with_message(
       Kind::Error,
-      'The key :email has an invalid value'
+      'The key :email has an invalid value. Expected: Numeric'
     ) { Kind.assert_hash!(h1, schema: {email: Numeric}) }
 
     assert_raises_with_message(
       Kind::Error,
-      'The key :email has an invalid value'
+      'The key :email has an invalid value. Expected: foo@foo.com, Given: bar@bar.com'
     ) { Kind.assert_hash!(h1, schema: {email: 'foo@foo.com'}) }
 
     assert_raises_with_message(
       Kind::Error,
-      'The key :email has an invalid value'
+      'The key :email has an invalid value. Expected: nil'
     ) { Kind.assert_hash!(h1, schema: {email: nil}) }
+
+    if defined?(Kind::Object) && defined?(Kind::UnionType)
+      assert_raises_with_message(
+        Kind::Error,
+        'The key :number has an invalid value. Expected: (String | Symbol)'
+      ) { Kind.assert_hash!(h1, schema: {number: Kind[String] | Symbol}) }
+
+      assert_raises_with_message(
+        Kind::Error,
+        'The key :number has an invalid value. Expected: String'
+      ) { Kind.assert_hash!(h1, schema: {number: Kind::String}) }
+
+      filled_string = begin
+        filled_str = ->(value) {value.is_a?(String) && !value.empty?}
+
+        Kind::Of(filled_str, name: 'FilledString')
+      end
+
+      assert_raises_with_message(
+        Kind::Error,
+        'The key :string has an invalid value. Expected: FilledString'
+      ) { Kind.assert_hash!({string: ''}, schema: {string: filled_string}) }
+    end
   end
 
   def test_Kind_assert_schema___require_all_true

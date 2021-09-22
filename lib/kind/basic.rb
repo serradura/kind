@@ -48,8 +48,8 @@ module Kind
     KIND.interface?(method_names, value)
   end
 
-  def of(kind, value, label: nil)
-    STRICT.object_is_a(kind, value, label)
+  def of(kind, value, label: nil, expected: nil)
+    STRICT.object_is_a(kind, value, label, expected)
   end
 
   alias_method :of!, :of
