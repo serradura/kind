@@ -46,6 +46,11 @@ module Kind
     Object::Instance.new(kind, opt)
   end
 
+  # Kind.object(name:,&block)
+  def self.object(name:, &block)
+    self[block, name: name]
+  end
+
   # Kind::Of()
   def self.Of(*args)
     warn '[DEPRECATION] Kind::Of() is deprecated; use Kind[] instead. ' \

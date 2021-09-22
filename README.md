@@ -42,7 +42,7 @@ So, I invite you to check out these features to see how they could be useful for
 Version    | Documentation
 ---------- | -------------
 unreleased | https://github.com/serradura/kind/blob/main/README.md
-5.8.1      | https://github.com/serradura/kind/blob/v5.x/README.md
+5.9.0      | https://github.com/serradura/kind/blob/v5.x/README.md
 4.1.0      | https://github.com/serradura/kind/blob/v4.x/README.md
 3.1.0      | https://github.com/serradura/kind/blob/v3.x/README.md
 2.3.0      | https://github.com/serradura/kind/blob/v2.x/README.md
@@ -69,7 +69,7 @@ unreleased | https://github.com/serradura/kind/blob/main/README.md
   - [Creating type handlers](#creating-type-handlers)
     - [Dynamic creation](#dynamic-creation)
       - [Using a class or a module](#using-a-class-or-a-module)
-      - [Using an object which responds to ===](#using-an-object-which-responds-to-)
+      - [Using Kind.object(name:, &block) ===](#using-kindobjectname-block-)
     - [Kind::<Type> object](#kindtype-object)
   - [Utility methods](#utility-methods)
     - [Kind.of_class?()](#kindof_class)
@@ -125,7 +125,7 @@ unreleased | https://github.com/serradura/kind/blob/main/README.md
 | kind           | branch  | ruby               | activemodel    |
 | -------------- | ------- | ------------------ | -------------- |
 | unreleased     | main    | >= 2.1.0, <= 3.0.0 | >= 3.2, < 7.0  |
-| 5.8.1          | v5.x    | >= 2.1.0, <= 3.0.0 | >= 3.2, < 7.0  |
+| 5.9.0          | v5.x    | >= 2.1.0, <= 3.0.0 | >= 3.2, < 7.0  |
 | 4.1.0          | v4.x    | >= 2.2.0, <= 3.0.0 | >= 3.2, < 7.0  |
 | 3.1.0          | v3.x    | >= 2.2.0, <= 2.7   | >= 3.2, < 7.0  |
 | 2.3.0          | v2.x    | >= 2.2.0, <= 2.7   | >= 3.2, <= 6.0 |
@@ -393,7 +393,7 @@ end
 
 user = User.new
 
-kind_of_user = Kind::Of(User)
+kind_of_user = Kind[User]
 
 # kind_of_user.name
 # kind_of_user.kind
@@ -412,7 +412,7 @@ kind_of_user.value?('')       # false
 kind_of_user.value?(User.new) # true
 
 # If it doesn't receive an argument, a lambda will be returned and it will know how to do the type verification.
-[0, User.new].select?(&kind_of_user.value?) # [#<User:0x0000.... >]
+[0, User.new].select(&kind_of_user.value?) # [#<User:0x0000.... >]
 
 # kind_of_user.or_nil(value)
 # Can return nil if the given value isn't an instance of its kind
@@ -455,15 +455,12 @@ kind_of_user.maybe('1').value_or(User.new) # #<User:0x0000...>
 
 [⬆️ &nbsp;Back to Top](#table-of-contents-)
 
-##### Using an object which responds to ===
-
-Example using a lambda (an object which responds to .===) and a hash with the kind name.
+##### Using Kind.object(name:, &block) ===
 
 ```ruby
-PositiveInteger = Kind::Of(
-  -> value { value.kind_of?(Integer) && value > 0 },
-  name: 'PositiveInteger'
-)
+PositiveInteger = Kind.object(name: 'PositiveInteger') do |value|
+  value.kind_of?(Integer) && value > 0
+end
 
 # PositiveInteger.name
 # PositiveInteger.kind
@@ -482,7 +479,7 @@ PositiveInteger.value?(1)  # true
 PositiveInteger.value?(-1) # false
 
 # If it doesn't receive an argument, a lambda will be returned and it will know how to do the type verification.
-[1, 2, 0, 3, -1].select?(&PositiveInteger.value?) # [1, 2, 3]
+[1, 2, 0, 3, -1].select(&PositiveInteger.value?) # [1, 2, 3]
 
 # PositiveInteger.or_nil(value)
 # Can return nil if the given value isn't an instance of its kind

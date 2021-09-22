@@ -146,11 +146,10 @@ class Kind::ObjectTest < Minitest::Test
       'The key :string has an invalid value. Expected: String'
     ) { Kind.assert_hash!({string: 1}, schema: {string: Kind::String}) }
 
-    filled_string = begin
-      filled_str = ->(value) {value.is_a?(String) && !value.empty?}
-
-      Kind[filled_str, name: 'FilledString']
-    end
+    filled_string =
+      Kind.object(name: 'FilledString') do |value|
+        value.is_a?(String) && !value.empty?
+      end
 
     assert_raises_with_message(
       Kind::Error,
