@@ -3,6 +3,8 @@
 This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the recommendations of [keepachangelog.com](http://keepachangelog.com/).
 
 - [Unreleased](#unreleased)
+- [5.8.1 (2021-09-22)](#581-2021-09-22)
+  - [Fixed](#fixed)
 - [5.8.0 (2021-09-22)](#580-2021-09-22)
   - [Added](#added)
 - [5.7.0 (2021-06-22)](#570-2021-06-22)
@@ -12,7 +14,7 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
 - [5.5.0 (2021-04-05)](#550-2021-04-05)
   - [Added](#added-3)
 - [5.4.1 (2021-03-26)](#541-2021-03-26)
-  - [Fixed](#fixed)
+  - [Fixed](#fixed-1)
 - [5.4.0 (2021-03-25)](#540-2021-03-25)
   - [Added](#added-4)
 - [5.3.0 (2021-03-23)](#530-2021-03-23)
@@ -32,7 +34,7 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
 - [4.0.0 (2021-02-22)](#400-2021-02-22)
   - [Added](#added-9)
   - [Deprecated](#deprecated-2)
-  - [Fixed](#fixed-1)
+  - [Fixed](#fixed-2)
 - [3.1.0 (2020-07-08)](#310-2020-07-08)
   - [Added](#added-10)
 - [3.0.0 (2020-06-25)](#300-2020-06-25)
@@ -54,7 +56,7 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
 - [1.8.0 (2020-05-03)](#180-2020-05-03)
   - [Added](#added-17)
 - [1.7.0 (2020-05-03)](#170-2020-05-03)
-  - [Fixed](#fixed-2)
+  - [Fixed](#fixed-3)
 - [1.6.0 (2020-04-17)](#160-2020-04-17)
   - [Added](#added-18)
   - [Changes](#changes-1)
@@ -68,7 +70,7 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
   - [Added](#added-22)
 - [1.1.0 (2020-04-09)](#110-2020-04-09)
   - [Added](#added-23)
-  - [Fixed](#fixed-3)
+  - [Fixed](#fixed-4)
 - [1.0.0 (2020-03-16)](#100-2020-03-16)
   - [Added](#added-24)
 - [0.6.0 (2020-01-06)](#060-2020-01-06)
@@ -94,6 +96,23 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
 ### Removed
 ### Fixed
 -->
+
+5.8.1 (2021-09-22)
+------------------
+
+### Fixed
+
+* [#67](https://github.com/serradura/kind/pull/67) - Make `Kind.assert_hash!(some_hash, schema:)` works with a `Kind::Any` instance.
+```ruby
+require 'kind/any'
+
+Level = Kind::Any[:low, :high]
+
+Kind.assert_hash!({level: :medium}, schema: {level: Level})
+# Kind::Error (The key :status has an invalid value. Expected: Kind::Any[:low, :high])
+```
+
+[⬆️ &nbsp;Back to Top](#changelog-)
 
 5.8.0 (2021-09-22)
 ------------------
