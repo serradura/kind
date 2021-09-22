@@ -70,4 +70,11 @@ class Kind::AnyTest < Minitest::Test
       assert status.values == %w[open close]
     end
   end
+
+  def test_kind_assert_hash
+    assert_raises_with_message(
+      Kind::Error,
+      'The key :status has an invalid value. Expected: Kind::Any["open", "close"]'
+    ) { Kind.assert_hash!({status: 'foo'}, schema: {status: Status1}) }
+  end
 end

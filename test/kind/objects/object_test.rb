@@ -139,4 +139,22 @@ class Kind::ObjectTest < Minitest::Test
       'nil expected to be a kind of String'
     ) { Kind::Object::Instance.new([], {}) }
   end
+
+  def test_kind_assert_hash
+    assert_raises_with_message(
+      Kind::Error,
+      'The key :string has an invalid value. Expected: String'
+    ) { Kind.assert_hash!({string: 1}, schema: {string: Kind::String}) }
+
+    filled_string = begin
+      filled_str = ->(value) {value.is_a?(String) && !value.empty?}
+
+      Kind::Of(filled_str, name: 'FilledString')
+    end
+
+    assert_raises_with_message(
+      Kind::Error,
+      'The key :string has an invalid value. Expected: FilledString'
+    ) { Kind.assert_hash!({string: ''}, schema: {string: filled_string}) }
+  end
 end

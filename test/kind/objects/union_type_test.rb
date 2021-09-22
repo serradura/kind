@@ -35,4 +35,11 @@ class Kind::UnionTypeTest < Minitest::Test
       array: hash_or_array
     }))
   end
+
+  def test_kind_assert_hash
+    assert_raises_with_message(
+      Kind::Error,
+      'The key :status has an invalid value. Expected: (String | Symbol)'
+    ) { Kind.assert_hash!({status: 0}, schema: {status: Kind[String] | Symbol}) }
+  end
 end
