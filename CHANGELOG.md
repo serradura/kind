@@ -169,7 +169,7 @@ Kind.assert_hash!({level: :medium}, schema: {level: Level})
   FilledString = begin
     filled_string = ->(value) {value.is_a?(String) && value.present?}
 
-    Kind::Of(filled_string, name: 'FilledString')
+    Kind[filled_string, name: 'FilledString']
   end
 
   Kind.assert_hash!(some_hash, schema: {

@@ -149,7 +149,7 @@ class Kind::ObjectTest < Minitest::Test
     filled_string = begin
       filled_str = ->(value) {value.is_a?(String) && !value.empty?}
 
-      Kind::Of(filled_str, name: 'FilledString')
+      Kind[filled_str, name: 'FilledString']
     end
 
     assert_raises_with_message(
