@@ -13,7 +13,7 @@ module Kind
       :assert_hash!
     ].each { |method_name| remove_method(method_name) }
 
-    def object_is_a(_kind, value, _label = nil) # :nodoc:
+    def object_is_a(_kind, value, _label = nil, _expected = nil) # :nodoc:
       value
     end
 

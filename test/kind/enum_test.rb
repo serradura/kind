@@ -208,6 +208,96 @@ class Kind::EnumTest < Minitest::Test
     end
   end
 
+  module Level3
+    include Kind::Enum.from_array([:low, :medium, :high], use_index_as_value: false)
+  end
+
+  def test_an_array_of_values_2
+    assert Level3.name == 'Kind::EnumTest::Level3'
+    assert Level3.is_a?(Module)
+
+    refute Level3::LOW == 0
+    assert Level3::LOW == :low
+    assert Level3::LOW == 'low'
+
+    assert_equal([:HIGH, :LOW, :MEDIUM], Level3.constants.sort)
+
+    assert_equal(
+      '#<Kind::Enum::Item name="LOW" to_s="low" value=:low>',
+      Level3::LOW.inspect
+    )
+
+    [:low, :medium, :high, 'low', 'medium', 'high'].each do |key|
+      assert Level3 === key
+      assert Level3.ref?(key)
+    end
+
+    [:low, :medium, :high, 'low', 'medium', 'high'].each do |key|
+      assert Level3.key?(key)
+    end
+
+    [:foo, 'foo', 0, 1, 2].each { |key| refute Level3.ref?(key) }
+
+    [:foo, 'foo'].each { |key| refute Level3.key?(key) }
+
+    assert Level3.keys == %w[low medium high]
+    assert Level3.values == %i[low medium high]
+
+    assert Level3.value_at(:low) == :low
+    assert Level3.value_at('low') == :low
+    assert_nil Level3.value_at(0)
+    assert_nil Level3.value_at(:foo)
+    assert_nil Level3.value_at('foo')
+
+    assert_nil Level3.key(0)
+    assert_nil Level3.key(3)
+    assert_nil Level3.key('low')
+    assert Level3.key(:low) == 'low'
+
+    assert_equal(
+      { 'low' => :low, 'medium' => :medium, 'high' => :high },
+      Level3.to_h
+    )
+
+    assert Level3.items.all? { |item| item.instance_of?(Kind::Enum::Item) }
+
+    assert Level3.items[0].name == 'LOW'
+    assert Level3.items[1].name == 'MEDIUM'
+    assert Level3.items[2].name == 'HIGH'
+
+    ['low', :low].each do |value|
+      case value
+      when Level3::LOW    then assert(1 == 1)
+      when Level3::MEDIUM then raise
+      when Level3::HIGH   then raise
+      end
+    end
+
+    ['medium', :medium].each do |value|
+      case value
+      when Level3::LOW    then raise
+      when Level3::MEDIUM then assert(1 == 1)
+      when Level3::HIGH   then raise
+      end
+    end
+
+    ['high', :high].each do |value|
+      case value
+      when Level3::LOW    then raise
+      when Level3::MEDIUM then raise
+      when Level3::HIGH   then assert(1 == 1)
+      end
+    end
+
+    [
+      'low'   , :low,
+      'medium', :medium,
+      'high'  , :high
+    ].each do |value|
+      assert Level3[value] == value
+    end
+  end
+
   Fruits = Kind::Enum.values(
     :banana        => 'bANANA',
     'Orange'       => 'orangE',

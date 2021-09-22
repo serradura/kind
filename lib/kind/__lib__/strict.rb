@@ -6,16 +6,16 @@ module Kind
   module STRICT
     extend self
 
-    require 'kind/__lib__/assert_hash_schema'
+    require 'kind/__lib__/assert_hash'
 
     def error(kind_name, value, label = nil) # :nodoc:
       raise Error.new(kind_name, value, label: label)
     end
 
-    def object_is_a(kind, value, label = nil) # :nodoc:
+    def object_is_a(kind, value, label = nil, expected = nil) # :nodoc:
       return value if kind === value
 
-      error(kind.name, value, label)
+      error(expected || kind.name, value, label)
     end
 
     def kind_of(kind, value, kind_name = nil) # :nodoc:
@@ -53,12 +53,17 @@ module Kind
     end
 
     def assert_hash!(hash, options)
+      check_keys = options.key?(:keys)
+      check_schema = options.key?(:schema)
+
+      raise ArgumentError, ':keys or :schema is missing' if !check_keys && !check_schema
+      raise ArgumentError, "hash can't be empty" if hash.empty?
+
       require_all = options[:require_all]
 
-      return assert_hash_keys!(hash, options[:keys], require_all) if options.key?(:keys)
-      return assert_hash_schema!(hash, options[:schema], require_all) if options.key?(:schema)
+      return assert_hash_keys!(hash, options[:keys], require_all) if check_keys
 
-      raise ArgumentError, ':keys or :schema is missing'
+      assert_hash_schema!(hash, options[:schema], require_all)
     end
 
     private
@@ -66,7 +71,7 @@ module Kind
       def assert_hash_keys!(hash, arg, require_all)
         keys = Array(arg)
 
-        ASSERT_HASH_KEYS.require_all(keys, hash) if require_all
+        AssertHash::Keys.require_all(keys, hash) if require_all
 
         hash.each_key do |k|
           unless keys.include?(k)
@@ -76,9 +81,9 @@ module Kind
       end
 
       def assert_hash_schema!(hash, schema, require_all)
-        return ASSERT_HASH_SCHEMA.all(hash, schema) if require_all
+        return AssertHash::Schema.all(hash, schema) if require_all
 
-        ASSERT_HASH_SCHEMA.any(hash, schema)
+        AssertHash::Schema.any(hash, schema)
       end
   end
 

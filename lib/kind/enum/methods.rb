@@ -33,7 +33,7 @@ module Kind
     end
 
     def key?(arg)
-      arg.respond_to?(:to_sym) ? ref?(arg) && !value?(arg) : false
+      arg.respond_to?(:to_sym) ? ENUM__KEYS.member?(arg.to_s) : false
     end
 
     def value?(arg)

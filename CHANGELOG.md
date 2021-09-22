@@ -3,85 +3,87 @@
 This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the recommendations of [keepachangelog.com](http://keepachangelog.com/).
 
 - [Unreleased](#unreleased)
-- [5.7.0 (2021-06-22)](#570-2021-06-22)
+- [5.8.0 (2021-09-22)](#580-2021-09-22)
   - [Added](#added)
-- [5.6.0 (2021-05-14)](#560-2021-05-14)
+- [5.7.0 (2021-06-22)](#570-2021-06-22)
   - [Added](#added-1)
-- [5.5.0 (2021-04-05)](#550-2021-04-05)
+- [5.6.0 (2021-05-14)](#560-2021-05-14)
   - [Added](#added-2)
+- [5.5.0 (2021-04-05)](#550-2021-04-05)
+  - [Added](#added-3)
 - [5.4.1 (2021-03-26)](#541-2021-03-26)
   - [Fixed](#fixed)
 - [5.4.0 (2021-03-25)](#540-2021-03-25)
-  - [Added](#added-3)
-- [5.3.0 (2021-03-23)](#530-2021-03-23)
   - [Added](#added-4)
-- [5.2.0 (2021-03-17)](#520-2021-03-17)
+- [5.3.0 (2021-03-23)](#530-2021-03-23)
   - [Added](#added-5)
+- [5.2.0 (2021-03-17)](#520-2021-03-17)
+  - [Added](#added-6)
   - [Deprecated](#deprecated)
   - [Changes](#changes)
 - [5.1.0 (2021-02-23)](#510-2021-02-23)
-  - [Added](#added-6)
+  - [Added](#added-7)
   - [Deprecated](#deprecated-1)
 - [5.0.0 (2021-02-22)](#500-2021-02-22)
   - [Breaking Changes](#breaking-changes)
   - [Removed](#removed)
 - [4.1.0 (2021-02-22)](#410-2021-02-22)
-  - [Added](#added-7)
-- [4.0.0 (2021-02-22)](#400-2021-02-22)
   - [Added](#added-8)
+- [4.0.0 (2021-02-22)](#400-2021-02-22)
+  - [Added](#added-9)
   - [Deprecated](#deprecated-2)
   - [Fixed](#fixed-1)
 - [3.1.0 (2020-07-08)](#310-2020-07-08)
-  - [Added](#added-9)
+  - [Added](#added-10)
 - [3.0.0 (2020-06-25)](#300-2020-06-25)
   - [Breaking Changes](#breaking-changes-1)
-  - [Added](#added-10)
-- [2.3.0 (2020-06-24)](#230-2020-06-24)
   - [Added](#added-11)
-- [2.2.0 (2020-06-23)](#220-2020-06-23)
+- [2.3.0 (2020-06-24)](#230-2020-06-24)
   - [Added](#added-12)
-- [2.1.0 (2020-05-12)](#210-2020-05-12)
+- [2.2.0 (2020-06-23)](#220-2020-06-23)
   - [Added](#added-13)
+- [2.1.0 (2020-05-12)](#210-2020-05-12)
+  - [Added](#added-14)
   - [Breaking Changes](#breaking-changes-2)
 - [2.0.0 (2020-05-07)](#200-2020-05-07)
-  - [Added](#added-14)
+  - [Added](#added-15)
   - [Breaking Changes](#breaking-changes-3)
   - [Removed](#removed-1)
 - [1.9.0 (2020-05-06)](#190-2020-05-06)
-  - [Added](#added-15)
-- [1.8.0 (2020-05-03)](#180-2020-05-03)
   - [Added](#added-16)
+- [1.8.0 (2020-05-03)](#180-2020-05-03)
+  - [Added](#added-17)
 - [1.7.0 (2020-05-03)](#170-2020-05-03)
   - [Fixed](#fixed-2)
 - [1.6.0 (2020-04-17)](#160-2020-04-17)
-  - [Added](#added-17)
+  - [Added](#added-18)
   - [Changes](#changes-1)
 - [1.5.0 (2020-04-12)](#150-2020-04-12)
-  - [Added](#added-18)
-- [1.4.0 (2020-04-12)](#140-2020-04-12)
   - [Added](#added-19)
-- [1.3.0 (2020-04-12)](#130-2020-04-12)
+- [1.4.0 (2020-04-12)](#140-2020-04-12)
   - [Added](#added-20)
-- [1.2.0 (2020-04-12)](#120-2020-04-12)
+- [1.3.0 (2020-04-12)](#130-2020-04-12)
   - [Added](#added-21)
-- [1.1.0 (2020-04-09)](#110-2020-04-09)
+- [1.2.0 (2020-04-12)](#120-2020-04-12)
   - [Added](#added-22)
+- [1.1.0 (2020-04-09)](#110-2020-04-09)
+  - [Added](#added-23)
   - [Fixed](#fixed-3)
 - [1.0.0 (2020-03-16)](#100-2020-03-16)
-  - [Added](#added-23)
-- [0.6.0 (2020-01-06)](#060-2020-01-06)
   - [Added](#added-24)
-- [0.5.0 (2020-01-04)](#050-2020-01-04)
+- [0.6.0 (2020-01-06)](#060-2020-01-06)
   - [Added](#added-25)
-- [0.4.0 (2020-01-03)](#040-2020-01-03)
+- [0.5.0 (2020-01-04)](#050-2020-01-04)
   - [Added](#added-26)
-- [0.3.0 (2020-01-03)](#030-2020-01-03)
+- [0.4.0 (2020-01-03)](#040-2020-01-03)
   - [Added](#added-27)
+- [0.3.0 (2020-01-03)](#030-2020-01-03)
+  - [Added](#added-28)
   - [Breaking Changes](#breaking-changes-4)
 - [0.2.0 (2020-01-02)](#020-2020-01-02)
-  - [Added](#added-28)
-- [0.1.0 (2019-12-26)](#010-2019-12-26)
   - [Added](#added-29)
+- [0.1.0 (2019-12-26)](#010-2019-12-26)
+  - [Added](#added-30)
 
 ## Unreleased
 
@@ -92,6 +94,90 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
 ### Removed
 ### Fixed
 -->
+
+5.8.0 (2021-09-22)
+------------------
+
+### Added
+
+* [#66](https://github.com/serradura/kind/pull/66) - Add `Kind::Any` to make easier the verification of a value in a list (array) of expected values.
+  ```ruby
+  require 'kind/any'
+
+  Level = Kind::Any[:low, :high] # or Kind::Any.new([:low, :high])
+
+  Level === :low  # true
+  Level === :high # true
+
+  Level === :foo  # false
+
+  Level[:low]  # :low
+  Level[:high] # :high
+
+  Level[:foo] # Kind::Error (:foo expected to be a kind of Kind::Any[:low, :high])
+
+  level_or_any_symbol = # (Kind::Any[:low, :high] | Symbol)
+
+  Level.name    # 'Kind::Any[:low, :high]'
+  Level.inspect # 'Kind::Any[:low, :high]'
+
+  Level.values  # [:low, :high]
+  ```
+
+* [#66](https://github.com/serradura/kind/pull/66) - Make `Kind.assert_hash!(hash, schema:)` works with a `Kind::Object`.
+  ```ruby
+  require 'kind/enum'
+
+  module Level
+    include Kind::Enum.from_array([:low, :medium, :high], use_index_as_value: false)
+  end
+
+  Level.keys   # ["low", "medium", "high"]
+  Level.values # [:low, :medium, :high]
+
+  # ---
+
+  module Status
+    include Kind::Enum.from_array([:open, :closed], use_index_as_value: true)
+  end
+
+  Status.keys   # ["open", "closed"]
+  Status.values # [0, 1]
+  ```
+
+* [#66](https://github.com/serradura/kind/pull/66) - Make `Kind.assert_hash!(hash, schema:)` works with a `Kind::Object`.
+  ```ruby
+  FilledString = begin
+    filled_string = ->(value) {value.is_a?(String) && value.present?}
+
+    Kind::Of(filled_string, name: 'FilledString')
+  end
+
+  Kind.assert_hash!(some_hash, schema: {
+    string: FilledString,
+    callable: Kind::Callable,
+  })
+  ```
+
+* [#66](https://github.com/serradura/kind/pull/66) - Improve the exception messages of `Kind.assert_hash!(hash, schema:)`.
+  ```ruby
+  Kind.assert_hash!({status: 1}, schema: {status: Kind::String | Symbol})
+  # Kind::Error (The key :status has an invalid value. Expected: (String | Symbol))
+
+  Kind.assert_hash!({status: 'closed'}, schema: {status: 'active'})
+  # Kind::Error (The key :status has an invalid value. Expected: active, Given: closed)
+
+  Kind.assert_hash!({callable: 1}, schema: {callable: Kind::Callable})
+  # Kind::Error (The key :callable has an invalid value. Expected: Callable)
+  ```
+
+* [#66](https://github.com/serradura/kind/pull/66) - Make `Kind.assert_hash!(hash, **options)` raises an error if the given hash be empty.
+  ```ruby
+  Kind.assert_hash!({}, keys: []) # ArgumentError (hash can't be empty)
+  Kind.assert_hash!({}, schema: {}) # ArgumentError (hash can't be empty)
+  ```
+
+[⬆️ &nbsp;Back to Top](#changelog-)
 
 5.7.0 (2021-06-22)
 ------------------
