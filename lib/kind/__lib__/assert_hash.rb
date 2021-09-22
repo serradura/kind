@@ -23,13 +23,9 @@ module Kind
     module Schema
       extend self
 
-      KindObject = ->(value) do
-        defined?(Kind::Object) ? Kind::Object === value : false
-      end
-
-      KindUnionType = ->(value) do
-        defined?(Kind::UnionType) ? Kind::UnionType === value : false
-      end
+      KindAny = ->(value) { defined?(Kind::Any) ? Kind::Any === value : false }
+      KindObject = ->(value) { defined?(Kind::Object) ? Kind::Object === value : false }
+      KindUnionType = ->(value) { defined?(Kind::UnionType) ? Kind::UnionType === value : false }
 
       def any(hash, spec)
         spec.each do |key, expected|
@@ -37,7 +33,7 @@ module Kind
           error_message = "The key #{key.inspect} has an invalid value"
 
           case expected
-          when KindUnionType, KindObject then assert_kind_object(expected, value, error_message)
+          when KindAny, KindObject, KindUnionType then assert_kind_object(expected, value, error_message)
           when ::Module then assert_kind_of(expected, value, error_message)
           when ::Proc then assert(expected.call(value), error_message)
           when ::Regexp then assert_match(expected, value, error_message)
@@ -58,7 +54,7 @@ module Kind
       private
 
         def assert_equal(expected, value, message)
-          raise_kind_error("#{message}. Expected: #{expected}, Given: #{value}") if expected != value
+          raise_kind_error("#{message}. Expected: #{expected.inspect}, Given: #{value.inspect}") if expected != value
         end
 
         def assert(value, message)
@@ -72,11 +68,11 @@ module Kind
         def assert_match(expected, value, message)
           STRICT.kind_of(String, value)
 
-          raise_kind_error("#{message}. Expected: #{expected}") if value !~ expected
+          raise_kind_error("#{message}. Expected: #{expected.inspect}") if value !~ expected
         end
 
         def assert_kind_of(expected, value, message)
-          raise_kind_error("#{message}. Expected: #{expected}") unless expected === value
+          raise_kind_error("#{message}. Expected: #{expected.inspect}") unless expected === value
         end
 
         def assert_kind_object(expected, value, message)
