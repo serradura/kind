@@ -3,89 +3,91 @@
 This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the recommendations of [keepachangelog.com](http://keepachangelog.com/).
 
 - [Unreleased](#unreleased)
+- [5.9.0 (2021-09-22)](#590-2021-09-22)
+  - [Added](#added)
 - [5.8.1 (2021-09-22)](#581-2021-09-22)
   - [Fixed](#fixed)
 - [5.8.0 (2021-09-22)](#580-2021-09-22)
-  - [Added](#added)
-- [5.7.0 (2021-06-22)](#570-2021-06-22)
   - [Added](#added-1)
-- [5.6.0 (2021-05-14)](#560-2021-05-14)
+- [5.7.0 (2021-06-22)](#570-2021-06-22)
   - [Added](#added-2)
-- [5.5.0 (2021-04-05)](#550-2021-04-05)
+- [5.6.0 (2021-05-14)](#560-2021-05-14)
   - [Added](#added-3)
+- [5.5.0 (2021-04-05)](#550-2021-04-05)
+  - [Added](#added-4)
 - [5.4.1 (2021-03-26)](#541-2021-03-26)
   - [Fixed](#fixed-1)
 - [5.4.0 (2021-03-25)](#540-2021-03-25)
-  - [Added](#added-4)
-- [5.3.0 (2021-03-23)](#530-2021-03-23)
   - [Added](#added-5)
-- [5.2.0 (2021-03-17)](#520-2021-03-17)
+- [5.3.0 (2021-03-23)](#530-2021-03-23)
   - [Added](#added-6)
+- [5.2.0 (2021-03-17)](#520-2021-03-17)
+  - [Added](#added-7)
   - [Deprecated](#deprecated)
   - [Changes](#changes)
 - [5.1.0 (2021-02-23)](#510-2021-02-23)
-  - [Added](#added-7)
+  - [Added](#added-8)
   - [Deprecated](#deprecated-1)
 - [5.0.0 (2021-02-22)](#500-2021-02-22)
   - [Breaking Changes](#breaking-changes)
   - [Removed](#removed)
 - [4.1.0 (2021-02-22)](#410-2021-02-22)
-  - [Added](#added-8)
-- [4.0.0 (2021-02-22)](#400-2021-02-22)
   - [Added](#added-9)
+- [4.0.0 (2021-02-22)](#400-2021-02-22)
+  - [Added](#added-10)
   - [Deprecated](#deprecated-2)
   - [Fixed](#fixed-2)
 - [3.1.0 (2020-07-08)](#310-2020-07-08)
-  - [Added](#added-10)
+  - [Added](#added-11)
 - [3.0.0 (2020-06-25)](#300-2020-06-25)
   - [Breaking Changes](#breaking-changes-1)
-  - [Added](#added-11)
-- [2.3.0 (2020-06-24)](#230-2020-06-24)
   - [Added](#added-12)
-- [2.2.0 (2020-06-23)](#220-2020-06-23)
+- [2.3.0 (2020-06-24)](#230-2020-06-24)
   - [Added](#added-13)
-- [2.1.0 (2020-05-12)](#210-2020-05-12)
+- [2.2.0 (2020-06-23)](#220-2020-06-23)
   - [Added](#added-14)
+- [2.1.0 (2020-05-12)](#210-2020-05-12)
+  - [Added](#added-15)
   - [Breaking Changes](#breaking-changes-2)
 - [2.0.0 (2020-05-07)](#200-2020-05-07)
-  - [Added](#added-15)
+  - [Added](#added-16)
   - [Breaking Changes](#breaking-changes-3)
   - [Removed](#removed-1)
 - [1.9.0 (2020-05-06)](#190-2020-05-06)
-  - [Added](#added-16)
-- [1.8.0 (2020-05-03)](#180-2020-05-03)
   - [Added](#added-17)
+- [1.8.0 (2020-05-03)](#180-2020-05-03)
+  - [Added](#added-18)
 - [1.7.0 (2020-05-03)](#170-2020-05-03)
   - [Fixed](#fixed-3)
 - [1.6.0 (2020-04-17)](#160-2020-04-17)
-  - [Added](#added-18)
+  - [Added](#added-19)
   - [Changes](#changes-1)
 - [1.5.0 (2020-04-12)](#150-2020-04-12)
-  - [Added](#added-19)
-- [1.4.0 (2020-04-12)](#140-2020-04-12)
   - [Added](#added-20)
-- [1.3.0 (2020-04-12)](#130-2020-04-12)
+- [1.4.0 (2020-04-12)](#140-2020-04-12)
   - [Added](#added-21)
-- [1.2.0 (2020-04-12)](#120-2020-04-12)
+- [1.3.0 (2020-04-12)](#130-2020-04-12)
   - [Added](#added-22)
-- [1.1.0 (2020-04-09)](#110-2020-04-09)
+- [1.2.0 (2020-04-12)](#120-2020-04-12)
   - [Added](#added-23)
+- [1.1.0 (2020-04-09)](#110-2020-04-09)
+  - [Added](#added-24)
   - [Fixed](#fixed-4)
 - [1.0.0 (2020-03-16)](#100-2020-03-16)
-  - [Added](#added-24)
-- [0.6.0 (2020-01-06)](#060-2020-01-06)
   - [Added](#added-25)
-- [0.5.0 (2020-01-04)](#050-2020-01-04)
+- [0.6.0 (2020-01-06)](#060-2020-01-06)
   - [Added](#added-26)
-- [0.4.0 (2020-01-03)](#040-2020-01-03)
+- [0.5.0 (2020-01-04)](#050-2020-01-04)
   - [Added](#added-27)
-- [0.3.0 (2020-01-03)](#030-2020-01-03)
+- [0.4.0 (2020-01-03)](#040-2020-01-03)
   - [Added](#added-28)
+- [0.3.0 (2020-01-03)](#030-2020-01-03)
+  - [Added](#added-29)
   - [Breaking Changes](#breaking-changes-4)
 - [0.2.0 (2020-01-02)](#020-2020-01-02)
-  - [Added](#added-29)
-- [0.1.0 (2019-12-26)](#010-2019-12-26)
   - [Added](#added-30)
+- [0.1.0 (2019-12-26)](#010-2019-12-26)
+  - [Added](#added-31)
 
 ## Unreleased
 
@@ -96,6 +98,80 @@ This project follows [semver 2.0.0](http://semver.org/spec/v2.0.0.html) and the 
 ### Removed
 ### Fixed
 -->
+
+5.9.0 (2021-09-22)
+------------------
+
+### Added
+
+* [#68](https://github.com/serradura/kind/pull/68) - Add `Kind.object(name:, &block)` to create `Kind::Objects`.
+```ruby
+PositiveInteger = Kind.object(name: 'PositiveInteger') do |value|
+  value.kind_of?(Integer) && value > 0
+end
+
+# PositiveInteger.name
+# PositiveInteger.kind
+# The type handler can return its kind and its name
+PositiveInteger.name # "PositiveInteger"
+PositiveInteger.kind # #<Proc:0x0000.... >
+
+# PositiveInteger.===
+# Can check if a given value is an instance of its kind.
+PositiveInteger === 1 # true
+PositiveInteger === 0 # false
+
+# PositiveInteger.value?(value)
+# Can check if a given value is an instance of its kind.
+PositiveInteger.value?(1)  # true
+PositiveInteger.value?(-1) # false
+
+# If it doesn't receive an argument, a lambda will be returned and it will know how to do the type verification.
+[1, 2, 0, 3, -1].select(&PositiveInteger.value?) # [1, 2, 3]
+
+# PositiveInteger.or_nil(value)
+# Can return nil if the given value isn't an instance of its kind
+PositiveInteger.or_nil(1) # 1
+PositiveInteger.or_nil(0) # nil
+
+# PositiveInteger.or_undefined(value)
+# Can return Kind::Undefined if the given value isn't an instance of its kind
+PositiveInteger.or_undefined(2)  # 2
+PositiveInteger.or_undefined(-1) # Kind::Undefined
+
+# PositiveInteger.or(fallback, value)
+# Can return a fallback if the given value isn't an instance of its kind
+PositiveInteger.or(nil, 1) # 1
+PositiveInteger.or(nil, 0) # nil
+
+# If it doesn't receive a second argument (the value), it will return a callable that knows how to expose an instance of the expected type or a fallback if the given value was wrong.
+[1, 2, 0, 3, -1].map(&PositiveInteger.or(1))   # [1, 2, 1, 3, 1]
+[1, 2, 0, 3, -1].map(&PositiveInteger.or(nil)) # [1, 2, nil, 3, nil]
+
+# An error will be raised if the fallback didn't have the expected kind or if not nil / Kind::Undefined.
+[1, 2, 0, 3, -1].map(&PositiveInteger.or(:foo)) # Kind::Error (:foo expected to be a kind of PositiveInteger)
+
+# PositiveInteger[value]
+# Will raise Kind::Error if the given value isn't an instance of the expected kind
+PositiveInteger[1]    # 1
+PositiveInteger[:foo] # Kind::Error (:foo expected to be a kind of PositiveInteger)
+
+# PositiveInteger.value(arg, default:)
+# This method ensures that you will have a value of the expected kind. But, in the case of the given value be invalid, this method will require a default value (with the expected kind) to be returned.
+PositiveInteger.value(2, default: 1)   # 2
+
+PositiveInteger.value('1', default: 1) # 1
+
+PositiveInteger.value('1', default: 0) # Kind::Error (0 expected to be a kind of PositiveInteger)
+
+# PositiveInteger.maybe
+# This method returns a typed Kind::Maybe.
+PositiveInteger.maybe(0).value_or(1) # 1
+
+PositiveInteger.maybe(2).value_or(1) # 2
+```
+
+[⬆️ &nbsp;Back to Top](#changelog-)
 
 5.8.1 (2021-09-22)
 ------------------
