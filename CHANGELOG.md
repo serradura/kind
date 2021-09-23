@@ -219,7 +219,7 @@ Kind.assert_hash!({level: :medium}, schema: {level: Level})
   Level.values  # [:low, :high]
   ```
 
-* [#66](https://github.com/serradura/kind/pull/66) - Make `Kind.assert_hash!(hash, schema:)` works with a `Kind::Object`.
+* [#66](https://github.com/serradura/kind/pull/66) - Add `Kind::Enum.from_array(arg, use_index_as_value:)` to allow the creation of enums where its values will be the array values.
   ```ruby
   require 'kind/enum'
 

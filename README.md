@@ -69,7 +69,7 @@ unreleased | https://github.com/serradura/kind/blob/main/README.md
   - [Creating type handlers](#creating-type-handlers)
     - [Dynamic creation](#dynamic-creation)
       - [Using a class or a module](#using-a-class-or-a-module)
-      - [Using Kind.object(name:, &block) ===](#using-kindobjectname-block-)
+      - [Using Kind.object(name:, &block)](#using-kindobjectname-block)
     - [Kind::<Type> object](#kindtype-object)
   - [Utility methods](#utility-methods)
     - [Kind.of_class?()](#kindof_class)
@@ -455,7 +455,7 @@ kind_of_user.maybe('1').value_or(User.new) # #<User:0x0000...>
 
 [⬆️ &nbsp;Back to Top](#table-of-contents-)
 
-##### Using Kind.object(name:, &block) ===
+##### Using Kind.object(name:, &block)
 
 ```ruby
 PositiveInteger = Kind.object(name: 'PositiveInteger') do |value|
