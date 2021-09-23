@@ -4,28 +4,25 @@ class Kind::AnyTest < Minitest::Test
   require 'kind/any'
 
   def test_the_kind_any_constructor
-    [nil, {}, [], 1, '', :s].each do |value|
+    [nil, {}, [], Set.new, 1, '', :s].each do |value|
       assert_raises_with_message(
         Kind::Error,
-        "#{value.inspect} expected to be a kind of filled array"
-      ) { Kind::Any[value] }
+        "#{value.inspect} expected to be a kind of filled array or set"
+      ) { Kind::Any.new(value) }
     end
 
-    [nil, {}, [], 1, '', :s].each do |value|
+    [nil, {}, [], Set.new, 1, '', :s].each do |value|
       assert_raises_with_message(
         Kind::Error,
-        "#{value.inspect} expected to be a kind of filled array"
-      ) { Kind::Any.new(value) }
+        "#{value.inspect} expected to be a kind of filled array or set"
+      ) { Kind::Any[value] }
     end
   end
 
-  Level1 = Kind::Any[:low, :high]
-  Level2 = Kind::Any.new(:low, :high)
+  Level1 = Kind::Any[Set[:low, :high]]
+  Level2 = Kind::Any.new(Set[:low, :high])
 
-  Status1 = Kind::Any[%w[open close]]
-  Status2 = Kind::Any.new(%w[open close])
-
-  def test_kind_any
+  def test_kind_any_with_a_set
     [Level1, Level2].each do |level|
       assert level === :low
       assert level === :high
@@ -37,18 +34,25 @@ class Kind::AnyTest < Minitest::Test
 
       assert_raises_with_message(
         Kind::Error,
-        ':foo expected to be a kind of Kind::Any[:low, :high]'
+        ':foo expected to be a kind of Kind::Any{:low, :high}'
       ) { level[:foo] }
 
       assert (level | Status1) === :low
       assert (level | Status2) === 'close'
 
-      assert level.inspect == 'Kind::Any[:low, :high]'
+      assert level.inspect == 'Kind::Any{:low, :high}'
 
-      assert level.values == [:low, :high]
+      assert level.values == Set[:low, :high]
     end
+  end
 
-    [Status1, Status2].each do |status|
+  Status1 = Kind::Any[%w[open close]]
+  Status2 = Kind::Any.new(%w[open close])
+  Status3 = Kind::Any.new('open', 'close')
+  Status4 = Kind::Any['open', 'close']
+
+  def test_kind_any_with_an_array
+    [Status1, Status2, Status3, Status4].each do |status|
       assert status === 'open'
       assert status === 'close'
 

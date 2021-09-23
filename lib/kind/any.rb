@@ -2,7 +2,7 @@
 
 module Kind
   class Any
-    FilledArray = ->(value) {value.is_a?(::Array) && !value.empty?}
+    FilledList = ->(val) {(val.is_a?(::Array) || val.is_a?(::Set)) && !val.empty?}
 
     singleton_class.send(:alias_method, :[], :new)
 
@@ -11,11 +11,11 @@ module Kind
     def initialize(*args)
       array = args.size == 1 ? args[0] : args
 
-      @values = Kind.of(FilledArray, array, expected: 'filled array')
+      @values = Kind.of(FilledList, array, expected: 'filled array or set')
     end
 
-    def ===(other)
-      @values.any? { |value| value == other }
+    def ===(value)
+      @values.include?(value)
     end
 
     def [](value, label: nil)
@@ -27,11 +27,18 @@ module Kind
     end
 
     def name
-      "Kind::Any#{@values}"
+      str = @values.inspect
+
+      if @values.is_a?(::Set)
+        str.sub!(/\A#<Set: /, '')
+        str.chomp!('>')
+      end
+
+      "Kind::Any#{str}"
     end
 
     alias inspect name
 
-    private_constant :FilledArray
+    private_constant :FilledList
   end
 end
