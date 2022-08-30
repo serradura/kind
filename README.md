@@ -92,7 +92,7 @@ unreleased | https://github.com/serradura/kind/blob/main/README.md
   - [Kind::None() and Kind::Some()](#kindnone-and-kindsome)
   - [Kind::Optional](#kindoptional)
     - [Replacing blocks by lambdas](#replacing-blocks-by-lambdas-2)
-  - [Kind::Maybe(<Type>)](#kindmaybetype)
+  - [Kind::Maybe(<Type>)](#kindtypemaybe)
     - [Real world examples](#real-world-examples)
   - [Error handling](#error-handling)
     - [Kind::Maybe.wrap {}](#kindmaybewrap-)
@@ -277,7 +277,7 @@ Kind::String.value('1', default: 1)  # Kind::Error (1 expected to be a kind of S
 
 ### Kind::\<Type\>.maybe
 
-This method exposes a [typed `Kind::Maybe`](#kindmaybetype) and using it will be possible to apply a sequence of operations in the case of the wrapped value has the expected kind.
+This method exposes a [typed `Kind::Maybe`](#kindtypemaybe) and using it will be possible to apply a sequence of operations in the case of the wrapped value has the expected kind.
 
 ```ruby
 Double = ->(value) do
@@ -865,9 +865,9 @@ This module also has the method `to_proc`, because of this you can make use of t
 
 ## Kind::Undefined
 
-The [`Kind::Undefined`](https://github.com/serradura/kind/blob/1674bab/lib/kind/undefined.rb) constant can be used to distinguish the usage of `nil`.
+The [`Kind::Undefined`](https://github.com/serradura/kind/blob/main/lib/kind/basic/undefined.rb) constant can be used to distinguish the usage of `nil`.
 
-If you are interested, check out [the tests](https://github.com/serradura/kind/blob/main/test/kind/undefined_test.rb) to understand its methods.
+If you are interested, check out [the tests](https://github.com/serradura/kind/blob/main/test/kind/basic/undefined_test.rb) to understand its methods.
 
 [⬆️ &nbsp;Back to Top](#table-of-contents-)
 
