@@ -18,6 +18,10 @@ module Kind
         .new(value)
     end
 
+    def to_proc
+      ->(value) { new(value) }
+    end
+
     alias_method :[], :new
 
     module Buildable

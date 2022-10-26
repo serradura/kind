@@ -11,6 +11,14 @@ class Kind::MaybeTest < Minitest::Test
     assert_equal(0, Kind::Maybe.new(optional).value)
   end
 
+  def test_to_proc
+    to_proc_maybe = 0.then(&Kind::Maybe)
+
+    constructor_maybe = Kind::Maybe.new(0)
+
+    assert_equal(constructor_maybe.value, to_proc_maybe.value)
+  end
+
   def test_maybe_result
     object = Object.new
 
