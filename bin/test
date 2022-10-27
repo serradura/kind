@@ -41,7 +41,8 @@ RUBY_2_2345="ruby 2.[2345]."
 RUBY_2_1234="ruby 2.[1234]."
 RUBY_2_567="ruby 2.[567]."
 RUBY_2_12="ruby 2.[12]."
-RUBY_3_X="ruby 3.0."
+RUBY_2_7="ruby 2.7."
+RUBY_3_X="ruby 3."
 
 if [[ $RUBY_V =~ $RUBY_2_12345 ]]; then
   if [[ $RUBY_V =~ $RUBY_2_12 ]]; then
@@ -69,6 +70,10 @@ if [[ $RUBY_V =~ $RUBY_2_567 ]] || [[ $RUBY_V =~ $RUBY_3_X ]]; then
 
   test_with_activemodel "6.0"
   test_with_activemodel "6.1"
+
+  if [[ $RUBY_V =~ $RUBY_2_7 ]] || [[ $RUBY_V =~ $RUBY_3_X ]]; then
+    test_with_activemodel "7.0"
+  fi
 
   run_tests_by_modules
 
