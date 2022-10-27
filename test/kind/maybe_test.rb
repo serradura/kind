@@ -12,7 +12,7 @@ class Kind::MaybeTest < Minitest::Test
   end
 
   def test_to_proc
-    to_proc_maybe = 0.then(&Kind::Maybe)
+    to_proc_maybe = Kind::Maybe.to_proc.call(0)
 
     constructor_maybe = Kind::Maybe.new(0)
 
